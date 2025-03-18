@@ -1,0 +1,2 @@
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Release\net8.0\browser-wasm\PubTmp\Out\emcc-props.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Release\net8.0\browser-wasm\PubTmp\Out\web.config

@@ -1,0 +1,12 @@
+﻿@page "/ModalEjemplo"
+@inject IModalService model
+
+<PageTitle>Modal</PageTitle>
+
+<h1>Modal Ejemplo!</h1>
+
+Welcome to your new app.
+
+<button @onclick="@(()=>model.Show<Index>("Index"))" class="btn btn-primary">View</button>
+
+<SurveyPrompt Title="How is Blazor working for you?" />

@@ -1,0 +1,7 @@
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.csproj.AssemblyReference.cache
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.AssemblyInfoInputs.cache
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.AssemblyInfo.cs
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.csproj.CoreCompileInputs.cache
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.MvcApplicationPartsAssemblyInfo.cache
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net7.0\PRESUPUESTOS_BlazorApp.sourcelink.json

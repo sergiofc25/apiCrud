@@ -1,0 +1,12 @@
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_BlazorApp\obj\Debug\net8.0\staticwebassets.build.json

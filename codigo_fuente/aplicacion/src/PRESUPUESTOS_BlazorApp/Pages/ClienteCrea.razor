@@ -1,0 +1,149 @@
+﻿@* @page "/cliente_crea"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@using static MudBlazor.Icons.Material
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+
+
+<PageTitle>Crear Cliente</PageTitle>
+
+<MudItem xs="12">
+    <MudPaper Class="pa-5" Elevation="3">
+        <MudForm @ref="form" OnValidSubmit="CrearCliente">
+            <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
+            <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
+            <MudTextField @bind-Value="cliente.TipDoc_Nombre" Label="Tipo de Documento" Class="mud-width-full" />
+            <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+            <MudButton Type="Submit" Variant="Variant.Filled" Color="Color.Primary">Crear Cliente</MudButton>
+        </MudForm>
+    </MudPaper>
+</MudItem>
+
+@code {
+    private MudForm form;
+    private DTO_Cliente_Crea cliente = new DTO_Cliente_Crea();
+
+    private async Task CrearCliente()
+    {
+        if (form.IsValid)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var content = new StringContent(JsonConvert.SerializeObject(cliente), System.Text.Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("api/v1/Cliente/Crea", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Cliente creado exitosamente.");
+                    NavigationManager.NavigateTo("/clientes_paginado");
+                }
+                else
+                {
+                    // Manejar errores
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+}
+ *@
+@page "/cliente_crea"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject ILocalStorageService localStorage
+
+<PageTitle>Crear Cliente</PageTitle>
+
+<section style="max-width:600px; margin: 0 auto;">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                <MudForm Model="@cliente" @ref="form" OnValidSubmit="CrearCliente">
+                    <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
+                    <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
+                    <MudTextField @bind-Value="cliente.TipDoc_Nombre" Label="Tipo de Documento" Class="mud-width-full" />
+                    <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+                    <MudItem Class="d-flex justify-center align-center" xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearCliente())">
+                            @if (_processing)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                <MudText Class="ms-2">Creando...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Crear Cliente</MudText>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudForm>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</section>
+
+@code {
+    private MudForm? form;
+    private DTO_Cliente_Crea cliente = new DTO_Cliente_Crea();
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    private async Task CrearCliente()
+    {
+        if (form != null && form.IsValid)
+        {
+            _processing = true;
+            StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
+            try
+            {
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                // Agregar el token de autorización a la solicitud actual
+                var token = await localStorage.GetItemAsync<string>("authToken");
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+                var content = new StringContent(JsonConvert.SerializeObject(cliente), System.Text.Encoding.UTF8, "application/json");
+                var response = await client.PostAsync("api/v1/Cliente/Crea", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Cliente creado exitosamente.");
+                    NavigationManager.NavigateTo("/clientes_paginado");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Ocurrió un error: {ex.Message}";
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged(); // Actualiza el UI para ocultar el estado de procesamiento
+            }
+        }
+    }
+}

@@ -1,0 +1,521 @@
+[
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.AccountsController",
+    "Method": "Login",
+    "RelativePath": "api/v{version}/Accounts/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eDTO_Usuario_Obten_Login",
+        "Type": "Model.DTO.v1.DTO_Usuario_Obten_Login",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Actualiza_Condicion",
+    "RelativePath": "api/v{version}/Cliente/Actualiza_Condicion/{Cli_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Cli_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Cliente_Actualiza_Condicion",
+        "Type": "Model.DTO.v1.DTO_Cliente_Actualiza_Condicion",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Actualiza",
+    "RelativePath": "api/v{version}/Cliente/Actualiza/{Cli_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Cli_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Cliente_Actualiza",
+        "Type": "Model.DTO.v1.DTO_Cliente_Actualiza",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Crea",
+    "RelativePath": "api/v{version}/Cliente/Crea",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eDTO_Cliente_Crea",
+        "Type": "Model.DTO.v1.DTO_Cliente_Crea",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Obten",
+    "RelativePath": "api/v{version}/Cliente/Obten_Nombre",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Obten_Paginado",
+    "RelativePath": "api/v{version}/Cliente/Obten_Paginado/{RegistroPagina}/{NumeroPagina}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RegistroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "NumeroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PorNDocumento",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Obten_x_Id",
+    "RelativePath": "api/v{version}/Cliente/Obten_x_Id/{Cli_Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Cli_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
+    "Method": "Obten_x_Nombre",
+    "RelativePath": "api/v{version}/Cliente/Obten_x_Nombre/{Cli_NomApeRazSocial}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Cli_NomApeRazSocial",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.PresupuestoController",
+    "Method": "Obten_x_Id",
+    "RelativePath": "api/v{version}/Presupuesto/{Pre_Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Pre_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [],
+    "EndpointName": "Presupuesto_Obten_x_Id"
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.PresupuestoController",
+    "Method": "Actualiza_Condicion",
+    "RelativePath": "api/v{version}/Presupuesto/Actualiza_Condicion/{Pre_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Pre_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Presupuesto_Actualiza_Condicion",
+        "Type": "Model.DTO.v1.DTO_Presupuesto_Actualiza_Condicion",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.PresupuestoController",
+    "Method": "Actualiza",
+    "RelativePath": "api/v{version}/Presupuesto/Actualiza/{Pre_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Pre_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Presupuesto_Actualiza",
+        "Type": "Model.DTO.v1.DTO_Presupuesto_Actualiza",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.PresupuestoController",
+    "Method": "Crea",
+    "RelativePath": "api/v{version}/Presupuesto/Crea",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eDTO_Presupuesto_Crea",
+        "Type": "Model.DTO.v1.DTO_Presupuesto_Crea",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.PresupuestoController",
+    "Method": "Obten_Paginado",
+    "RelativePath": "api/v{version}/Presupuesto/Obten_Paginado/{RegistroPagina}/{NumeroPagina}/{PorPresupuesto}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RegistroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "NumeroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PorPresupuesto",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.Tipo_DocumentoController",
+    "Method": "Obten",
+    "RelativePath": "api/v{version}/Tipo_Documento/Obten",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.TokenController",
+    "Method": "Refresh",
+    "RelativePath": "api/v{version}/Token/refresh",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eDTO_RefreshToken",
+        "Type": "Model.DTO.v1.DTO_RefreshToken",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UbicacionController",
+    "Method": "Obten_x_Nombre",
+    "RelativePath": "api/v{version}/Ubicacion/Obten_x_Nombre/{Ubi_Departamento}/{Ubi_Provincia}/{Ubi_Distrito}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Ubi_Departamento",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Ubi_Provincia",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "Ubi_Distrito",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Obten_x_Id",
+    "RelativePath": "api/v{version}/Usuario/{Usu_Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Usu_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [],
+    "EndpointName": "Usuario_Obten_x_Id"
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Actualiza_Condicion",
+    "RelativePath": "api/v{version}/Usuario/Actualiza_Condicion/{Usu_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Usu_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Usuario_Actualiza_Condicion",
+        "Type": "Model.DTO.v1.DTO_Usuario_Actualiza_Condicion",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Actualiza",
+    "RelativePath": "api/v{version}/Usuario/Actualiza/{Usu_Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Usu_Id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "eDTO_Usuario_Actualiza",
+        "Type": "Model.DTO.v1.DTO_Usuario_Actualiza",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Crea",
+    "RelativePath": "api/v{version}/Usuario/Crea",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "eDTO_Usuario_Crea",
+        "Type": "Model.DTO.v1.DTO_Usuario_Crea",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Obten_Paginado",
+    "RelativePath": "api/v{version}/Usuario/Obten_Paginado/{RegistroPagina}/{NumeroPagina}/{PorCorreo}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "RegistroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "NumeroPagina",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "PorCorreo",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.UsuarioController",
+    "Method": "Obten_Usuario_Logeado",
+    "RelativePath": "api/v{version}/Usuario/Obten_Usuario_Logeado",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

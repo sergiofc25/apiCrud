@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\PRESUPUESTOS_BlazorApp.props" />
+</Project>
