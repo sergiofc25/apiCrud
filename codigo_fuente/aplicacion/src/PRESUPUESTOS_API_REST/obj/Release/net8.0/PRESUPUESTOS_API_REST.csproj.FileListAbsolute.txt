@@ -91,3 +91,4 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_RE
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PRESUPUESTOS_API_REST.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PRESUPUESTOS_API_REST.genruntimeconfig.cache
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\ref\PRESUPUESTOS_API_REST.dll
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\bin\Release\net8.0\Dapper.dll

@@ -1,0 +1,69 @@
+﻿@page "/Cliente"
+
+<PageTitle>Presupuestos | Cliente </PageTitle>
+
+
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudPaper Class="pa-5" Elevation="3">
+            <MudItem Class="d-flex align-center justify-center mud-width-full" xs="12">
+                <MudItem Class="d-flex align-center justify-start mud-width-full" xs="6">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Cliente </MudText>
+                </MudItem>
+
+                <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
+                               Size="Size.Small" OnClick="Btn_Nuevo_Cliente_Click">NUEVO</MudButton>
+                </MudItem>
+            </MudItem>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTable Items="@Lst_Cliente" RowsPerPage="@RegistroPagina" FixedHeader="true" Dense="true"
+                  Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@Cargando"
+                  LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
+            <ToolBarContent>
+            <MudText Typo="Typo.h6">Listado de Clientes</MudText>
+            </ToolBarContent>
+            <ToolBarContent>
+                <MudItem Class="d-flex align-center justify-center mud-width-full pb-5" xs="12">
+                    <MudTextField T="string" ValueChanged="@(searchTerm => OnSearch(searchTerm))"
+                                  Placeholder="Buscar por DNI" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                    </MudTextField>
+                </MudItem>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>ID</MudTh>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Abreviatura</MudTh>
+                <MudTh>Documento</MudTh>
+                <MudTh>N° Documento</MudTh>
+                <MudTh>Estado</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="ID">@context.Cli_Id</MudTd>
+                <MudTd DataLabel="Nombre">@context.Cli_NomApeRazSocial</MudTd>
+                <MudTd DataLabel="Abreviatura">@context.Cli_Abreviatura</MudTd>
+                <MudTd DataLabel="Documento">@context.eTipo_Documento.TipDoc_Nombre</MudTd>
+                <MudTd DataLabel="N° Documento">@context.Cli_NumDocumento</MudTd>
+                <MudTd DataLabel="Estado">
+                    @(Convert.ToBoolean(context.Cli_Estado) ? "Habilitado" : "Inhabilitado")
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <div class="d-flex flex-column align-center">
+                    <MudPagination Size="Size.Small" Rectangular="true" Variant="Variant.Text" BoundaryCount="1"
+                                   MiddleCount="3" Count="@TotalPagina" SelectedChanged="PageChanged" Class="pa-4" />
+                </div>
+            </PagerContent>
+            <NoRecordsContent>
+                <MudText>No se encontraron registros.</MudText>
+            </NoRecordsContent>
+            <LoadingContent>
+                <MudText>Un momento por favor...</MudText>
+            </LoadingContent>
+        </MudTable>
+    </MudItem>
+</MudGrid>

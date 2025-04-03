@@ -9,6 +9,7 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_RE
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Blazored.LocalStorage.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Blazored.Modal.dll
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Dapper.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\FluentValidation.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Microsoft.AspNetCore.Authorization.dll

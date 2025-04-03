@@ -1,0 +1,85 @@
+﻿@page "/Cliente_Obten_Nombre"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
+<PageTitle>Cliente Nombres</PageTitle>
+
+<MudItem xs="12">
+    <MudPaper Class="pa-5" Elevation="3">
+        <MudItem Class="d-flex align-center justify-center mud-width-full" xs="12">
+            <MudItem Class="d-flex align-center justify-start mud-width-full" xs="6">
+                <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente" @bind-Value="selectedCliente" Dense="true" Class="mud-width-full">
+                    @foreach (var cliente in clientes)
+                    {
+                        <MudSelectItem Value="cliente">@cliente.Cli_NomApeRazSocial</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudItem>
+    </MudPaper>
+</MudItem>
+
+@code {
+    public List<DTO_Cliente_Obten_Nombre> clientes { get; set; } = new List<DTO_Cliente_Obten_Nombre>();
+    public DTO_Cliente_Obten_Nombre selectedCliente { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStorage.GetItemAsync<string>("authToken");
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+
+        await GetClientes();
+    }
+
+    private async Task GetClientes()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+
+            // Agregar el token de autorización a la solicitud actual
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Cliente/Obten_Nombre");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Cliente_Obten_Nombre>>>(responseBody);
+                if (result != null && result.IsSuccessful)
+                {
+                    clientes = result.Data;
+                    Console.WriteLine($"Clientes Count: {clientes.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

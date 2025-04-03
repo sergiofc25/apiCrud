@@ -14,8 +14,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient("ApiPRESUPUESTOS", httpClient =>
 {
-    httpClient.BaseAddress = new Uri("https://localhost:7196/");
-    //httpClient.BaseAddress = new Uri("http://sergiofc25-001-site1.qtempurl.com/api/v1");
+    //httpClient.BaseAddress = new Uri("https://localhost:7196/");
+    httpClient.BaseAddress = new Uri("https://apiprueba.runasp.net");
 });
 
 

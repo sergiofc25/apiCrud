@@ -8,6 +8,11 @@ using System.Text.Json;
 using Model.Entitie;
 using PRESUPUESTOS_API_REST.TokenServices;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
+using System.Data.SqlClient;
+using Dapper;
 
 namespace PRESUPUESTOS_API_REST.Controllers.v1;
 
@@ -31,6 +36,8 @@ public class AccountsController : ControllerBase
 
         _tokenService = tokenService;
     }
+
+    [AllowAnonymous]
     [HttpPost("Login")]
     public async Task<IActionResult> Login([FromBody] DTO_Usuario_Obten_Login eDTO_Usuario_Obten_Login)
     {
@@ -45,7 +52,7 @@ public class AccountsController : ControllerBase
         var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         Usuario.Usu_TokenActualizado = _tokenService.GenerateRefreshToken();
-        Usuario.Usu_FecHoraTokenActualizado= DateTime.Now.AddDays(3);
+        Usuario.Usu_FecHoraTokenActualizado = DateTime.Now.AddDays(3);
 
         var expirationTime = tokenOptions.ValidTo.ToLocalTime();
 
@@ -57,6 +64,15 @@ public class AccountsController : ControllerBase
 
         return Ok(new DTO_AuthResponse { IsAuthSuccessful = true, Token = token, RefreshToken = Usuario.Usu_TokenActualizado, Expires = expirationTime });
     }
-
+    [HttpGet("ServerTime")]
+    [AllowAnonymous]
+    public IActionResult GetServerTime()
+    {
+        return Ok(new
+        {
+            ServerTime = DateTime.UtcNow,
+            TimeZone = TimeZoneInfo.Local.DisplayName
+        });
+    }
 }
 

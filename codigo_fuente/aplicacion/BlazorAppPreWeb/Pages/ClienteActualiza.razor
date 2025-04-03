@@ -1,0 +1,132 @@
+﻿@page "/cliente_actualiza/{Cli_Id}"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject ILocalStorageService localStorage
+
+<PageTitle>Actualizar Cliente</PageTitle>
+
+<section style="max-width:600px; margin: 0 auto;">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                @if (cliente != null)
+                {
+                    <MudForm Model="@cliente" @ref="form" OnValidSubmit="ActualizarCliente">
+                        <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
+                        <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
+                        <MudTextField @bind-Value="cliente.TipDoc_Nombre" Label="Tipo de Documento" Class="mud-width-full" />
+                        <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+                        <MudItem Class="d-flex justify-center align-center" xs="12">
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarCliente())">
+                                @if (_processing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                    <MudText Class="ms-2">Actualizando...</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>Actualizar Cliente</MudText>
+                                }
+                            </MudButton>
+                        </MudItem>
+                    </MudForm>
+                }
+                else if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</section>
+
+@code {
+    [Parameter] public string Cli_Id { get; set; }
+    private DTO_Cliente_Obten_x_Id cliente;
+    private MudForm? form;
+    private bool _processing = false;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCliente();
+    }
+
+    private async Task LoadCliente()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var response = await client.GetAsync($"api/v1/Cliente/Obten_x_Id/{Cli_Id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadFromJsonAsync<DTO_Response<DTO_Cliente_Obten_x_Id>>();
+                if (responseBody != null && responseBody.Data != null)
+                {
+                    cliente = responseBody.Data;
+                }
+                else
+                {
+                    errorMessage = "Cliente no encontrado.";
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+    }
+
+    private async Task ActualizarCliente()
+    {
+        if (cliente == null) return;
+
+        _processing = true;
+        StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
+
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var content = new StringContent(JsonConvert.SerializeObject(cliente), System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"api/v1/Cliente/Actualiza/{Cli_Id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/clientes_paginado");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged(); // Actualiza el UI para ocultar el estado de procesamiento
+        }
+    }
+}

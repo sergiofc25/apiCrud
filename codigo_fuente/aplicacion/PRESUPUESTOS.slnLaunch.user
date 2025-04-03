@@ -3,11 +3,11 @@
     "Name": "Nuevo perfil",
     "Projects": [
       {
-        "Path": "src\\PRESUPUESTOS_BlazorApp\\PRESUPUESTOS_BlazorApp.csproj",
+        "Path": "src\\PRESUPUESTOS_API_REST\\PRESUPUESTOS_API_REST.csproj",
         "Action": "Start"
       },
       {
-        "Path": "src\\PRESUPUESTOS_API_REST\\PRESUPUESTOS_API_REST.csproj",
+        "Path": "BlazorAppPreWeb\\BlazorAppPreWeb.csproj",
         "Action": "Start"
       }
     ]

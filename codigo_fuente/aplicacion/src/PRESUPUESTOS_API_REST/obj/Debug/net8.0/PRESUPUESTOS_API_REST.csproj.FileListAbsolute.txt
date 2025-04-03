@@ -90,4 +90,5 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_RE
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\bin\Debug\net8.0\PRESUPUESTOS_API_REST.staticwebassets.endpoints.json
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Debug\net8.0\staticwebassets\msbuild.PRESUPUESTOS_API_REST.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\bin\Debug\net8.0\Dapper.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

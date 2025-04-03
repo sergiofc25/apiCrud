@@ -141,7 +141,12 @@ public class ClienteController : ControllerBase
 
             var ClienteDTO = _mapper.Map<DTO_Cliente_Obten_x_Id>(Cliente);
 
-            return CreatedAtRoute("Cliente_Obten_x_Id", new { Cliente.Cli_Id }, ClienteDTO);
+            //return CreatedAtRoute("Cliente_Obten_x_Id", new { Cliente.Cli_Id }, ClienteDTO);
+            return Ok(new DTO_Response<DTO_Cliente_Obten_x_Id>
+            {
+                Data = _mapper.Map<DTO_Cliente_Obten_x_Id>(Cliente),
+                IsSuccessful = true
+            });
         }
         catch (Exception)
         {

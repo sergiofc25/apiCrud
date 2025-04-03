@@ -1,4 +1,4 @@
-
+﻿
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
@@ -10,26 +10,40 @@ using System.Text;
 using UnitOfWork_Interface;
 using UnitOfWork_SqlServer;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddCors(policy =>
 {
-    policy.AddPolicy("CorsPolicy", opt => opt
+    policy.AddPolicy("AllowAllOrigins", opt => opt
         .SetIsOriginAllowedToAllowWildcardSubdomains()
         .AllowAnyOrigin()
         .AllowAnyHeader()
         .AllowAnyMethod()
         .WithExposedHeaders("X-Pagination"));
-    //policy.AddPolicy("CorsPolicy", opt => opt
-    //    .SetIsOriginAllowedToAllowWildcardSubdomains()
-    //    .WithOrigins("http://sergiofc25-001-site1.qtempurl.com/frontend") // Permite el frontend
-    //    .AllowAnyHeader()
-    //    .AllowAnyMethod()
-    //    .WithExposedHeaders("X-Pagination"));
 });
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowFrontend",
+//        builder =>
+//        {
+//            builder.WithOrigins("https://apipruebaweb.runasp.net", "https://apiprueba.runasp.net")
+//                   .AllowAnyHeader()
+//                   .AllowAnyMethod()
+//                   .WithExposedHeaders("X-Pagination");
+//        });
+//});
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(30);
+});
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<ITipo_DocumentoService, Tipo_DocumentoService>();
@@ -38,14 +52,35 @@ builder.Services.AddTransient<IPresupuestoService, PresupuestoService>();
 builder.Services.AddTransient<IUbicacionService, UbicacionService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
-var jwtSettings = builder.Configuration.GetSection("JWTSettings");
+//var jwtSettings = builder.Configuration.GetSection("JWTSettings");
 
+
+//builder.Services.AddAuthentication(opt =>
+//{
+//    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//}).AddJwtBearer(options =>
+//{
+//    options.TokenValidationParameters = new TokenValidationParameters
+//    {
+//        ValidateIssuer = true,
+//        ValidateAudience = true,
+//        ValidateLifetime = true,
+//        ValidateIssuerSigningKey = true,
+
+//        ValidIssuer = jwtSettings["validIssuer"],
+//        ValidAudience = jwtSettings["validAudience"],
+//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["securityKey"]))
+//    };
+//});
+var jwtSettings = builder.Configuration.GetSection("JWTSettings");
 
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -53,12 +88,23 @@ builder.Services.AddAuthentication(opt =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JwtSettings:validIssuer"],
+        ValidAudience = builder.Configuration["JwtSettings:validAudience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:securityKey"]))
+    };
 
-        ValidIssuer = jwtSettings["validIssuer"],
-        ValidAudience = jwtSettings["validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["securityKey"]))
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"❌ Error de autenticación: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
     };
 });
+
+
+
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpClient();
@@ -100,37 +146,58 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 //Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+app.Use(async (context, next) =>
 {
-    ForwardedHeaders = ForwardedHeaders.All
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        // Asegúrate de agregar el header en caso de error
+        if (!context.Response.Headers.ContainsKey("Access-Control-Allow-Origin"))
+        {
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "https://apipruebaweb.runasp.net");
+        }
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("Error interno");
+    }
+});
+app.UseHttpsRedirection();
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (error != null)
+        {
+            await context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                error = error.Error.Message,
+                stackTrace = error.Error.StackTrace
+            }));
+        }
+    });
 });
 
-app.UseHttpsRedirection();
-
-// Configurar para servir archivos est�ticos desde la carpeta "frontend"
-//app.UseStaticFiles(new StaticFileOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "frontend")),
-//    RequestPath = ""
-//});
 app.UseRouting();
 
-app.UseCors("CorsPolicy");
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthentication();
 
 app.UseAuthorization();
-// Configurar la redirecci�n de rutas al frontend en wwwroot
-//app.MapFallbackToFile("/frontend/index.html");
-//
 
 app.MapControllers();
 
 app.Run();
+

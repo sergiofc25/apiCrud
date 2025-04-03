@@ -21,6 +21,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.AccountsController",
+    "Method": "GetServerTime",
+    "RelativePath": "api/v{version}/Accounts/ServerTime",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.ClienteController",
     "Method": "Actualiza_Condicion",
     "RelativePath": "api/v{version}/Cliente/Actualiza_Condicion/{Cli_Id}",
@@ -300,6 +316,38 @@
         "Type": "System.String",
         "IsRequired": true
       },
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.TestController",
+    "Method": "TestDb",
+    "RelativePath": "api/v{version}/Test/db-test",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "version",
+        "Type": "",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "PRESUPUESTOS_API_REST.Controllers.v1.TestController",
+    "Method": "Test",
+    "RelativePath": "api/v{version}/Test/test",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
         "Name": "version",
         "Type": "",

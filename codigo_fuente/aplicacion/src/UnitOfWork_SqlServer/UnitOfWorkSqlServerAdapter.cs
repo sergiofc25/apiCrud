@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,9 @@ namespace UnitOfWork_SqlServer
     {
         public UnitOfWorkSqlServerAdapter(string connectionString)
         {
+            // Agrega esto temporalmente para debug
+            Console.WriteLine($"CADENA DE CONEXIÓN USADA: {connectionString}");
+            //
             _context = new SqlConnection(connectionString);
             _context.Open();
 
