@@ -1114,6 +1114,6 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Deb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\ref\BlazorAppPreWeb.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\mc1i14hq8n-71hvhwwx9x.gz
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\y8cutlqap9-lovthf51rn.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\xw1e19m4uf-lhm4d68ny2.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\tfsb1g6ee1-x49e7wx11q.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\2foo7n26dm-i1tgk3ipz9.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\xw1e19m4uf-wiqib6i29w.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\tfsb1g6ee1-2oqgy1je26.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Debug\net8.0\compressed\2foo7n26dm-qjmtu0stn6.gz

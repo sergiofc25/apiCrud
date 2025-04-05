@@ -1,12 +1,57 @@
-# Archivos de Visual Studio
+### IDE y Herramientas ###
+# Visual Studio
 .vs/
 *.user
 *.suo
+*.userprefs
+*.vspscc
+*.vssscc
 
-# Node.js
+# Rider
+.idea/
+*.sln.iml
+
+# Node.js (si usas JavaScript interop)
 node_modules/
 npm-debug.log
+package-lock.json
 
-# Archivos temporales de sistemas operativos
-.DS_Store  # macOS
-Thumbs.db  # Windows
+### Sistemas Operativos ###
+# macOS
+.DS_Store
+._*
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+### .NET ###
+# Build y ejecución
+bin/
+obj/
+*.dll
+*.pdb
+*.exe
+*.wasm
+*.cache
+*.webcil
+*.blazor
+
+# Blazor WebAssembly
+wwwroot/_framework/
+wwwroot/service-worker*.js
+!wwwroot/appsettings.json  # Excepción (si necesitas algún JSON específico)
+
+# Configuraciones (conservar estos)
+!appsettings.json
+!appsettings.*.json
+
+### Archivos generados ###
+# Logs y temporales
+*.log
+*.tmp
+*.temp
+*.bak
+
+# Archivos de desarrollo local
+launchSettings.json.user  # Configuraciones locales de IIS Express
