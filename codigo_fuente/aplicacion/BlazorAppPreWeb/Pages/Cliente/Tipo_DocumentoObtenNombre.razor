@@ -1,0 +1,26 @@
+﻿@page "/Tipo_Documento_Obten_Nombre"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
+<PageTitle>Tipos Documentos Nombres</PageTitle>
+
+<MudItem xs="12">
+    <MudPaper Class="pa-5" Elevation="3">
+        <MudItem Class="d-flex align-center justify-center mud-width-full" xs="12">
+            <MudItem Class="d-flex align-center justify-start mud-width-full" xs="6">
+                <MudSelect T="DTO_Tipo_Documento_Obten" Label="Documento" @bind-Value="selectedDocumento" Dense="true" Class="mud-width-full">
+                    @foreach (var documento in documentos)
+                    {
+                        <MudSelectItem Value="documento">@documento.TipDoc_Nombre</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudItem>
+    </MudPaper>
+</MudItem>

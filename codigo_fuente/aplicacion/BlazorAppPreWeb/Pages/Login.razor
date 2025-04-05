@@ -12,7 +12,6 @@
 <PageTitle>Login - Sistema Web SFC</PageTitle>
 
 <MudGrid Class="full-height">
-    <!-- Sección izquierda (70%) - Contenido elegante -->
     <MudItem xs="12" md="8" Class="d-flex flex-column justify-center align-center pa-10">
         <div class="welcome-content">
             <MudText Typo="Typo.h3" Class="mb-4" Color="Color.Primary">
@@ -25,7 +24,7 @@
             <div class="features-list">
                 <MudText Class="d-flex align-center mb-3">
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
-                    Acceso seguro y encriptado
+                    Acceso seguro
                 </MudText>
                 <MudText Class="d-flex align-center mb-3">
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
@@ -47,7 +46,6 @@
         </div>
     </MudItem>
 
-    <!-- Sección derecha (30%) - Formulario de login -->
     <MudItem xs="12" md="4" Class="login-section">
         <MudPaper Class="pa-8 full-height" Elevation="10" Style="border-radius: 0;">
             <div class="d-flex flex-column justify-space-between full-height">
@@ -179,7 +177,7 @@
                     {
                         // Almacenar el token en el almacenamiento local
                         localStorage.SetItemAsync("authToken", result.Token);
-                        NavigationManager.NavigateTo("/index");
+                        NavigationManager.NavigateTo("/clientes_paginado");
                     }
                     else
                     {

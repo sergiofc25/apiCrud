@@ -57,9 +57,9 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_RE
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\UnitOfWork_Interface.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\UnitOfWork_SqlServer.dll
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Model.pdb
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\PRESUPUESTOS_BlazorApp.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Service.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\UnitOfWork_Interface.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\UnitOfWork_SqlServer.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Repository_Interface.pdb
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\Repository_SqlServer.pdb
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\src\PRESUPUESTOS_API_REST\obj\Release\net8.0\PubTmp\Out\PRESUPUESTOS_BlazorApp.pdb

@@ -1112,8 +1112,8 @@ D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Rel
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\xt41pvsn2o-gi2ea3kv1q.gz
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\pu0b0vfz4d-crgaf2g35p.gz
 D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\gpdxxy5ny2-qkbufwhni2.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\mc1i14hq8n-varid62a6w.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\y8cutlqap9-djv80a5gny.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\xw1e19m4uf-ub24jnbnl4.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\tfsb1g6ee1-cltj0qq6n9.gz
-D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\2foo7n26dm-96vr8kafbr.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\mc1i14hq8n-d2y2qa5rxn.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\y8cutlqap9-oyygpojj2a.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\xw1e19m4uf-q86t76fs9v.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\tfsb1g6ee1-9uy7z8v23d.gz
+D:\ProyectosPrueba\PRESUPUESTOS\codigo_fuente\aplicacion\BlazorAppPreWeb\obj\Release\net8.0\compressed\2foo7n26dm-k8c0648fm5.gz

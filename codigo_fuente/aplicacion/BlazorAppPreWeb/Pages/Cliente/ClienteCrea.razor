@@ -1,0 +1,176 @@
+﻿@page "/cliente_crea"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+
+<PageTitle>Crear Cliente</PageTitle>
+
+<section style="max-width:600px; margin: 0 auto;">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                <MudForm Model="@cliente" @ref="form" OnValidSubmit="CrearCliente">
+                    <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
+                    <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
+                    @* <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento" @bind-Value="selectedDocumento" Dense="true" Class="mud-width-full">
+                        @foreach (var documento in documentos)
+                        {
+                            <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
+                        }
+                    </MudSelect> *@
+                    <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento"
+                               @bind-Value="selectedDocumento"
+                               ToStringFunc="@(doc => doc?.TipDoc_Nombre ?? "Seleccione tipo de documento")"
+                               Dense="true" Class="mud-width-full">
+                        @foreach (var documento in documentos)
+                        {
+                            <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+                    <MudItem Class="d-flex justify-center align-center" xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearCliente())">
+                            @if (_processing)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                <MudText Class="ms-2">Creando...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Crear Cliente</MudText>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudForm>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</section>
+
+@code {
+    private MudForm? form;
+    private DTO_Cliente_Crea cliente = new DTO_Cliente_Crea();
+    private List<DTO_Tipo_Documento_Obten> documentos = new List<DTO_Tipo_Documento_Obten>();
+    private DTO_Tipo_Documento_Obten selectedDocumento { get; set; } = new DTO_Tipo_Documento_Obten();
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetDocumento();
+    }
+
+    private async Task GetDocumento()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Tipo_Documento/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Tipo_Documento_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    documentos = result.Data;
+                    Console.WriteLine($"Documento Count: {documentos.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar tipos de documento: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+
+    private async Task CrearCliente()
+    {
+        if (form != null && form.IsValid)
+        {
+            _processing = true;
+            StateHasChanged();
+
+            try
+            {
+                // Prepara el objeto para enviar al backend
+                var clienteParaEnviar = new
+                {
+                    Cli_NomApeRazSocial = cliente.Cli_NomApeRazSocial,
+                    Cli_Abreviatura = cliente.Cli_Abreviatura,
+                    eTipo_Documento = new
+                    {
+                        TipDoc_Nombre = selectedDocumento?.TipDoc_Nombre
+                    },
+                    Cli_NumDocumento = cliente.Cli_NumDocumento
+                };
+
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var content = new StringContent(JsonConvert.SerializeObject(clienteParaEnviar),
+                    Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("api/v1/Cliente/Crea", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Cliente creado exitosamente.");
+                    NavigationManager.NavigateTo("/clientes_paginado");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Ocurrió un error: {ex.Message}";
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+    }
+}

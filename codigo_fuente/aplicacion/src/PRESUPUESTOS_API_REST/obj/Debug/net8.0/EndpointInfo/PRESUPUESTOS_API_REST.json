@@ -1007,9 +1007,8 @@
             "type": "string",
             "nullable": true
           },
-          "tipDoc_Nombre": {
-            "type": "string",
-            "nullable": true
+          "eTipo_Documento": {
+            "$ref": "#/components/schemas/Ent_Tipo_Documento"
           },
           "cli_NumDocumento": {
             "type": "string",
@@ -1176,6 +1175,20 @@
             "nullable": true
           },
           "usu_Clave": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Ent_Tipo_Documento": {
+        "type": "object",
+        "properties": {
+          "tipDoc_Id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipDoc_Nombre": {
             "type": "string",
             "nullable": true
           }

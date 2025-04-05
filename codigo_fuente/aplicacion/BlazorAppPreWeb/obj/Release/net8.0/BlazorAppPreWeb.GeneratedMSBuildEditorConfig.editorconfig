@@ -31,28 +31,32 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZS5yYXpvcg==
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/Cliente.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ClienteActualiza.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZUFjdHVhbGl6YS5yYXpvcg==
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/ClienteActualiza.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlQWN0dWFsaXphLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ClienteCrea.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZUNyZWEucmF6b3I=
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/ClienteCrea.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlQ3JlYS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ClienteElimina.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZUVsaW1pbmEucmF6b3I=
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/ClienteElimina.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlRWxpbWluYS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ClienteObtenNombre.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZU9idGVuTm9tYnJlLnJhem9y
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/ClienteObtenNombre.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlT2J0ZW5Ob21icmUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ClientesPaginado.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZXNQYWdpbmFkby5yYXpvcg==
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/ClientesPaginado.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxDbGllbnRlc1BhZ2luYWRvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Cliente/Tipo_DocumentoObtenNombre.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2xpZW50ZVxUaXBvX0RvY3VtZW50b09idGVuTm9tYnJlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Index.razor]
@@ -65,6 +69,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/ModalEjemplo.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTW9kYWxFamVtcGxvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/Proyecto/ProyectosPaginado.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJveWVjdG9cUHJveWVjdG9zUGFnaW5hZG8ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/ProyectosPrueba/PRESUPUESTOS/codigo_fuente/aplicacion/BlazorAppPreWeb/Pages/RedirectToLogin.razor]

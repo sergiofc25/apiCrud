@@ -44,15 +44,20 @@ public class MappingProfile : Profile
             .ForMember(destino => destino.Cli_Estado,
             opt => opt.MapFrom(origen => origen.Cli_Estado));
 
+        //CreateMap<DTO_Cliente_Crea, Ent_Cliente>()
+        //    .ForPath(destino => destino.Cli_NomApeRazSocial,
+        //    opt => opt.MapFrom(origen => origen.Cli_NomApeRazSocial))
+        //    .ForPath(destino => destino.Cli_Abreviatura,
+        //    opt => opt.MapFrom(origen => origen.Cli_Abreviatura))
+        //    .ForPath(destino => destino.eTipo_Documento.TipDoc_Nombre,
+        //    opt => opt.MapFrom(origen => origen.TipDoc_Nombre))
+        //    .ForPath(destino => destino.Cli_NumDocumento,
+        //    opt => opt.MapFrom(origen => origen.Cli_NumDocumento));
         CreateMap<DTO_Cliente_Crea, Ent_Cliente>()
-            .ForPath(destino => destino.Cli_NomApeRazSocial,
-            opt => opt.MapFrom(origen => origen.Cli_NomApeRazSocial))
-            .ForPath(destino => destino.Cli_Abreviatura,
-            opt => opt.MapFrom(origen => origen.Cli_Abreviatura))
-            .ForPath(destino => destino.eTipo_Documento.TipDoc_Nombre,
-            opt => opt.MapFrom(origen => origen.TipDoc_Nombre))
-            .ForPath(destino => destino.Cli_NumDocumento,
-            opt => opt.MapFrom(origen => origen.Cli_NumDocumento));
+            .ForMember(dest => dest.Cli_NomApeRazSocial, opt => opt.MapFrom(src => src.Cli_NomApeRazSocial))
+            .ForMember(dest => dest.Cli_Abreviatura, opt => opt.MapFrom(src => src.Cli_Abreviatura))
+            .ForMember(dest => dest.eTipo_Documento, opt => opt.MapFrom(src => src.eTipo_Documento))
+            .ForMember(dest => dest.Cli_NumDocumento, opt => opt.MapFrom(src => src.Cli_NumDocumento));
 
         CreateMap<DTO_Cliente_Actualiza, Ent_Cliente>()
             .ForPath(destino => destino.Cli_NomApeRazSocial,

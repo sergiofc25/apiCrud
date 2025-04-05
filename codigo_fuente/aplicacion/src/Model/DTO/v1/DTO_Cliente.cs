@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.Entitie;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,7 +39,9 @@ public class DTO_Cliente_Crea
 {
     public string? Cli_NomApeRazSocial { get; set; }
     public string? Cli_Abreviatura { get; set; }
-    public string? TipDoc_Nombre { get; set; }
+    //public string? TipDoc_Nombre { get; set; }
+    public Ent_Tipo_Documento eTipo_Documento { get; set; } = new Ent_Tipo_Documento();
+
     public string? Cli_NumDocumento { get; set; }
 };
 

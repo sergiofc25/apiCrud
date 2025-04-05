@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PRESUPUESTOS_API_REST")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5708d90c76d296832fb6aae1f19d32d17f793ee7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+14de8cc53c1cc7aa0f94a67b10378c1167dfbc43")]
 [assembly: System.Reflection.AssemblyProductAttribute("PRESUPUESTOS_API_REST")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PRESUPUESTOS_API_REST")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

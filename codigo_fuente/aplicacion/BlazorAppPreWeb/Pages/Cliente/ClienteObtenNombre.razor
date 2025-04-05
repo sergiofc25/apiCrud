@@ -1,0 +1,26 @@
+﻿@page "/Cliente_Obten_Nombre"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+
+<PageTitle>Cliente Nombres</PageTitle>
+
+<MudItem xs="12">
+    <MudPaper Class="pa-5" Elevation="3">
+        <MudItem Class="d-flex align-center justify-center mud-width-full" xs="12">
+            <MudItem Class="d-flex align-center justify-start mud-width-full" xs="6">
+                <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente" @bind-Value="selectedCliente" Dense="true" Class="mud-width-full">
+                    @foreach (var cliente in clientes)
+                    {
+                        <MudSelectItem Value="cliente">@cliente.Cli_NomApeRazSocial</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudItem>
+    </MudPaper>
+</MudItem>
