@@ -20,12 +20,6 @@
                 <MudForm Model="@cliente" @ref="form" OnValidSubmit="CrearCliente">
                     <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
                     <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
-                    @* <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento" @bind-Value="selectedDocumento" Dense="true" Class="mud-width-full">
-                        @foreach (var documento in documentos)
-                        {
-                            <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
-                        }
-                    </MudSelect> *@
                     <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento"
                                @bind-Value="selectedDocumento"
                                ToStringFunc="@(doc => doc?.TipDoc_Nombre ?? "Seleccione tipo de documento")"
