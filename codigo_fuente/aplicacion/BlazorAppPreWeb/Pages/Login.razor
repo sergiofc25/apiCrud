@@ -120,35 +120,34 @@
 </MudGrid>
 
 <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: url('/assets/img/hero-bg.jpg') no-repeat center center fixed;
+        background-size: cover;
+    }
     .full-height {
         height: 100vh;
         margin: 0;
     }
 
     .login-section {
-        background-color: var(--mud-palette-background);
+        background-color: rgba(255,255,255,0.1);
     }
 
     .welcome-content {
-        max-width: 600px;
+        max-width: 1000px;
+        background-color: rgba(0,0,0,0.8);
+        border-radius: 8px;
         color: black;
     }
 
     .features-list {
         margin: 2rem 0;
         padding: 1rem;
-        background-color: rgba(255,255,255,0.05);
+        background-color: rgba(255,255,255,0.1);
         border-radius: 8px;
-    }
-
-    @@media (max-width: 960px) {
-        .welcome-content {
-            display: none;
-        }
-
-        .login-section {
-            width: 100% !important;
-        }
+        color: #e0e0e0;
     }
 </style>
 

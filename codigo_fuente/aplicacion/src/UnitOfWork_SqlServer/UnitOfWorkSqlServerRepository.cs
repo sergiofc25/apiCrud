@@ -16,7 +16,6 @@ namespace UnitOfWork_SqlServer
         public ITipo_DocumentoRepository Tipo_DocumentoRepository { get; }
         public IUsuarioRepository UsuarioRepository { get; }
         public IPresupuestoRepository PresupuestoRepository { get; }
-        public IUbicacionRepository UbicacionRepository { get; }
         public UnitOfWorkSqlServerRepository(SqlConnection context, SqlTransaction transaction)
         {
             ClienteRepository = new ClienteRepository(context, transaction);
@@ -26,8 +25,6 @@ namespace UnitOfWork_SqlServer
             UsuarioRepository = new UsuarioRepository(context, transaction);
 
             PresupuestoRepository = new PresupuestoRepository(context, transaction);
-
-            UbicacionRepository = new UbicacionRepository(context, transaction);
 
         }
         

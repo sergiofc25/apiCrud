@@ -37,7 +37,6 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
             {
                 Pre_Id = oDR.GetInt32(oDR.GetOrdinal("Pre_Id")),
                 Pre_Codigo = oDR.IsDBNull(oDR.GetOrdinal("Pre_Codigo")) ? string.Empty : oDR.GetString(oDR.GetOrdinal("Pre_Codigo")),
-                //Pre_Codigo = oDR.GetString(oDR.GetOrdinal("Pre_Codigo")),
                 eUsuario = new()
                 {
                     Usu_NomApellidos = oDR.GetString(oDR.GetOrdinal("Usu_NomApellidos")),
@@ -49,13 +48,10 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
                     Cli_NomApeRazSocial = oDR.GetString(oDR.GetOrdinal("Cli_NomApeRazSocial")),
 
                 },
-                eUbicacion = new()
-                {
-                    Ubi_Departamento = oDR.GetString(oDR.GetOrdinal("Ubi_Departamento")),
-                    Ubi_Provincia = oDR.GetString(oDR.GetOrdinal("Ubi_Provincia")),
-                    Ubi_Distrito = oDR.GetString(oDR.GetOrdinal("Ubi_Distrito")),
-
-                },
+                ePais = new(){Pai_Nombre = oDR.GetString(oDR.GetOrdinal("Pai_Nombre")),},
+                eDeparatemaneto = new(){Dep_Nombre = oDR.GetString(oDR.GetOrdinal("Dep_Nombre")),},
+                eProvincia = new() { Prov_Nombre = oDR.GetString(oDR.GetOrdinal("Prov_Nombre")), },
+                eDistrito = new() { Dist_Nombre = oDR.GetString(oDR.GetOrdinal("Dist_Nombre")), },
                 Pre_Jornal = oDR.GetDecimal(oDR.GetOrdinal("Pre_Jornal")),
                 Pre_FecHorRegistro = oDR.GetDateTime(oDR.GetOrdinal("Pre_FecHorRegistro")),
                 Pre_Estado = oDR.GetByte(oDR.GetOrdinal("Pre_Estado")) != 0 ? true : false,
@@ -101,12 +97,10 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
                 {
                     Cli_NomApeRazSocial = oDR.GetString(oDR.GetOrdinal("Cli_NomApeRazSocial"))
                 },
-                eUbicacion = new()
-                {
-                    Ubi_Departamento = oDR.GetString(oDR.GetOrdinal("Ubi_Departamento")),
-                    Ubi_Provincia = oDR.GetString(oDR.GetOrdinal("Ubi_Provincia")),
-                    Ubi_Distrito = oDR.GetString(oDR.GetOrdinal("Ubi_Distrito"))
-                },
+                ePais = new() { Pai_Nombre = oDR.GetString(oDR.GetOrdinal("Pai_Nombre")), },
+                eDeparatemaneto = new() { Dep_Nombre = oDR.GetString(oDR.GetOrdinal("Dep_Nombre")), },
+                eProvincia = new() { Prov_Nombre = oDR.GetString(oDR.GetOrdinal("Prov_Nombre")), },
+                eDistrito = new() { Dist_Nombre = oDR.GetString(oDR.GetOrdinal("Dist_Nombre")), },
                 Pre_Jornal = oDR.GetDecimal(oDR.GetOrdinal("Pre_Jornal")),
                 Pre_Estado = oDR.GetByte(oDR.GetOrdinal("Pre_Estado")) != 0 ? true : false,
             };
@@ -139,9 +133,10 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
         oCmd.Parameters.AddWithValue("Usu_NomApellidos", Ent_Presupuesto.eUsuario.Usu_NomApellidos);
         oCmd.Parameters.AddWithValue("Pre_Nombre", Ent_Presupuesto.Pre_Nombre);
         oCmd.Parameters.AddWithValue("Cli_NomApeRazSocial", Ent_Presupuesto.eCliente.Cli_NomApeRazSocial);
-        oCmd.Parameters.AddWithValue("Ubi_Departamento", Ent_Presupuesto.eUbicacion.Ubi_Departamento);
-        oCmd.Parameters.AddWithValue("Ubi_Provincia", Ent_Presupuesto.eUbicacion.Ubi_Provincia);
-        oCmd.Parameters.AddWithValue("Ubi_Distrito", Ent_Presupuesto.eUbicacion.Ubi_Distrito);
+        oCmd.Parameters.AddWithValue("Pai_Nombre", Ent_Presupuesto.ePais.Pai_Nombre);
+        oCmd.Parameters.AddWithValue("Dep_Nombre", Ent_Presupuesto.eDeparatemaneto.Dep_Nombre);
+        oCmd.Parameters.AddWithValue("Prov_Nombre", Ent_Presupuesto.eProvincia.Prov_Nombre);
+        oCmd.Parameters.AddWithValue("Dist_Nombre", Ent_Presupuesto.eDistrito.Dist_Nombre);
         oCmd.Parameters.AddWithValue("Pre_Jornal", Ent_Presupuesto.Pre_Jornal);
 
         var preIdParam = new SqlParameter
@@ -180,9 +175,10 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
         oCmd.Parameters.AddWithValue("Usu_NomApellidos", Ent_Presupuesto.eUsuario.Usu_NomApellidos);
         oCmd.Parameters.AddWithValue("Pre_Nombre", Ent_Presupuesto.Pre_Nombre);
         oCmd.Parameters.AddWithValue("Cli_NomApeRazSocial", Ent_Presupuesto.eCliente.Cli_NomApeRazSocial);
-        oCmd.Parameters.AddWithValue("Ubi_Departamento", Ent_Presupuesto.eUbicacion.Ubi_Departamento);
-        oCmd.Parameters.AddWithValue("Ubi_Provincia", Ent_Presupuesto.eUbicacion.Ubi_Provincia);
-        oCmd.Parameters.AddWithValue("Ubi_Distrito", Ent_Presupuesto.eUbicacion.Ubi_Distrito);
+        oCmd.Parameters.AddWithValue("Pai_Nombre", Ent_Presupuesto.ePais.Pai_Nombre);
+        oCmd.Parameters.AddWithValue("Dep_Nombre", Ent_Presupuesto.eDeparatemaneto.Dep_Nombre);
+        oCmd.Parameters.AddWithValue("Prov_Nombre", Ent_Presupuesto.eProvincia.Prov_Nombre);
+        oCmd.Parameters.AddWithValue("Dist_Nombre", Ent_Presupuesto.eDistrito.Dist_Nombre);
         oCmd.Parameters.AddWithValue("Pre_Jornal", Ent_Presupuesto.Pre_Jornal);
 
         return oCmd.ExecuteNonQuery();

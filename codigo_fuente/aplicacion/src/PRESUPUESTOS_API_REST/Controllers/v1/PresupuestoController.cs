@@ -25,12 +25,13 @@ public class PresupuestoController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}/{PorPresupuesto}")]
-    public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, string PorPresupuesto= " ")
+    //[HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}/{PorPresupuesto}")]
+    [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}")]
+    public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, [FromQuery] string? PorNombre = null)
     {
         try
         {
-            (int TotalPagina, int TotalRegistro, bool TienePaginaAnterior, bool TienePaginaProximo, var Lst_Presupuesto) = await _PresupuestoService.Obten_Paginado(RegistroPagina, NumeroPagina, PorPresupuesto);
+            (int TotalPagina, int TotalRegistro, bool TienePaginaAnterior, bool TienePaginaProximo, var Lst_Presupuesto) = await _PresupuestoService.Obten_Paginado(RegistroPagina, NumeroPagina, PorNombre);
 
             var metadata = new
             {

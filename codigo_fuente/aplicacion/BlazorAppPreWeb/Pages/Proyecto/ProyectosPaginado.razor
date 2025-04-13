@@ -10,8 +10,186 @@
 @inject ILocalStorageService localStorage
 @inject IModalService model
 
-<PageTitle>Proyectos</PageTitle>
+<PageTitle>Proyectos Paginados</PageTitle>
 
 <MudGrid>
+    <MudItem xs="12">
+        <MudPaper Class="pa-5" Elevation="3">
+            <MudItem Class="d-flex align-center justify-center mud-width-full" xs="12">
+                <MudItem Class="d-flex align-center justify-start mud-width-full" xs="6">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">Proyectos</MudText>
+                </MudItem>
 
+                <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
+                               Size="Size.Small" OnClick="Btn_Nuevo_Proyecto_Click">NUEVO</MudButton>
+                </MudItem>
+            </MudItem>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Class="pa-5" Elevation="3">
+            <MudTable Items="@presupuestos" RowsPerPage="@registroPagina" FixedHeader="true" Dense="true"
+                      Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@cargando"
+                      LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Listado de Proyectos</MudText>
+                </ToolBarContent>
+                <ToolBarContent>
+                    <MudItem Class="d-flex align-center justify-center mud-width-full pb-5" xs="12">
+                        <MudTextField T="string" Value="@searchTerm" ValueChanged="@(value => OnSearch(value))"
+                                      Placeholder="Buscar por Nombre" Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                        </MudTextField>
+                    </MudItem>
+                </ToolBarContent>
+                <HeaderContent>
+
+                    <MudTh>Codigo</MudTh>
+                    <MudTh>Usuario</MudTh>
+                    <MudTh>Nombre</MudTh>
+                    <MudTh>Cliente</MudTh>
+                    <MudTh>Jornal</MudTh>
+                    <MudTh>Pais</MudTh>
+                    <MudTh>Departamento</MudTh>
+                    <MudTh>Provincia</MudTh>
+                    <MudTh>Distrito</MudTh>
+                    <MudTh>Acciones</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+
+                    <MudTd DataLabel="Codigo">@context.Pre_Codigo</MudTd>
+                    <MudTd DataLabel="Usuario">@context.Usu_NomApellidos</MudTd>
+                    <MudTd DataLabel="Nombre">@context.Pre_Nombre</MudTd>
+                    <MudTd DataLabel="Cliente">@context.Cli_NomApeRazSocial</MudTd>
+                    <MudTd DataLabel="Jornal">@context.Pre_Jornal</MudTd>
+                    <MudTd DataLabel="Pais">@context.Pai_Nombre</MudTd>
+                    <MudTd DataLabel="Departamento">@context.Dep_Nombre</MudTd>
+                    <MudTd DataLabel="Provincia">@context.Prov_Nombre</MudTd>
+                    <MudTd DataLabel="Distrito">@context.Dist_Nombre</MudTd>
+                    <MudTd DataLabel="Acciones">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))">
+                            Actualizar
+                        </MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small" @onclick="@(() => Btn_Eliminar_Proyecto_Click(@context.Pre_Id))">
+                            Eliminar
+                        </MudButton>
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <div class="d-flex flex-column align-center">
+                        <MudPagination Size="Size.Small" Rectangular="true" Variant="Variant.Text" BoundaryCount="1"
+                                       MiddleCount="3" Count="@metaData.TotalPagina" SelectedChanged="PageChanged" Class="pa-4" />
+                    </div>
+                </PagerContent>
+                <NoRecordsContent>
+                    <MudText>No se encontraron registros.</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Un momento por favor...</MudText>
+                </LoadingContent>
+            </MudTable>
+        </MudPaper>
+    </MudItem>
 </MudGrid>
+
+@code {
+    private IEnumerable<DTO_Presupuesto_Obten_Paginado> presupuestos;
+    private MetaData metaData = new MetaData();
+    private int registroPagina = 10;
+    private int numeroPagina = 1;
+    private string searchTerm = string.Empty;
+    private bool cargando = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await localStorage.GetItemAsync<string>("authToken");
+        if (string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/login");
+            return;
+        }
+        await LoadClients();
+    }
+
+    private async Task LoadClients()
+    {
+        try
+        {
+            cargando = true;
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+
+            // Agregar el token de autorización a la solicitud actual
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var requestUri = $"api/v1/Presupuesto/Obten_Paginado/{registroPagina}/{numeroPagina}";
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                requestUri += $"?PorNombre={Uri.EscapeDataString(searchTerm)}";
+            }
+
+            var response = await client.GetAsync(requestUri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var metadataHeader = response.Headers.GetValues("X-Pagination").FirstOrDefault();
+                if (metadataHeader != null)
+                {
+                    metaData = JsonSerializer.Deserialize<MetaData>(metadataHeader);
+                }
+
+                var responseBody = await response.Content.ReadFromJsonAsync<DTO_ResponsePag<IEnumerable<DTO_Presupuesto_Obten_Paginado>>>();
+                if (responseBody != null && responseBody.IsSuccessful)
+                {
+                    presupuestos = responseBody.Data;
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+
+    private void PageChanged(int page)
+    {
+        numeroPagina = page;
+        _ = LoadClients();
+    }
+
+    private void OnSearch(string searchTerm)
+    {
+        this.searchTerm = searchTerm;
+        numeroPagina = 1; // Reset to first page when searching
+        _ = LoadClients();
+    }
+
+    private void Btn_Nuevo_Proyecto_Click()
+    {
+        NavigationManager.NavigateTo("/proyecto_crea");
+    }
+
+    private void Btn_Actualizar_Proyecto_Click(string Cli_Id)
+    {
+        NavigationManager.NavigateTo($"/presupuesto_actualiza/{Cli_Id}");
+    }
+
+    private void Btn_Eliminar_Proyecto_Click(string Cli_Id)
+    {
+        NavigationManager.NavigateTo($"/presupuesto_actualiza_condicion/{Cli_Id}");
+    }
+}

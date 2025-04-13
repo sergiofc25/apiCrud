@@ -40,8 +40,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // Configuración de HttpClient para API
 builder.Services.AddHttpClient("ApiPRESUPUESTOS", httpClient =>
 {
-    httpClient.BaseAddress = new Uri("https://localhost:7196/");
-    //httpClient.BaseAddress = new Uri("https://apiprueba.runasp.net");
+    //httpClient.BaseAddress = new Uri("https://localhost:7196/");
+    httpClient.BaseAddress = new Uri("https://apiprueba.runasp.net");
 });
 
 // HttpClient para recursos locales

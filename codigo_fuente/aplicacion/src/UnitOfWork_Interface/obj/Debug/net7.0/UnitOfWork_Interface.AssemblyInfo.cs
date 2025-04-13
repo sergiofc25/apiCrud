@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UnitOfWork_Interface")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e80bb7e0ca2000984b37eb6cf4904da650bd2e05")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4019b281a8eb4b24f3abb3f2c615647e3fb9366c")]
 [assembly: System.Reflection.AssemblyProductAttribute("UnitOfWork_Interface")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UnitOfWork_Interface")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

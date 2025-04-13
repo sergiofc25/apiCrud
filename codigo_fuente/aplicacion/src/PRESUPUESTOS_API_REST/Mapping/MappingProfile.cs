@@ -163,12 +163,14 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.Pre_Nombre))
             .ForMember(destino => destino.Cli_NomApeRazSocial,
             opt => opt.MapFrom(origen => origen.eCliente.Cli_NomApeRazSocial))
-            .ForMember(destino => destino.Ubi_Departamento,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Departamento))
-            .ForMember(destino => destino.Ubi_Provincia,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Provincia))
-            .ForMember(destino => destino.Ubi_Distrito,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Distrito))
+            .ForMember(destino => destino.Pai_Nombre,
+            opt => opt.MapFrom(origen => origen.ePais.Pai_Nombre))
+            .ForMember(destino => destino.Dep_Nombre,
+            opt => opt.MapFrom(origen => origen.eDeparatemaneto.Dep_Nombre))
+            .ForMember(destino => destino.Prov_Nombre,
+            opt => opt.MapFrom(origen => origen.eProvincia.Prov_Nombre))
+            .ForMember(destino => destino.Dist_Nombre,
+            opt => opt.MapFrom(origen => origen.eDistrito.Dist_Nombre))
             .ForMember(destino => destino.Pre_Jornal,
             opt => opt.MapFrom(origen => origen.Pre_Jornal))
             .ForMember(destino => destino.Pre_FecHorRegistro,
@@ -184,12 +186,14 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.Pre_Nombre))
             .ForMember(destino => destino.Cli_NomApeRazSocial,
             opt => opt.MapFrom(origen => origen.eCliente.Cli_NomApeRazSocial))
-            .ForMember(destino => destino.Ubi_Departamento,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Departamento))
-            .ForMember(destino => destino.Ubi_Provincia,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Provincia))
-            .ForMember(destino => destino.Ubi_Distrito,
-            opt => opt.MapFrom(origen => origen.eUbicacion.Ubi_Distrito))
+            .ForMember(destino => destino.Pai_Nombre,
+            opt => opt.MapFrom(origen => origen.ePais.Pai_Nombre))
+            .ForMember(destino => destino.Dep_Nombre,
+            opt => opt.MapFrom(origen => origen.eDeparatemaneto.Dep_Nombre))
+            .ForMember(destino => destino.Prov_Nombre,
+            opt => opt.MapFrom(origen => origen.eProvincia.Prov_Nombre))
+            .ForMember(destino => destino.Dist_Nombre,
+            opt => opt.MapFrom(origen => origen.eDistrito.Dist_Nombre))
             .ForMember(destino => destino.Pre_Jornal,
             opt => opt.MapFrom(origen => origen.Pre_Jornal))
             .ForMember(destino => destino.Pre_Estado,
@@ -201,12 +205,14 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.Pre_Nombre))
             .ForPath(destino => destino.eCliente.Cli_NomApeRazSocial,
             opt => opt.MapFrom(origen => origen.Cli_NomApeRazSocial))
-            .ForPath(destino => destino.eUbicacion.Ubi_Departamento,
-            opt => opt.MapFrom(origen => origen.Ubi_Departamento))
-            .ForPath(destino => destino.eUbicacion.Ubi_Provincia,
-            opt => opt.MapFrom(origen => origen.Ubi_Provincia))
-            .ForPath(destino => destino.eUbicacion.Ubi_Distrito,
-            opt => opt.MapFrom(origen => origen.Ubi_Distrito))
+            .ForPath(destino => destino.ePais.Pai_Nombre,
+            opt => opt.MapFrom(origen => origen.Pai_Nombre))
+            .ForPath(destino => destino.eDeparatemaneto.Dep_Nombre,
+            opt => opt.MapFrom(origen => origen.Dep_Nombre))
+            .ForPath(destino => destino.eProvincia.Prov_Nombre,
+            opt => opt.MapFrom(origen => origen.Prov_Nombre))
+            .ForPath(destino => destino.eDistrito.Dist_Nombre,
+            opt => opt.MapFrom(origen => origen.Dist_Nombre))
             .ForPath(destino => destino.Pre_Jornal,
             opt => opt.MapFrom(origen => origen.Pre_Jornal));
         CreateMap<DTO_Presupuesto_Actualiza, Ent_Presupuesto>()
@@ -216,25 +222,19 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.Pre_Nombre))
             .ForPath(destino => destino.eCliente.Cli_NomApeRazSocial,
             opt => opt.MapFrom(origen => origen.Cli_NomApeRazSocial))
-            .ForPath(destino => destino.eUbicacion.Ubi_Departamento,
-            opt => opt.MapFrom(origen => origen.Ubi_Departamento))
-            .ForPath(destino => destino.eUbicacion.Ubi_Provincia,
-            opt => opt.MapFrom(origen => origen.Ubi_Provincia))
-            .ForPath(destino => destino.eUbicacion.Ubi_Distrito,
-            opt => opt.MapFrom(origen => origen.Ubi_Distrito))
+            .ForPath(destino => destino.ePais.Pai_Nombre,
+            opt => opt.MapFrom(origen => origen.Pai_Nombre))
+            .ForPath(destino => destino.eDeparatemaneto.Dep_Nombre,
+            opt => opt.MapFrom(origen => origen.Dep_Nombre))
+            .ForPath(destino => destino.eProvincia.Prov_Nombre,
+            opt => opt.MapFrom(origen => origen.Prov_Nombre))
+            .ForPath(destino => destino.eDistrito.Dist_Nombre,
+            opt => opt.MapFrom(origen => origen.Dist_Nombre))
             .ForPath(destino => destino.Pre_Jornal,
             opt => opt.MapFrom(origen => origen.Pre_Jornal));
         CreateMap<DTO_Presupuesto_Actualiza_Condicion, Ent_Presupuesto>()
             .ForPath(destino => destino.Pre_Estado,
             opt => opt.MapFrom(origen => origen.Pre_Estado));
-        //UBICACION
-        CreateMap<Ent_Ubicacion, DTO_Ubicacion_Obten_x_Nombre>()
-            .ForMember(destino => destino.Ubi_Departamento,
-            opt => opt.MapFrom(origen => origen.Ubi_Departamento))
-            .ForMember(destino => destino.Ubi_Provincia,
-            opt => opt.MapFrom(origen => origen.Ubi_Provincia))
-            .ForMember(destino => destino.Ubi_Distrito,
-            opt => opt.MapFrom(origen => origen.Ubi_Distrito));
     }
 
 } 

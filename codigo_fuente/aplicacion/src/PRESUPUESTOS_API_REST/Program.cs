@@ -15,27 +15,27 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddCors(policy =>
-{
-    policy.AddPolicy("AllowAllOrigins", opt => opt
-        .SetIsOriginAllowedToAllowWildcardSubdomains()
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-        .WithExposedHeaders("X-Pagination"));
-});
-
-//builder.Services.AddCors(options =>
+//builder.Services.AddCors(policy =>
 //{
-//    options.AddPolicy("AllowFrontend",
-//        builder =>
-//        {
-//            builder.WithOrigins("https://apipruebaweb.runasp.net", "https://apiprueba.runasp.net")
-//                   .AllowAnyHeader()
-//                   .AllowAnyMethod()
-//                   .WithExposedHeaders("X-Pagination");
-//        });
+//    policy.AddPolicy("AllowAllOrigins", opt => opt
+//        .SetIsOriginAllowedToAllowWildcardSubdomains()
+//        .AllowAnyOrigin()
+//        .AllowAnyHeader()
+//        .AllowAnyMethod()
+//        .WithExposedHeaders("X-Pagination"));
 //});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        builder =>
+        {
+            builder.WithOrigins("https://apipruebaweb.runasp.net", "https://apiprueba.runasp.net")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod()
+                   .WithExposedHeaders("X-Pagination");
+        });
+});
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -49,7 +49,6 @@ builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<ITipo_DocumentoService, Tipo_DocumentoService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IPresupuestoService, PresupuestoService>();
-builder.Services.AddTransient<IUbicacionService, UbicacionService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 //var jwtSettings = builder.Configuration.GetSection("JWTSettings");
@@ -191,7 +190,7 @@ app.UseExceptionHandler(errorApp =>
 
 app.UseRouting();
 
-app.UseCors("AllowAllOrigins");
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 

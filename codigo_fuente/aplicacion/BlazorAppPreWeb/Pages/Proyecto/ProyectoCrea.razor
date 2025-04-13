@@ -1,0 +1,168 @@
+﻿@page "/proyecto_crea"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+
+<PageTitle>Crear Proyecto</PageTitle>
+
+<section style="max-width:600px; margin: 0 auto;">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                <MudForm Model="@proyecto" @ref="form" OnValidSubmit="CrearProyecto">
+                    <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
+                    <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente"
+                               @bind-Value="selectedCliente"
+                               ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
+                               Dense="true" Class="mud-width-full">
+                        @foreach (var cliente in clientes)
+                        {
+                            <MudSelectItem Value="@cliente">@cliente.Cli_NomApeRazSocial</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Class="mud-width-full" />
+                    <MudItem Class="d-flex justify-center align-center" xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearProyecto())">
+                            @if (_processing)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                <MudText Class="ms-2">Creando...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Crear Cliente</MudText>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudForm>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</section>
+
+@code {
+    private MudForm? form;
+    private DTO_Presupuesto_Crea proyecto = new DTO_Presupuesto_Crea();
+    private List<DTO_Cliente_Obten_Nombre> clientes = new List<DTO_Cliente_Obten_Nombre>();
+    private DTO_Cliente_Obten_Nombre selectedCliente { get; set; } = new DTO_Cliente_Obten_Nombre();
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCliente();
+    }
+
+    private async Task GetCliente()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Cliente/Obten_Nombre");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Cliente_Obten_Nombre>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    clientes = result.Data;
+                    Console.WriteLine($"Cliente Count: {clientes.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar nombres de clientes: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+
+    private async Task CrearProyecto()
+    {
+        if (form != null && form.IsValid)
+        {
+            _processing = true;
+            StateHasChanged();
+
+            try
+            {
+                // Prepara el objeto para enviar al backend
+                var proyectoParaEnviar = new
+                {
+                    Pre_Nombre = proyecto.Pre_Nombre,
+                    eCliente = new
+                    {
+                        Cli_NomApeRazSocial = selectedCliente?.Cli_NomApeRazSocial
+                    },
+                    Pre_Jornal = proyecto.Pre_Jornal
+                };
+
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var content = new StringContent(JsonConvert.SerializeObject(proyectoParaEnviar),
+                    Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync("api/v1/Presupuesto/Crea", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Proyecto creado exitosamente.");
+                    NavigationManager.NavigateTo("/proyectos_paginado");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Ocurrió un error: {ex.Message}";
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+    }
+}

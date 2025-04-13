@@ -52,13 +52,9 @@ public class AccountsController : ControllerBase
         var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
         Usuario.Usu_TokenActualizado = _tokenService.GenerateRefreshToken();
-        Usuario.Usu_FecHoraTokenActualizado = DateTime.Now.AddDays(3);
+        Usuario.Usu_FecHoraTokenActualizado = DateTime.UtcNow.AddDays(3);
 
         var expirationTime = tokenOptions.ValidTo.ToLocalTime();
-
-        // Crear DateTimeOffset para Perú
-        //var peruTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-        //DateTimeOffset expirationTime = TimeZoneInfo.ConvertTime(tokenOptions.ValidTo, peruTimeZone);
 
         await UsuarioService.Actualiza_Token(Usuario);
 

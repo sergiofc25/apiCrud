@@ -13,6 +13,5 @@ namespace UnitOfWork_Interface
         ITipo_DocumentoRepository Tipo_DocumentoRepository { get; }
         IUsuarioRepository UsuarioRepository { get; }
         IPresupuestoRepository PresupuestoRepository { get; }
-        IUbicacionRepository UbicacionRepository { get; }
     }
 }
