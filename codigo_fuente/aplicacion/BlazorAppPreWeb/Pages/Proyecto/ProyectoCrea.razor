@@ -19,7 +19,7 @@
             <MudPaper Class="pa-5" Elevation="3">
                 <MudForm Model="@proyecto" @ref="form" OnValidSubmit="CrearProyecto">
                     <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
-                    <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente"
+                    @* <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente"
                                @bind-Value="selectedCliente"
                                ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
                                Dense="true" Class="mud-width-full">
@@ -27,7 +27,14 @@
                         {
                             <MudSelectItem Value="@cliente">@cliente.Cli_NomApeRazSocial</MudSelectItem>
                         }
-                    </MudSelect>
+                    </MudSelect> *@
+                    <MudAutocomplete T="DTO_Cliente_Obten_Nombre"
+                                     Label="Buscar cliente"
+                                     @bind-Value="selectedCliente"
+                                     ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
+                                     SearchFunc="@SearchClientes"
+                                     Dense="true"
+                                     Class="mud-width-full" />
                     <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Class="mud-width-full" />
                     <MudItem Class="d-flex justify-center align-center" xs="12">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearProyecto())">
@@ -38,7 +45,7 @@
                             }
                             else
                             {
-                                <MudText>Crear Cliente</MudText>
+                                <MudText>Crear Proyecto</MudText>
                             }
                         </MudButton>
                     </MudItem>
@@ -64,6 +71,15 @@
     {
         await GetCliente();
     }
+
+    private async Task<IEnumerable<DTO_Cliente_Obten_Nombre>> SearchClientes(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return clientes;
+
+        return clientes.Where(cli => cli.Cli_NomApeRazSocial.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+
 
     private async Task GetCliente()
     {

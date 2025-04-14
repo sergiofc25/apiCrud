@@ -102,7 +102,15 @@
                                 <MudText>Iniciar Sesión</MudText>
                             }
                         </MudButton>
-
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Default"
+                                   Size="Size.Small"
+                                   EndIcon="@Icons.Material.Filled.Person"
+                                   Disabled="isProcessing"
+                                   OnClick="async () => await LoginAsGuest()"
+                                   Class="mb-4" Style="width: 100%;">
+                            <MudText>Ingresar como Invitado</MudText>
+                        </MudButton>
                         @if (!string.IsNullOrEmpty(errorMessage))
                         {
                             <MudAlert Severity="Severity.Error" Class="mt-4">@errorMessage</MudAlert>
@@ -176,7 +184,7 @@
                     {
                         // Almacenar el token en el almacenamiento local
                         localStorage.SetItemAsync("authToken", result.Token);
-                        NavigationManager.NavigateTo("/clientes_paginado");
+                        NavigationManager.NavigateTo("/proyectos_paginado", forceLoad: true);
                     }
                     else
                     {
@@ -198,6 +206,42 @@
                 isProcessing = false;
                 StateHasChanged();  // Actualiza el UI para ocultar el estado de procesamiento
             }
+        }
+    }
+    private async Task LoginAsGuest()
+    {
+        isProcessing = true;
+        StateHasChanged();
+
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var response = await client.PostAsJsonAsync("api/v1/Accounts/Login", new DTO_Usuario_Obten_Login
+                {
+                    Usu_Correo = "Invitado",
+                    Usu_Clave = "invitado123"
+                });
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<DTO_AuthResponse>();
+                if (result?.IsAuthSuccessful == true)
+                {
+                    await localStorage.SetItemAsync("authToken", result.Token);
+                    NavigationManager.NavigateTo("/clientes_paginado");
+                    return;
+                }
+            }
+            errorMessage = "Error al acceder como invitado";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isProcessing = false;
+            StateHasChanged();
         }
     }
 
