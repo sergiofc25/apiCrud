@@ -11,6 +11,10 @@ namespace UnitOfWork_Interface
     {
         IClienteRepository ClienteRepository { get; }
         ITipo_DocumentoRepository Tipo_DocumentoRepository { get; }
+        IPaisRepository PaisRepository { get; }
+        IDepartamentoRepository DepartamentoRepository { get; }
+        IProvinciaRepository ProvinciaRepository { get; }
+        IDistritoRepository DistritoRepository { get; }
         IUsuarioRepository UsuarioRepository { get; }
         IPresupuestoRepository PresupuestoRepository { get; }
     }

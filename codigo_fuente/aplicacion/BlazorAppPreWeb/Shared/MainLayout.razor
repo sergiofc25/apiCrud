@@ -64,7 +64,6 @@
         {
             var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
             var token = await localStorage.GetItemAsync<string>("authToken");
-            // if (token != null)
             if (!string.IsNullOrEmpty(token))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

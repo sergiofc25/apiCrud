@@ -18,23 +18,62 @@
         <MudItem xs="12">
             <MudPaper Class="pa-5" Elevation="3">
                 <MudForm Model="@proyecto" @ref="form" OnValidSubmit="CrearProyecto">
+                    <MudTextField @bind-Value="usuario.Usu_NomApellidos"Label="Usuario"Required="true"Class="mud-width-full"Variant="Variant.Outlined"ReadOnly="true"Immediate="true" />
                     <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
-                    @* <MudSelect T="DTO_Cliente_Obten_Nombre" Label="Cliente"
-                               @bind-Value="selectedCliente"
-                               ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
-                               Dense="true" Class="mud-width-full">
-                        @foreach (var cliente in clientes)
-                        {
-                            <MudSelectItem Value="@cliente">@cliente.Cli_NomApeRazSocial</MudSelectItem>
-                        }
-                    </MudSelect> *@
                     <MudAutocomplete T="DTO_Cliente_Obten_Nombre"
-                                     Label="Buscar cliente"
-                                     @bind-Value="selectedCliente"
-                                     ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
-                                     SearchFunc="@SearchClientes"
+                    Label="Buscar cliente"
+                    @bind-Value="selectedCliente"
+                    ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
+                    SearchFunc="@SearchClientes"
+                    Dense="true"
+                    Class="mud-width-full" />
+                    <MudAutocomplete T="DTO_Pais_Obten"
+                    Label="Buscar país"
+                    @bind-Value="selectedPais"
+                    ToStringFunc="@(pai => pai?.Pai_Nombre ?? "Seleccione país")"
+                    SearchFunc="@SearchPais"
+                    Dense="true"
+                    Class="mud-width-full"
+                    @oninput="async () => await OnPaisSelected()"
+                    Items="@pais" />
+                    <MudAutocomplete T="DTO_Departamento_Obten"
+                                     Label="Buscar departamento"
+                                     Value="selectedDepartamento"
+                                     ValueChanged="OnDepartamentoSelected"
+                                     ValueExpression="@(() => selectedDepartamento)"
+                                     ToStringFunc="@(dep => dep?.Dep_Nombre ?? "Seleccione departamento")"
+                                     SearchFunc="@SearchDepartamento"
                                      Dense="true"
-                                     Class="mud-width-full" />
+                                     Class="mud-width-full"
+                                     Disabled="@(selectedPais == null)"
+                                     @key="selectedPais?.Pai_Nombre"
+                                     Immediate="true">
+                    </MudAutocomplete>
+                    <MudAutocomplete T="DTO_Provincia_Obten"
+                                     Label="Buscar provincia"
+                                     Value="selectedProvincia"
+                                     ValueChanged="OnProvinciaSelected"
+                                     ValueExpression="@(() => selectedProvincia)"
+                                     ToStringFunc="@(prov => prov?.Prov_Nombre ?? "Seleccione provincia")"
+                                     SearchFunc="@SearchProvincia"
+                                     Dense="true"
+                                     Class="mud-width-full"
+                                     Disabled="@(selectedDepartamento == null)"
+                                     @key="selectedDepartamento?.Dep_Nombre"
+                                     Immediate="true">
+                    </MudAutocomplete>
+                    <MudAutocomplete T="DTO_Distrito_Obten"
+                                     Label="Buscar distrito"
+                                     ValueChanged="OnDistritoSelected"
+                                     ValueExpression="@(() => selectedDistrito)"
+                                     ToStringFunc="@(dist => dist?.Dist_Nombre ?? "Seleccione distrito")"
+                                     SearchFunc="@SearchDistrito"
+                                     Dense="true"
+                                     Class="mud-width-full"
+                                     Disabled="@(selectedProvincia == null)"
+                                     @key="selectedProvincia?.Prov_Nombre"
+                                     Immediate="true">
+                    </MudAutocomplete>
                     <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Class="mud-width-full" />
                     <MudItem Class="d-flex justify-center align-center" xs="12">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearProyecto())">
@@ -64,12 +103,38 @@
     private DTO_Presupuesto_Crea proyecto = new DTO_Presupuesto_Crea();
     private List<DTO_Cliente_Obten_Nombre> clientes = new List<DTO_Cliente_Obten_Nombre>();
     private DTO_Cliente_Obten_Nombre selectedCliente { get; set; } = new DTO_Cliente_Obten_Nombre();
+    private DTO_Usuario_Obten_x_Correo usuario = new DTO_Usuario_Obten_x_Correo();
+    private List<DTO_Pais_Obten> pais = new List<DTO_Pais_Obten>();
+    private DTO_Pais_Obten selectedPais { get; set; } = new DTO_Pais_Obten();
+    private DTO_Departamento_Obten selectedDepartamento;
+    private List<DTO_Departamento_Obten> departamento = new();
+    private DTO_Provincia_Obten selectedProvincia;
+    private List<DTO_Provincia_Obten> provincia = new();
+    private DTO_Distrito_Obten selectedDistrito;
+    private List<DTO_Distrito_Obten> distrito = new();
+
+
     private string errorMessage = string.Empty;
     private bool _processing = false;
 
     protected override async Task OnInitializedAsync()
     {
+        await GetUsuario();
         await GetCliente();
+        await GetPais();
+        if (selectedPais != null)
+        {
+            await GetDepartamentosByPais(selectedPais.Pai_Nombre);
+        }
+        if (selectedDepartamento != null)
+        {
+            await GetProvinciasByDepartamento(selectedDepartamento.Dep_Nombre);
+        }
+        if (selectedProvincia != null)
+        {
+            await GetDistritoByProvincia(selectedProvincia.Prov_Nombre);
+        }
+
     }
 
     private async Task<IEnumerable<DTO_Cliente_Obten_Nombre>> SearchClientes(string searchText)
@@ -79,7 +144,79 @@
 
         return clientes.Where(cli => cli.Cli_NomApeRazSocial.Contains(searchText, StringComparison.OrdinalIgnoreCase));
     }
+    private async Task<IEnumerable<DTO_Pais_Obten>> SearchPais(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return pais;
 
+        return pais.Where(pai => pai.Pai_Nombre.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+    private async Task<IEnumerable<DTO_Departamento_Obten>> SearchDepartamento(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return departamento;
+
+        return departamento
+            .Where(dep => dep.Dep_Nombre.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+    private async Task<IEnumerable<DTO_Provincia_Obten>> SearchProvincia(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return provincia;
+
+        return provincia.Where(prov => prov.Prov_Nombre.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+    private async Task<IEnumerable<DTO_Distrito_Obten>> SearchDistrito(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return distrito;
+
+        return distrito.Where(dist => dist.Dist_Nombre.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+    }
+    private async Task GetUsuario()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Usuario/Obten_Usuario_Logeado");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Usuario_Obten_x_Correo>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    usuario = result.Data;
+                    Console.WriteLine($"Usuario Count: {usuario.ToString}");
+
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar usuario: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
 
     private async Task GetCliente()
     {
@@ -123,7 +260,211 @@
         }
         StateHasChanged();
     }
+    private async Task GetPais()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
+            var response = await client.GetAsync("api/v1/Pais/Obten");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Pais_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    pais = result.Data;
+                    selectedPais = pais.FirstOrDefault(p => p.Pai_Nombre == "PERU");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar países: {ex.Message}";
+        }
+    }
+    private async Task OnPaisSelected()
+    {
+        selectedDepartamento = null;
+
+        if (selectedPais != null)
+        {
+            await GetDepartamentosByPais(selectedPais.Pai_Nombre);
+        }
+        else
+        {
+            departamento.Clear();
+        }
+        StateHasChanged();
+    }
+    private async Task GetDepartamentosByPais(string paisNombre)
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync($"api/v1/Departamento/Obten/{Uri.EscapeDataString(paisNombre)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Departamento_Obten>>>(responseBody);
+
+                if (result?.IsSuccessful == true)
+                {
+                    departamento = result.Data ?? new List<DTO_Departamento_Obten>();
+                    //selectedDepartamento = departamento.FirstOrDefault(d => d.Dep_Nombre == "LA LIBERTAD");
+                }
+                else
+                {
+                    errorMessage = "No se pudieron obtener los departamentos";
+                    departamento.Clear();
+                }
+            }
+            else
+            {
+                errorMessage = $"Error: {response.StatusCode}";
+                departamento.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar departamentos: {ex.Message}";
+            departamento.Clear();
+        }
+        StateHasChanged();
+    }
+
+    private async Task OnDepartamentoSelected(DTO_Departamento_Obten nuevoDepartamento)
+    {
+        selectedDepartamento = nuevoDepartamento;
+        selectedProvincia = null;
+        provincia = new List<DTO_Provincia_Obten>();
+
+        if (selectedDepartamento != null && !string.IsNullOrEmpty(selectedDepartamento.Dep_Nombre))
+        {
+            Console.WriteLine($"Cargando provincias para: {selectedDepartamento.Dep_Nombre}");
+            await GetProvinciasByDepartamento(selectedDepartamento.Dep_Nombre);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task GetProvinciasByDepartamento(string departamentoNombre)
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync($"api/v1/Provincia/Obten/{Uri.EscapeDataString(departamentoNombre)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Provincia_Obten>>>(responseBody);
+
+                if (result?.IsSuccessful == true)
+                {
+                    provincia = result.Data ?? new List<DTO_Provincia_Obten>();
+                }
+                else
+                {
+                    errorMessage = "No se pudieron obtener las provincias";
+                    provincia.Clear();
+                }
+            }
+            else
+            {
+                errorMessage = $"Error: {response.StatusCode}";
+                provincia.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar provincias: {ex.Message}";
+            provincia.Clear();
+        }
+        StateHasChanged();
+    }
+    private async Task OnProvinciaSelected(DTO_Provincia_Obten nuevoProvincia)
+    {
+        selectedProvincia = nuevoProvincia;
+        selectedDistrito = null;
+        distrito = new List<DTO_Distrito_Obten>();
+
+        if (selectedProvincia != null && !string.IsNullOrEmpty(selectedProvincia.Prov_Nombre))
+        {
+            Console.WriteLine($"Cargando departamentos para: {selectedProvincia.Prov_Nombre}");
+            await GetDistritoByProvincia(selectedProvincia.Prov_Nombre);
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task GetDistritoByProvincia(string provinciaNombre)
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync($"api/v1/Distrito/Obten/{Uri.EscapeDataString(provinciaNombre)}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Distrito_Obten>>>(responseBody);
+
+                if (result?.IsSuccessful == true)
+                {
+                    distrito = result.Data ?? new List<DTO_Distrito_Obten>();
+                    //selectedDepartamento = departamento.FirstOrDefault(d => d.Dep_Nombre == "LA LIBERTAD");
+                }
+                else
+                {
+                    errorMessage = "No se pudieron obtener los distritos";
+                    distrito.Clear();
+                }
+            }
+            else
+            {
+                errorMessage = $"Error: {response.StatusCode}";
+                distrito.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar departamentos: {ex.Message}";
+            distrito.Clear();
+        }
+        StateHasChanged();
+    }
+    private async Task OnDistritoSelected(DTO_Distrito_Obten nuevoDistrito)
+    {
+        selectedDistrito = nuevoDistrito;
+        await InvokeAsync(StateHasChanged);
+    }
     private async Task CrearProyecto()
     {
         if (form != null && form.IsValid)
@@ -133,14 +474,15 @@
 
             try
             {
-                // Prepara el objeto para enviar al backend
                 var proyectoParaEnviar = new
                 {
+                    Usu_NomApellidos = usuario.Usu_NomApellidos,
                     Pre_Nombre = proyecto.Pre_Nombre,
-                    eCliente = new
-                    {
-                        Cli_NomApeRazSocial = selectedCliente?.Cli_NomApeRazSocial
-                    },
+                    Cli_NomApeRazSocial = selectedCliente?.Cli_NomApeRazSocial,
+                    Pai_Nombre = selectedPais?.Pai_Nombre,
+                    Dep_Nombre = selectedDepartamento?.Dep_Nombre,
+                    Prov_Nombre = selectedProvincia?.Prov_Nombre,
+                    Dist_Nombre = selectedDistrito?.Dist_Nombre,
                     Pre_Jornal = proyecto.Pre_Jornal
                 };
 

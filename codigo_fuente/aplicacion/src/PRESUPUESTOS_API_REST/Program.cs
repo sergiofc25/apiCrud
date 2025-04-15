@@ -47,6 +47,10 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 builder.Services.AddTransient<IUnitOfWork, UnitOfWorkSqlServer>();
 builder.Services.AddTransient<IClienteService, ClienteService>();
 builder.Services.AddTransient<ITipo_DocumentoService, Tipo_DocumentoService>();
+builder.Services.AddTransient<IPaisService, PaisService>();
+builder.Services.AddTransient<IDepartamentoService, DepartamentoService>();
+builder.Services.AddTransient<IProvinciaService, ProvinciaService>();
+builder.Services.AddTransient<IDistritoService, DistritoService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IPresupuestoService, PresupuestoService>();
 builder.Services.AddTransient<ITokenService, TokenService>();

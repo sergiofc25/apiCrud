@@ -76,6 +76,22 @@ public class MappingProfile : Profile
         CreateMap<Ent_Tipo_Documento, DTO_Tipo_Documento_Obten>()
             .ForMember(destino => destino.TipDoc_Nombre,
             opt => opt.MapFrom(origen => origen.TipDoc_Nombre));
+        //PAIS
+        CreateMap<Ent_Pais, DTO_Pais_Obten>()
+            .ForMember(destino => destino.Pai_Nombre,
+            opt => opt.MapFrom(origen => origen.Pai_Nombre));
+        //DEPARTAMENTO
+        CreateMap<Ent_Departamento, DTO_Departamento_Obten>()
+            .ForMember(destino => destino.Dep_Nombre,
+            opt => opt.MapFrom(origen => origen.Dep_Nombre));
+        //PROVINCIA
+        CreateMap<Ent_Provincia, DTO_Provincia_Obten>()
+            .ForMember(destino => destino.Prov_Nombre,
+            opt => opt.MapFrom(origen => origen.Prov_Nombre));
+        //DISTRITO
+        CreateMap<Ent_Distrito, DTO_Distrito_Obten>()
+            .ForMember(destino => destino.Dist_Nombre,
+            opt => opt.MapFrom(origen => origen.Dist_Nombre));
         //USUARIO
         CreateMap<Ent_Usuario, DTO_Usuario_Obten_Paginado>()
             .ForMember(destino => destino.Usu_Correo,

@@ -54,7 +54,8 @@ public class PresupuestoController : ControllerBase
         }
     }
 
-    [HttpGet("{Pre_Id}", Name = "Presupuesto_Obten_x_Id")]
+    //[HttpGet("{Pre_Id}", Name = "Presupuesto_Obten_x_Id")]
+    [HttpGet("Obten_x_Id/{Pre_Id}")]
     public async Task<IActionResult> Obten_x_Id(int Pre_Id)
     {
         try
@@ -94,7 +95,12 @@ public class PresupuestoController : ControllerBase
 
             var PresupuestoDTO = _mapper.Map<DTO_Presupuesto_Obten_x_Id>(Presupuesto);
 
-            return CreatedAtRoute("Presupuesto_Obten_x_Id", new { Presupuesto.Pre_Id }, PresupuestoDTO);
+            //return CreatedAtRoute("Presupuesto_Obten_x_Id", new { Presupuesto.Pre_Id }, PresupuestoDTO);
+            return Ok(new DTO_Response<DTO_Presupuesto_Obten_x_Id>
+            {
+                Data = _mapper.Map<DTO_Presupuesto_Obten_x_Id>(Presupuesto),
+                IsSuccessful = true
+            });
         }
         catch (Exception)
         {
