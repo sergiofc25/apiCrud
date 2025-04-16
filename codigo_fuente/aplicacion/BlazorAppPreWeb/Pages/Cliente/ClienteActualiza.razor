@@ -19,8 +19,15 @@
                     <MudForm Model="@cliente" @ref="form" OnValidSubmit="ActualizarCliente">
                         <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
                         <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
-                        <MudTextField @bind-Value="cliente.TipDoc_Nombre" Label="Tipo de Documento" Class="mud-width-full" />
-                        <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+                        <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento"
+                                   @bind-Value="selectedDocumento"
+                                   ToStringFunc="@(doc => doc?.TipDoc_Nombre ?? "Seleccione tipo de documento")"
+                                   Dense="true" Class="mud-width-full">
+                            @foreach (var documento in documentos)
+                            {
+                                <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
+                            }
+                        </MudSelect>                        <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
                         <MudItem Class="d-flex justify-center align-center" xs="12">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarCliente())">
                                 @if (_processing)
@@ -49,12 +56,16 @@
     [Parameter] public string Cli_Id { get; set; }
     private DTO_Cliente_Obten_x_Id cliente;
     private MudForm? form;
+    private List<DTO_Tipo_Documento_Obten> documentos = new List<DTO_Tipo_Documento_Obten>();
+    private DTO_Tipo_Documento_Obten selectedDocumento { get; set; } = new DTO_Tipo_Documento_Obten();
     private bool _processing = false;
     private string errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadCliente();
+        await GetDocumento();
+
     }
 
     private async Task LoadCliente()
@@ -91,10 +102,55 @@
             errorMessage = $"Ocurrió un error: {ex.Message}";
         }
     }
+    private async Task GetDocumento()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
 
+            var response = await client.GetAsync("api/v1/Tipo_Documento/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Tipo_Documento_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    documentos = result.Data;
+                    selectedDocumento = documentos.FirstOrDefault(doc => doc.TipDoc_Nombre == cliente.TipDoc_Nombre);
+
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar tipos de documento: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
     private async Task ActualizarCliente()
     {
-        if (cliente == null) return;
+        if (cliente == null || documentos == null) return;
+
+        cliente.TipDoc_Nombre = selectedDocumento.TipDoc_Nombre;
+
 
         _processing = true;
         StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
