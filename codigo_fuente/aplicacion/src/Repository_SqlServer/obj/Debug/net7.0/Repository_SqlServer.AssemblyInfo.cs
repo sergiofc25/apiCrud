@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Repository_SqlServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2bd1189a321b2a8fb1b7dd94734e695320315b2a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96b47de675aa58d240f954e05d8b8f272da6b17d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Repository_SqlServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Repository_SqlServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

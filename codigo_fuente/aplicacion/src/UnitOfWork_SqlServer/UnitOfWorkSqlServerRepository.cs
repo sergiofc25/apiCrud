@@ -20,6 +20,7 @@ namespace UnitOfWork_SqlServer
         public IDistritoRepository DistritoRepository { get; }
         public IUsuarioRepository UsuarioRepository { get; }
         public IPresupuestoRepository PresupuestoRepository { get; }
+        public ISubPresupuestoRepository SubPresupuestoRepository { get; }
         public UnitOfWorkSqlServerRepository(SqlConnection context, SqlTransaction transaction)
         {
             ClienteRepository = new ClienteRepository(context, transaction);
@@ -34,6 +35,8 @@ namespace UnitOfWork_SqlServer
             UsuarioRepository = new UsuarioRepository(context, transaction);
 
             PresupuestoRepository = new PresupuestoRepository(context, transaction);
+
+            SubPresupuestoRepository = new SubPresupuestoRepository(context, transaction);
 
         }
         

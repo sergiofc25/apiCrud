@@ -74,7 +74,7 @@
                                      @key="selectedProvincia?.Prov_Nombre"
                                      Immediate="true">
                     </MudAutocomplete>
-                    <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Class="mud-width-full" />
+                    <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Required="true" InputType="InputType.Number" Class="mud-width-full" />
                     <MudItem Class="d-flex justify-center align-center" xs="12">
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearProyecto())">
                             @if (_processing)

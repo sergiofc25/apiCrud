@@ -251,6 +251,23 @@ public class MappingProfile : Profile
         CreateMap<DTO_Presupuesto_Actualiza_Condicion, Ent_Presupuesto>()
             .ForPath(destino => destino.Pre_Estado,
             opt => opt.MapFrom(origen => origen.Pre_Estado));
+        //SUB_PRESUPUESTO
+        CreateMap<Ent_SubPresupuesto, DTO_SubPresupuesto_Obten_x_Presupuesto>()
+            .ForMember(destino => destino.SubPre_Id,
+            opt => opt.MapFrom(origen => origen.SubPre_Id))
+            .ForMember(destino => destino.Pre_Id,
+            opt => opt.MapFrom(origen => origen.ePresupuesto.Pre_Id))
+            .ForMember(destino => destino.Padre_Id,
+            opt => opt.MapFrom(origen => origen.Padre_Id))
+            .ForMember(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre))
+            .ForMember(destino => destino.SubPre_Nivel,
+            opt => opt.MapFrom(origen => origen.SubPre_Nivel))
+            .ForMember(destino => destino.SubPre_Orden,
+            opt => opt.MapFrom(origen => origen.SubPre_Orden))
+            .ForMember(destino => destino.SubPre_Ruta,
+            opt => opt.MapFrom(origen => origen.SubPre_Ruta))
+            ;
     }
 
 } 

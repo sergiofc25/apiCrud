@@ -27,7 +27,14 @@
                             {
                                 <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
                             }
-                        </MudSelect>                        <MudTextField @bind-Value="cliente.Cli_NumDocumento" Label="Número de Documento" Class="mud-width-full" />
+                        </MudSelect>
+                        <MudTextField @bind-Value="cliente.Cli_NumDocumento"
+                                      Label="Número de Documento"
+                                      Required="true"
+                                      Class="mud-width-full"
+                                      InputType="InputType.Number"
+                                      MaxLength="10"
+                                      Pattern="[0-9]*" />
                         <MudItem Class="d-flex justify-center align-center" xs="12">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarCliente())">
                                 @if (_processing)

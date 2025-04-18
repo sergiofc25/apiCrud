@@ -69,6 +69,9 @@
                     <MudTd DataLabel="Provincia">@context.Prov_Nombre</MudTd>
                     <MudTd DataLabel="Distrito">@context.Dist_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
+                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))">
+                            Presupuestos
+                        </MudButton>
                         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))">
                             Actualizar
                         </MudButton>
@@ -182,7 +185,10 @@
     {
         NavigationManager.NavigateTo("/proyecto_crea");
     }
-
+    private void Btn_Mostrar_SubPresupuestos_Click(string Pre_Id)
+    {
+        NavigationManager.NavigateTo($"/subpresupuesto/{Pre_Id}");
+    }
     private void Btn_Actualizar_Proyecto_Click(string Pre_Id)
     {
         NavigationManager.NavigateTo($"/proyecto_actualiza/{Pre_Id}");

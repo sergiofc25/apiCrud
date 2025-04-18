@@ -17,5 +17,6 @@ namespace UnitOfWork_Interface
         IDistritoRepository DistritoRepository { get; }
         IUsuarioRepository UsuarioRepository { get; }
         IPresupuestoRepository PresupuestoRepository { get; }
+        ISubPresupuestoRepository SubPresupuestoRepository { get; }
     }
 }

@@ -18,7 +18,7 @@
                 {
                     <MudForm Model="@proyecto" @ref="form" OnValidSubmit="ActualizarProyecto">
                         <MudTextField @bind-Value="proyecto.Usu_NomApellidos" Label="Usuario" Required="true" ReadOnly="true" Class="mud-width-full" />
-                        <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Class="mud-width-full" />
+                        <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
                         <MudAutocomplete T="DTO_Cliente_Obten_Nombre"
                         Label="Buscar cliente"
                         @bind-Value="selectedCliente"
@@ -74,7 +74,7 @@
                                          @key="selectedProvincia?.Prov_Nombre"
                                          Immediate="true">
                         </MudAutocomplete>
-                        <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Class="mud-width-full" />
+                        <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Required="true" InputType="InputType.Number" Class="mud-width-full" />
                         <MudItem Class="d-flex justify-center align-center" xs="12">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarProyecto())">
                                 @if (_processing)
@@ -84,7 +84,7 @@
                                 }
                                 else
                                 {
-                                    <MudText>Actualizar Cliente</MudText>
+                                    <MudText>Actualizar Proyecto</MudText>
                                 }
                             </MudButton>
                         </MudItem>
