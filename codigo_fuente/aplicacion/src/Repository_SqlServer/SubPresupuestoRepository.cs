@@ -18,36 +18,6 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         _transaction = transaction;
     }
 
-
-    //public IEnumerable<Ent_SubPresupuesto> Obten_x_Presupuesto(int Pre_Id)
-    //{
-    //    var Lst_SubPresupuesto = new List<Ent_SubPresupuesto>();
-
-    //    using var oCmd = CreateCommand("SP_SubPresupuesto_Obten_x_Presupuesto");
-
-    //    oCmd.CommandType = CommandType.StoredProcedure;
-
-    //    oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
-
-    //    using var oDR = oCmd.ExecuteReader(CommandBehavior.SingleRow);
-
-    //    while (oDR.Read())
-    //        Lst_SubPresupuesto.Add(new Ent_SubPresupuesto
-    //        {
-    //            SubPre_Id = oDR.GetInt32(oDR.GetOrdinal("SubPre_Id")),
-    //            ePresupuesto = new()
-    //            {
-    //                Pre_Id = oDR.GetInt32(oDR.GetOrdinal("Pre_Id"))
-
-    //            },
-    //            Padre_Id = oDR.GetInt32(oDR.GetOrdinal("Padre_Id")),
-    //            SubPre_Nombre = oDR.GetString(oDR.GetOrdinal("SubPre_Nombre")),
-    //            SubPre_Nivel = oDR.GetInt32(oDR.GetOrdinal("SubPre_Nivel")),
-    //            SubPre_Orden = oDR.GetInt32(oDR.GetOrdinal("SubPre_Orden")),
-    //            SubPre_Ruta = oDR.GetString(oDR.GetOrdinal("SubPre_Ruta"))
-    //        });
-    //    return Lst_SubPresupuesto;
-    //}
     public IEnumerable<Ent_SubPresupuesto> Obten_x_Presupuesto(int Pre_Id)
     {
         var Lst_SubPresupuesto = new List<Ent_SubPresupuesto>();
@@ -70,10 +40,9 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
                 SubPre_Nombre = oDR.GetString(oDR.GetOrdinal("SubPre_Nombre")),
                 SubPre_Nivel = oDR.GetInt32(oDR.GetOrdinal("SubPre_Nivel")),
                 SubPre_Orden = oDR.GetInt32(oDR.GetOrdinal("SubPre_Orden")),
-                SubPre_Ruta = oDR.GetString(oDR.GetOrdinal("SubPre_Ruta"))
+                SubPre_Ruta = oDR.GetString(oDR.GetOrdinal("SubPre_Ruta")),
+                SubPre_TieneHijos = oDR.GetByte(oDR.GetOrdinal("SubPre_TieneHijos")) != 0 ? true : false
             };
-
-            // Manejo de Padre_Id nulo
             int padreIdOrdinal = oDR.GetOrdinal("Padre_Id");
             subPresupuesto.Padre_Id = oDR.IsDBNull(padreIdOrdinal) ?
                                      (int?)null :
@@ -83,6 +52,74 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         }
 
         return Lst_SubPresupuesto;
+    }
+    public Ent_SubPresupuesto Obten_x_Id(int SubPre_Id)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Obten_x_Id");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+        oCmd.Parameters.AddWithValue("SubPre_Id", SubPre_Id);
+
+        using var oDR = oCmd.ExecuteReader(CommandBehavior.SingleRow);
+
+        if (oDR.HasRows)
+        {
+            oDR.Read();
+
+            return new Ent_SubPresupuesto
+            {
+                SubPre_Id = oDR.GetInt32(oDR.GetOrdinal("SubPre_Id")),
+                
+                ePresupuesto = new()
+                {
+                    Pre_Id = oDR.GetInt32(oDR.GetOrdinal("Pre_Id")),
+                    Pre_Nombre = oDR.GetString(oDR.GetOrdinal("Pre_Nombre")),
+                },
+                // Modificación para manejar valores nulos
+                Padre_Id = oDR.IsDBNull(oDR.GetOrdinal("Padre_Id")) ?
+                          null :
+                          (int?)oDR.GetInt32(oDR.GetOrdinal("Padre_Id")),
+                SubPre_Nombre = oDR.GetString(oDR.GetOrdinal("SubPre_Nombre")),
+                SubPre_Nivel = oDR.GetInt32(oDR.GetOrdinal("SubPre_Nivel")),
+                SubPre_Orden = oDR.GetInt32(oDR.GetOrdinal("SubPre_Orden")),
+                SubPre_Ruta = oDR.GetString(oDR.GetOrdinal("SubPre_Ruta")),
+                SubPre_TieneHijos = oDR.GetByte(oDR.GetOrdinal("SubPre_TieneHijos")) != 0 ? true : false,
+            };
+        }
+
+        return null;
+    }
+    public int Actualiza_Nombre(Ent_SubPresupuesto Ent_SubPresupuesto)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Actualiza_Nombre");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("SubPre_Id", Ent_SubPresupuesto.SubPre_Id);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+
+        return oCmd.ExecuteNonQuery();
+    }
+    public int Elimina(int SubPre_Id)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Elimina_Seguro_v2");
+        oCmd.CommandType = CommandType.StoredProcedure;
+        oCmd.Parameters.AddWithValue("SubPre_Id", SubPre_Id);
+
+        // Agregar parámetro de retorno
+        var returnParam = oCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
+        returnParam.Direction = ParameterDirection.ReturnValue;
+
+        try
+        {
+            oCmd.ExecuteNonQuery();
+            return (int)returnParam.Value; // Devuelve el valor de RETURN del SP
+        }
+        catch (SqlException ex)
+        {
+            // Log del error si es necesario
+            throw new Exception("Error al eliminar subpresupuesto: " + ex.Message);
+        }
     }
 }
 

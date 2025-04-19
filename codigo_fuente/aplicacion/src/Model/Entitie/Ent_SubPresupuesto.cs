@@ -15,5 +15,6 @@ namespace Model.Entitie
         public int SubPre_Nivel { get; set; }
         public int SubPre_Orden { get; set; }
         public string SubPre_Ruta { get; set; }
+        public bool SubPre_TieneHijos { get; set; }
     }
 }

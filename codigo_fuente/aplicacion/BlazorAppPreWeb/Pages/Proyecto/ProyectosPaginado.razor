@@ -69,15 +69,14 @@
                     <MudTd DataLabel="Provincia">@context.Prov_Nombre</MudTd>
                     <MudTd DataLabel="Distrito">@context.Dist_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <MudButton Variant="Variant.Filled" Color="Color.Warning" Size="Size.Small" @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))">
-                            Presupuestos
-                        </MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))">
+                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Medium" @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))" />
+                        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))">
                             Actualizar
-                        </MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small" @onclick="@(() => Btn_Eliminar_Proyecto_Click(@context.Pre_Id))">
-                            Eliminar
-                        </MudButton>
+                        </MudButton> *@
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))" />
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Medium" @onclick="@(() => Btn_Eliminar_Proyecto_Click(@context.Pre_Id))" />
+
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>

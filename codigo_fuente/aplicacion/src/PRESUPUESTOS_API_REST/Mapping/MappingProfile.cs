@@ -266,8 +266,29 @@ public class MappingProfile : Profile
             .ForMember(destino => destino.SubPre_Orden,
             opt => opt.MapFrom(origen => origen.SubPre_Orden))
             .ForMember(destino => destino.SubPre_Ruta,
+            opt => opt.MapFrom(origen => origen.SubPre_Ruta));
+        CreateMap<Ent_SubPresupuesto, DTO_SubPresupuesto_Obten_x_Id>()
+            .ForMember(destino => destino.SubPre_Id,
+            opt => opt.MapFrom(origen => origen.SubPre_Id))
+            .ForMember(destino => destino.Pre_Id,
+            opt => opt.MapFrom(origen => origen.ePresupuesto.Pre_Id))
+            .ForMember(destino => destino.Pre_Nombre,
+            opt => opt.MapFrom(origen => origen.ePresupuesto.Pre_Nombre))
+            .ForMember(destino => destino.Padre_Id,
+            opt => opt.MapFrom(origen => origen.Padre_Id))
+            .ForMember(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre))
+            .ForMember(destino => destino.SubPre_Nivel,
+            opt => opt.MapFrom(origen => origen.SubPre_Nivel))
+            .ForMember(destino => destino.SubPre_Orden,
+            opt => opt.MapFrom(origen => origen.SubPre_Orden))
+            .ForMember(destino => destino.SubPre_Ruta,
             opt => opt.MapFrom(origen => origen.SubPre_Ruta))
-            ;
+            .ForMember(destino => destino.SubPre_TieneHijos,
+            opt => opt.MapFrom(origen => origen.SubPre_TieneHijos));
+        CreateMap<DTO_SubPresupuesto_Actualiza_Nombre, Ent_SubPresupuesto>()
+            .ForPath(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre));
     }
 
 } 

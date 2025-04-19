@@ -7,6 +7,8 @@
 @using Blazored.LocalStorage
 @using System.Net.Http.Headers
 @inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <PageTitle>SubPresupuestos de proyecto</PageTitle>
 
@@ -44,13 +46,10 @@
                             @context.SubPre_Nombre
                         </div>
                     </MudTd>
-                    <MudTd DataLabel="Acciones" Style="padding: 6px 8px;">
-                        <MudButton Variant="Variant.Filled"
-                                   Color="Color.Secondary"
-                                   Size="Size.Small"
-                                   @onclick="@(() => Btn_Eliminar_SubPresupuesto(context))">
-                            Eliminar
-                        </MudButton>
+                    <MudTd DataLabel="Acciones" Style="width: 250px;padding: 6px 8px;">
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Info" Size="Size.Medium" @onclick="@(() => Btn_Crear_SubPresupuesto(context))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" @onclick="@(() => Btn_Actualizar_SubPresupuesto_Click(@context.SubPre_Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Medium" @onclick="@(() => Btn_Eliminar_SubPresupuesto(@context.SubPre_Id))" />
                     </MudTd>
                 </RowTemplate>
 
@@ -136,8 +135,17 @@
         // Sangría de 20px por nivel (ajustable)
         return nivel * 20;
     }
-    private void Btn_Eliminar_SubPresupuesto(DTO_SubPresupuesto_Obten_x_Presupuesto item)
+    private void Btn_Eliminar_SubPresupuesto(string SubPre_Id)
     {
-        // Implementar lógica de eliminación
+        NavigationManager.NavigateTo($"/subpresupuesto_elimina/{SubPre_Id}");
+
+    }
+    private void Btn_Actualizar_SubPresupuesto_Click(string SubPre_Id)
+    {
+        NavigationManager.NavigateTo($"/subpresupuesto_actualiza/{SubPre_Id}");
+    }
+    private void Btn_Crear_SubPresupuesto(DTO_SubPresupuesto_Obten_x_Presupuesto item)
+    {
+        // Implementar lógica de creación
     }
 }
