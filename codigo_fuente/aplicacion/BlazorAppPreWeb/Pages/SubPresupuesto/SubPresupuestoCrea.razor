@@ -1,0 +1,111 @@
+﻿@page "/subpresupuesto_crea/{SubPre_Id}"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+
+<PageTitle>Crear SubPresupuesto</PageTitle>
+<section style="max-width:600px; margin: 0 auto;">
+    <MudGrid>
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                <MudForm Model="@subpresupuesto" @ref="form" OnValidSubmit="CrearSubPresupuesto">
+                    <MudTextField @bind-Value="subpresupuesto.SubPre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
+                    <MudItem Class="d-flex justify-center align-center" xs="12">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearSubPresupuesto())">
+                            @if (_processing)
+                            {
+                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                <MudText Class="ms-2">Creando...</MudText>
+                            }
+                            else
+                            {
+                                <MudText>Crear</MudText>
+                            }
+                        </MudButton>
+                    </MudItem>
+                </MudForm>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</section>
+@code {
+    private MudForm? form;
+    [Parameter] public string SubPre_Id { get; set; }
+    private DTO_SubPresupuesto_Crea_Dentro subpresupuesto = new DTO_SubPresupuesto_Crea_Dentro();
+
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private async Task CrearSubPresupuesto()
+    {
+        if (form != null && form.IsValid)
+        {
+            _processing = true;
+            StateHasChanged();
+
+            try
+            {
+                // Prepara el objeto para enviar al backend
+                var subPresupuestoParaEnviar = new
+                {
+                    SubPre_Nombre = subpresupuesto.SubPre_Nombre,
+
+                };
+
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var content = new StringContent(JsonConvert.SerializeObject(subPresupuestoParaEnviar),
+                    Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"api/v1/SubPresupuesto/Crea_D/{SubPre_Id}", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("SubPresupuesto creado exitosamente.");
+                    await JSRuntime.InvokeVoidAsync("history.back");
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Ocurrió un error: {ex.Message}";
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+    }
+}

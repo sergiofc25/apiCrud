@@ -89,6 +89,55 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
 
         return null;
     }
+    public int Crea(Ent_SubPresupuesto Ent_SubPresupuesto)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Crea");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Pre_Id", Ent_SubPresupuesto.ePresupuesto.Pre_Id);
+        oCmd.Parameters.AddWithValue("Padre_Id", Ent_SubPresupuesto.Padre_Id);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Nivel", Ent_SubPresupuesto.SubPre_Nivel);
+        oCmd.Parameters.AddWithValue("SubPre_Orden", Ent_SubPresupuesto.SubPre_Orden);
+
+        var subPreIdParam = new SqlParameter
+        {
+            ParameterName = "@SubPre_Id",
+            SqlDbType = SqlDbType.Int,
+            Direction = ParameterDirection.Output
+        };
+        oCmd.Parameters.Add(subPreIdParam);
+
+        oCmd.ExecuteNonQuery();
+
+        int subpreId = Convert.ToInt32(subPreIdParam.Value);
+
+        return subpreId;
+    }
+    public int Crea_Dentro(int SubPre_Padre_Id, Ent_SubPresupuesto Ent_SubPresupuesto)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Crea_D");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("SubPre_Padre_Id", SubPre_Padre_Id);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+
+        var subPreIdParam = new SqlParameter
+        {
+            ParameterName = "@SubPre_Id",
+            SqlDbType = SqlDbType.Int,
+            Direction = ParameterDirection.Output
+        };
+        oCmd.Parameters.Add(subPreIdParam);
+
+        oCmd.ExecuteNonQuery();
+
+        int subpreId = Convert.ToInt32(subPreIdParam.Value);
+
+        return subpreId;
+    }
     public int Actualiza_Nombre(Ent_SubPresupuesto Ent_SubPresupuesto)
     {
         using var oCmd = CreateCommand("SP_SubPresupuesto_Actualiza_Nombre");
@@ -106,18 +155,16 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         oCmd.CommandType = CommandType.StoredProcedure;
         oCmd.Parameters.AddWithValue("SubPre_Id", SubPre_Id);
 
-        // Agregar parámetro de retorno
         var returnParam = oCmd.Parameters.Add("@ReturnVal", SqlDbType.Int);
         returnParam.Direction = ParameterDirection.ReturnValue;
 
         try
         {
             oCmd.ExecuteNonQuery();
-            return (int)returnParam.Value; // Devuelve el valor de RETURN del SP
+            return (int)returnParam.Value;
         }
         catch (SqlException ex)
         {
-            // Log del error si es necesario
             throw new Exception("Error al eliminar subpresupuesto: " + ex.Message);
         }
     }

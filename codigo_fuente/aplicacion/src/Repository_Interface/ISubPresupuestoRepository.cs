@@ -11,6 +11,8 @@ namespace Repository_Interface
     {
         IEnumerable<Ent_SubPresupuesto> Obten_x_Presupuesto(int Pre_Id);
         Ent_SubPresupuesto Obten_x_Id(int SubPre_Id);
+        int Crea(Ent_SubPresupuesto SubPresupuesto);
+        int Crea_Dentro(int SubPre_Padre_Id, Ent_SubPresupuesto SubPresupuesto);
         int Actualiza_Nombre(Ent_SubPresupuesto SubPresupuesto);
         int Elimina(int SubPre_Id);
 

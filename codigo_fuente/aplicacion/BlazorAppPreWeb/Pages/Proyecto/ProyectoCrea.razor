@@ -46,7 +46,6 @@
                                      Dense="true"
                                      Class="mud-width-full"
                                      Disabled="@(selectedPais == null)"
-                                     @key="selectedPais?.Pai_Nombre"
                                      Immediate="true">
                     </MudAutocomplete>
                     <MudAutocomplete T="DTO_Provincia_Obten"
@@ -59,7 +58,6 @@
                                      Dense="true"
                                      Class="mud-width-full"
                                      Disabled="@(selectedDepartamento == null)"
-                                     @key="selectedDepartamento?.Dep_Nombre"
                                      Immediate="true">
                     </MudAutocomplete>
                     <MudAutocomplete T="DTO_Distrito_Obten"
@@ -72,7 +70,7 @@
                                      Class="mud-width-full"
                                      Disabled="@(selectedProvincia == null)"
                                      @key="selectedProvincia?.Prov_Nombre"
-                                     Immediate="true">
+                                     Immediate="true">  
                     </MudAutocomplete>
                     <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Required="true" InputType="InputType.Number" Class="mud-width-full" />
                     <MudItem Class="d-flex justify-center align-center" xs="12">

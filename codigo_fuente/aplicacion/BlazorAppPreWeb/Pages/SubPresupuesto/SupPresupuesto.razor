@@ -9,6 +9,8 @@
 @inject ILocalStorageService localStorage
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
+@inject IModalService model
+
 
 <PageTitle>SubPresupuestos de proyecto</PageTitle>
 
@@ -47,7 +49,8 @@
                         </div>
                     </MudTd>
                     <MudTd DataLabel="Acciones" Style="width: 250px;padding: 6px 8px;">
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Info" Size="Size.Medium" @onclick="@(() => Btn_Crear_SubPresupuesto(context))" />
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" @onclick="@(() => Btn_Nuevo_SubPresupuesto_Click(@context.SubPre_Id))" />
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" @onclick="@(() => Btn_Actualizar_SubPresupuesto_Click(@context.SubPre_Id))" />
                         <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Medium" @onclick="@(() => Btn_Eliminar_SubPresupuesto(@context.SubPre_Id))" />
                     </MudTd>
@@ -128,12 +131,14 @@
     {
         if (string.IsNullOrEmpty(ruta))
             return 0;
-
         // Cuenta los puntos en la ruta para determinar el nivel
         int nivel = ruta.Count(c => c == '.');
-
         // Sangría de 20px por nivel (ajustable)
         return nivel * 20;
+    }
+    private void Btn_Nuevo_SubPresupuesto_Click(string SubPre_Id)
+    {
+        NavigationManager.NavigateTo($"/subpresupuesto_crea/{SubPre_Id}");
     }
     private void Btn_Eliminar_SubPresupuesto(string SubPre_Id)
     {
@@ -144,8 +149,6 @@
     {
         NavigationManager.NavigateTo($"/subpresupuesto_actualiza/{SubPre_Id}");
     }
-    private void Btn_Crear_SubPresupuesto(DTO_SubPresupuesto_Obten_x_Presupuesto item)
-    {
-        // Implementar lógica de creación
-    }
+
+    
 }

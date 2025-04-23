@@ -13,7 +13,7 @@ namespace PRESUPUESTOS_API_REST.Controllers.v1;
 [Route("api/v{version:apiVersion}/[Controller]")]
 [ApiVersion("1")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class SubPresupuestoController : ControllerBase
 {
     private readonly ISubPresupuestoService _SubPresupuestoService;
@@ -57,6 +57,70 @@ public class SubPresupuestoController : ControllerBase
         catch (Exception)
         {
             return StatusCode(500, "Error interno del servidor.");
+        }
+    }
+    [HttpPost("Crea")]
+    public async Task<IActionResult> Crea([FromBody] DTO_SubPresupuesto_Crea eDTO_SubPresupuesto_Crea)
+    {
+        try
+        {
+            if (eDTO_SubPresupuesto_Crea is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulo." });
+
+            var SubPresupuesto = _mapper.Map<Ent_SubPresupuesto>(eDTO_SubPresupuesto_Crea);
+
+            SubPresupuesto.SubPre_Id = await _SubPresupuestoService.Crea(SubPresupuesto);
+
+            var SubPresupuestoDTO = _mapper.Map<DTO_SubPresupuesto_Obten_x_Id>(SubPresupuesto);
+
+            return Ok(new DTO_Response<DTO_SubPresupuesto_Obten_x_Id>
+            {
+                Data = _mapper.Map<DTO_SubPresupuesto_Obten_x_Id>(SubPresupuesto),
+                IsSuccessful = true
+            });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error interno del servidor.");
+        }
+    }
+    [HttpPost("Crea_D/{SubPre_Padre_Id}")]
+    public async Task<IActionResult> Crea_D(int SubPre_Padre_Id, [FromBody] DTO_SubPresupuesto_Crea_Dentro eDTO_SubPresupuesto_Crea_Dentro)
+    {
+        try
+        {
+            if (eDTO_SubPresupuesto_Crea_Dentro is null)
+                return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
+
+            // Verificar si el padre existe
+            var padreExistente = await _SubPresupuestoService.Obten_x_Id(SubPre_Padre_Id);
+            if (padreExistente is null)
+                return BadRequest(new DTO_Response<object> { ErrorMessage = "El subpresupuesto padre no existe." });
+
+            // Mapear el DTO a la entidad
+            //var SubPresupuesto = _mapper.Map<Ent_SubPresupuesto>(eDTO_SubPresupuesto_Crea_Dentro);
+            var SubPresupuesto = _mapper.Map(eDTO_SubPresupuesto_Crea_Dentro, padreExistente);
+
+
+            // Llamar al servicio pasando tanto el ID del padre como los datos mapeados
+            SubPresupuesto.SubPre_Id = await _SubPresupuestoService.Crea_Dentro(SubPre_Padre_Id,SubPresupuesto);
+
+            // Obtener el subpresupuesto recién creado para devolverlo
+            var subPresupuestoCreado = await _SubPresupuestoService.Obten_x_Id(SubPresupuesto.SubPre_Id);
+            var SubPresupuestoDTO = _mapper.Map<DTO_SubPresupuesto_Obten_x_Id>(subPresupuestoCreado);
+
+            return Ok(new DTO_Response<DTO_SubPresupuesto_Obten_x_Id>
+            {
+                Data = SubPresupuestoDTO,
+                IsSuccessful = true
+            });
+        }
+        catch (Exception ex)
+        {
+            // Loggear el error (ex) aquí si es necesario
+            return StatusCode(500, new DTO_Response<object>
+            {
+                ErrorMessage = "Error interno del servidor al crear el subpresupuesto."
+            });
         }
     }
     [HttpPut("Actualiza/{SubPre_Id}")]

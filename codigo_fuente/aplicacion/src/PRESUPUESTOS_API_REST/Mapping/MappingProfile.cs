@@ -286,6 +286,18 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.SubPre_Ruta))
             .ForMember(destino => destino.SubPre_TieneHijos,
             opt => opt.MapFrom(origen => origen.SubPre_TieneHijos));
+        CreateMap<DTO_SubPresupuesto_Crea, Ent_SubPresupuesto>()
+            .ForPath(destino => destino.ePresupuesto.Pre_Id,
+            opt => opt.MapFrom(origen => origen.Pre_Id))
+            .ForPath(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre))
+            .ForPath(destino => destino.SubPre_Nivel,
+            opt => opt.MapFrom(origen => origen.SubPre_Nivel))
+            .ForPath(destino => destino.SubPre_Orden,
+            opt => opt.MapFrom(origen => origen.SubPre_Orden));
+        CreateMap<DTO_SubPresupuesto_Crea_Dentro, Ent_SubPresupuesto>()
+            .ForPath(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre));
         CreateMap<DTO_SubPresupuesto_Actualiza_Nombre, Ent_SubPresupuesto>()
             .ForPath(destino => destino.SubPre_Nombre,
             opt => opt.MapFrom(origen => origen.SubPre_Nombre));
