@@ -123,6 +123,64 @@ public class SubPresupuestoController : ControllerBase
             });
         }
     }
+    [HttpPost("Crea_Primer_Nivel/{Pre_Id}")]
+    public async Task<IActionResult> Crea_Primer_Nivel(int Pre_Id, [FromBody] DTO_SubPresupuesto_Crea_Primer_Nivel eDTO_SubPresupuesto_Crea_Primer_Nivel)
+    {
+        try
+        {
+            // Validación de entrada
+            if (eDTO_SubPresupuesto_Crea_Primer_Nivel == null)
+            {
+                return BadRequest(new DTO_Response<object>
+                {
+                    ErrorMessage = "Los datos del subpresupuesto no pueden ser nulos."
+                });
+            }
+
+            if (Pre_Id <= 0)
+            {
+                return BadRequest(new DTO_Response<object>
+                {
+                    ErrorMessage = "El ID del presupuesto principal no es válido."
+                });
+            }
+
+            // Mapear el DTO a la entidad
+            var subPresupuesto = _mapper.Map<Ent_SubPresupuesto>(eDTO_SubPresupuesto_Crea_Primer_Nivel);
+
+
+            // Crear el subpresupuesto de primer nivel
+            var subPresupuestoId = await _SubPresupuestoService.Crea_Primer_Nivel(Pre_Id, subPresupuesto);
+
+            // Obtener el subpresupuesto recién creado
+            var subPresupuestoCreado = await _SubPresupuestoService.Obten_x_Id(subPresupuestoId);
+
+            if (subPresupuestoCreado == null)
+            {
+                return StatusCode(500, new DTO_Response<object>
+                {
+                    ErrorMessage = "El subpresupuesto se creó pero no se pudo recuperar la información."
+                });
+            }
+
+            // Mapear a DTO de respuesta
+            var subPresupuestoDTO = _mapper.Map<DTO_SubPresupuesto_Obten_x_Id>(subPresupuestoCreado);
+
+            return Ok(new DTO_Response<DTO_SubPresupuesto_Obten_x_Id>
+            {
+                Data = subPresupuestoDTO,
+                IsSuccessful = true
+            });
+        }
+        catch (Exception ex)
+        {
+
+            return StatusCode(500, new DTO_Response<object>
+            {
+                ErrorMessage = $"Error interno del servidor: {ex.Message}",
+            });
+        }
+    }
     [HttpPut("Actualiza/{SubPre_Id}")]
     public async Task<IActionResult> Actualiza(int SubPre_Id, [FromBody] DTO_SubPresupuesto_Actualiza_Nombre eDTO_SubPresupuesto_Actualiza_Nombre)
     {

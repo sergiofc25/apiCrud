@@ -298,9 +298,30 @@ public class MappingProfile : Profile
         CreateMap<DTO_SubPresupuesto_Crea_Dentro, Ent_SubPresupuesto>()
             .ForPath(destino => destino.SubPre_Nombre,
             opt => opt.MapFrom(origen => origen.SubPre_Nombre));
+        CreateMap<DTO_SubPresupuesto_Crea_Primer_Nivel, Ent_SubPresupuesto>()
+            .ForPath(destino => destino.SubPre_Nombre,
+            opt => opt.MapFrom(origen => origen.SubPre_Nombre));
         CreateMap<DTO_SubPresupuesto_Actualiza_Nombre, Ent_SubPresupuesto>()
             .ForPath(destino => destino.SubPre_Nombre,
             opt => opt.MapFrom(origen => origen.SubPre_Nombre));
+        //PARTIDA
+        CreateMap<Ent_Partida, DTO_Partida_Obten_x_SubPresupuesto>()
+           .ForMember(destino => destino.Par_Id,
+           opt => opt.MapFrom(origen => origen.Par_Id))
+           .ForMember(destino => destino.Par_Ruta,
+           opt => opt.MapFrom(origen => origen.Par_Ruta))
+           .ForMember(destino => destino.SubPre_Id,
+           opt => opt.MapFrom(origen => origen.eSubPresupuesto.SubPre_Id))
+           .ForMember(destino => destino.Par_Nombre,
+           opt => opt.MapFrom(origen => origen.Par_Nombre))
+           .ForMember(destino => destino.Par_RenManObra,
+           opt => opt.MapFrom(origen => origen.Par_RenManObra))
+           .ForMember(destino => destino.Par_RenEquipo,
+           opt => opt.MapFrom(origen => origen.Par_RenEquipo))
+           .ForMember(destino => destino.UniMed_Nombre,
+           opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Nombre))
+           .ForMember(destino => destino.Par_Estado,
+           opt => opt.MapFrom(origen => origen.Par_Estado));
     }
 
 } 

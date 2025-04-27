@@ -33,8 +33,9 @@
                                       Required="true"
                                       Class="mud-width-full"
                                       InputType="InputType.Number"
-                                      MaxLength="10"
-                                      Pattern="[0-9]*" />
+                                      MaxLength="@(selectedDocumento?.TipDoc_Nombre == "DNI" ? 8 : 11)"
+                                      Pattern="[0-9]*"
+                                      OnInput="@((ChangeEventArgs e) => ValidateDocumentLength(e))" />
                         <MudItem Class="d-flex justify-center align-center" xs="12">
                             <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarCliente())">
                                 @if (_processing)
@@ -50,9 +51,9 @@
                         </MudItem>
                     </MudForm>
                 }
-                else if (!string.IsNullOrEmpty(errorMessage))
+                @if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mt-2">@errorMessage</MudAlert>
                 }
             </MudPaper>
         </MudItem>
@@ -72,7 +73,6 @@
     {
         await LoadCliente();
         await GetDocumento();
-
     }
 
     private async Task LoadCliente()
@@ -109,6 +109,7 @@
             errorMessage = $"Ocurrió un error: {ex.Message}";
         }
     }
+
     private async Task GetDocumento()
     {
         try
@@ -133,7 +134,6 @@
                 {
                     documentos = result.Data;
                     selectedDocumento = documentos.FirstOrDefault(doc => doc.TipDoc_Nombre == cliente.TipDoc_Nombre);
-
                 }
                 else
                 {
@@ -152,15 +152,45 @@
         }
         StateHasChanged();
     }
+
+    private void ValidateDocumentLength(ChangeEventArgs e)
+    {
+        if (e.Value is string value)
+        {
+            if (selectedDocumento?.TipDoc_Nombre == "DNI" && value.Length > 8)
+            {
+                cliente.Cli_NumDocumento = value[..8];
+            }
+            else if (value.Length > 11)
+            {
+                cliente.Cli_NumDocumento = value[..11];
+            }
+            StateHasChanged();
+        }
+    }
+
     private async Task ActualizarCliente()
     {
         if (cliente == null || documentos == null) return;
 
+        // Validación adicional de longitud
+        if (selectedDocumento?.TipDoc_Nombre == "DNI" && cliente.Cli_NumDocumento?.Length != 8)
+        {
+            errorMessage = "El DNI debe tener exactamente 8 dígitos";
+            StateHasChanged();
+            return;
+        }
+        else if (selectedDocumento?.TipDoc_Nombre != "DNI" && cliente.Cli_NumDocumento?.Length != 11)
+        {
+            errorMessage = "El número de documento debe tener exactamente 11 dígitos";
+            StateHasChanged();
+            return;
+        }
+
         cliente.TipDoc_Nombre = selectedDocumento.TipDoc_Nombre;
 
-
         _processing = true;
-        StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
+        StateHasChanged();
 
         try
         {
@@ -189,7 +219,7 @@
         finally
         {
             _processing = false;
-            StateHasChanged(); // Actualiza el UI para ocultar el estado de procesamiento
+            StateHasChanged();
         }
     }
 }

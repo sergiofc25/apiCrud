@@ -43,6 +43,10 @@ public class DTO_SubPresupuesto_Crea_Dentro
 {
     public string? SubPre_Nombre { get; set; }
 }
+public class DTO_SubPresupuesto_Crea_Primer_Nivel
+{
+    public string? SubPre_Nombre { get; set; }
+}
 public class DTO_SubPresupuesto_Actualiza_Nombre
 {
     public string? SubPre_Nombre { get; set; }

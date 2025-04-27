@@ -15,6 +15,7 @@ public interface ISubPresupuestoService
     Task<Ent_SubPresupuesto> Obten_x_Id(int SubPre_Id);
     Task<int> Crea(Ent_SubPresupuesto SubPresupuesto);
     Task<int> Crea_Dentro(int SubPre_Padre_Id, Ent_SubPresupuesto SubPresupuesto);
+    Task<int> Crea_Primer_Nivel(int Pre_Id, Ent_SubPresupuesto SubPresupuesto);
     Task<int> Actualiza_Nombre(Ent_SubPresupuesto SubPresupuesto);
     Task<int> Elimina(int SubPre_Id);
 }
@@ -70,6 +71,24 @@ public class SubPresupuestoService : ISubPresupuestoService
             using var context = _unitOfWork.Create();
 
             var SubPre_Id = context.Repositories.SubPresupuestoRepository.Crea_Dentro(SubPre_Padre_Id, SubPresupuesto);
+
+            if (SubPre_Id > 0)
+            {
+                context.SaveChanges();
+
+                return SubPre_Id;
+            }
+
+            return SubPre_Id;
+        });
+    }
+    public async Task<int> Crea_Primer_Nivel(int Pre_Id, Ent_SubPresupuesto SubPresupuesto)
+    {
+        return await Task.Run(() =>
+        {
+            using var context = _unitOfWork.Create();
+
+            var SubPre_Id = context.Repositories.SubPresupuestoRepository.Crea_Primer_Nivel(Pre_Id, SubPresupuesto);
 
             if (SubPre_Id > 0)
             {

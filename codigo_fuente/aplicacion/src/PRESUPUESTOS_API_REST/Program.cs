@@ -54,6 +54,7 @@ builder.Services.AddTransient<IDistritoService, DistritoService>();
 builder.Services.AddTransient<IUsuarioService, UsuarioService>();
 builder.Services.AddTransient<IPresupuestoService, PresupuestoService>();
 builder.Services.AddTransient<ISubPresupuestoService, SubPresupuestoService>();
+builder.Services.AddTransient<IPartidaService, PartidaService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 //var jwtSettings = builder.Configuration.GetSection("JWTSettings");

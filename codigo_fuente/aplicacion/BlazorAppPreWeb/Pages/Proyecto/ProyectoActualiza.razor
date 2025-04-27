@@ -45,7 +45,6 @@
                                          Dense="true"
                                          Class="mud-width-full"
                                          Disabled="@(selectedPais == null)"
-                                         @key="selectedPais?.Pai_Nombre"
                                          Immediate="true">
                         </MudAutocomplete>
                         <MudAutocomplete T="DTO_Provincia_Obten"
@@ -58,7 +57,6 @@
                                          Dense="true"
                                          Class="mud-width-full"
                                          Disabled="@(selectedDepartamento == null)"
-                                         @key="selectedDepartamento?.Dep_Nombre"
                                          Immediate="true">
                         </MudAutocomplete>
                         <MudAutocomplete T="DTO_Distrito_Obten"

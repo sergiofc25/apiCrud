@@ -18,5 +18,6 @@ namespace UnitOfWork_Interface
         IUsuarioRepository UsuarioRepository { get; }
         IPresupuestoRepository PresupuestoRepository { get; }
         ISubPresupuestoRepository SubPresupuestoRepository { get; }
+        IPartidaRepository PartidaRepository { get; }
     }
 }

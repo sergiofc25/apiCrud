@@ -1,0 +1,24 @@
+﻿@page "/partida_crea/{SubPre_Id}"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<MudItem xs="6">
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Crear Partida</MudText>
+</MudItem>
+
+
+@code {
+    [Parameter] public string SubPre_Id { get; set; }
+    private MudForm? form;
+}

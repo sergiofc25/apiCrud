@@ -1,0 +1,50 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider />
+
+<MudLayout>
+    <MudAppBar Color="Color.Primary" Elevation="1" Style="background-color: #1A237E !important;">
+        <div style="height: 60px; width: auto;">
+            <MudImage Src="/ImagenesC/LogoCasobi_Blanco_SinFondo.png"
+                      Class="h-100"
+                      Style="object-fit: contain;"
+                      Alt="CASOBI S.A.C. Logo" />
+        </div>
+
+        <MudSpacer />
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Inicio</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Servicios</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Obras</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Clientes</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Nosotros</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Contacto</MudButton>
+        <MudSpacer />
+
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="color: white;" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+            Ingresar
+        </MudButton>
+    </MudAppBar>
+
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+    <MudPaper Elevation="4" Class="pa-4" Style="background-color: #1A237E !important;">
+        <MudContainer MaxWidth="MaxWidth.Large">
+            <MudGrid Spacing="2">
+                <MudItem xs="12" sm="4">
+                    <MudText Typo="Typo.subtitle1" Style="color: white;">Contacto</MudText>
+                    <MudText Style="color: white;">casobiconstructora@gmail.com</MudText>
+                    <MudIconButton Style="color: white;" Href="https://wa.me/51902077345" Icon="@Icons.Custom.Brands.WhatsApp" Color="Color.Default" /><MudLink Href="https://wa.me/51902077345" Style="color: white;">902077345</MudLink>
+
+                </MudItem>
+                <MudSpacer />
+
+                <MudItem xs="12" sm="4" Class="text-right">
+                    <MudIconButton Style="color: white;" Href="https://www.facebook.com/casobiSAC/" Icon="@Icons.Custom.Brands.Facebook" Color="Color.Default" />
+                    <MudIconButton Style="color: white;" Href="https://www.instagram.com/casobiSAC/" Icon="@Icons.Custom.Brands.Instagram" Color="Color.Default" />
+                </MudItem>
+            </MudGrid>
+        </MudContainer>
+    </MudPaper>
+</MudLayout>

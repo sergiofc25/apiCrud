@@ -138,6 +138,29 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
 
         return subpreId;
     }
+    public int Crea_Primer_Nivel(int Pre_Id, Ent_SubPresupuesto Ent_SubPresupuesto)
+    {
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Crea_Primer_Nivel");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+
+        var subPreIdParam = new SqlParameter
+        {
+            ParameterName = "@SubPre_Id",
+            SqlDbType = SqlDbType.Int,
+            Direction = ParameterDirection.Output
+        };
+        oCmd.Parameters.Add(subPreIdParam);
+
+        oCmd.ExecuteNonQuery();
+
+        int subpreId = Convert.ToInt32(subPreIdParam.Value);
+
+        return subpreId;
+    }
     public int Actualiza_Nombre(Ent_SubPresupuesto Ent_SubPresupuesto)
     {
         using var oCmd = CreateCommand("SP_SubPresupuesto_Actualiza_Nombre");
@@ -151,7 +174,7 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
     }
     public int Elimina(int SubPre_Id)
     {
-        using var oCmd = CreateCommand("SP_SubPresupuesto_Elimina_Seguro_v2");
+        using var oCmd = CreateCommand("SP_SubPresupuesto_Elimina_Seguro_v3");
         oCmd.CommandType = CommandType.StoredProcedure;
         oCmd.Parameters.AddWithValue("SubPre_Id", SubPre_Id);
 
