@@ -1,33 +1,78 @@
 ﻿@inherits LayoutComponentBase
 @inject NavigationManager NavigationManager
-
-<MudThemeProvider />
+<MudThemeProvider  />
 
 <MudLayout>
-    <MudAppBar Color="Color.Primary" Elevation="1" Style="background-color: #1A237E !important;">
-        <div style="height: 60px; width: auto;">
+    <MudAppBar Color="Color.Primary" Elevation="1" Class="px-2 px-sm-4" Style="background-color: #1A237E !important;">
+        <div style="height: 60px; width: auto;" class="d-flex align-center">
             <MudImage Src="/ImagenesC/LogoCasobi_Blanco_SinFondo.png"
                       Class="h-100"
                       Style="object-fit: contain;"
                       Alt="CASOBI S.A.C. Logo" />
         </div>
-
+        <MudSpacer/>
+        <!-- Menú para desktop - Visible solo en pantallas grandes -->
+        <div class="d-none d-md-flex align-center">
+            <MudSpacer />
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Inicio</MudButton>
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Servicios</MudButton>
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Obras</MudButton>
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Clientes</MudButton>
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Nosotros</MudButton>
+            <MudButton Variant="Variant.Text" Class="mr-2" Style="color: white;">Contacto</MudButton>
+        </div>
         <MudSpacer />
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Inicio</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Servicios</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Obras</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Clientes</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Nosotros</MudButton>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="mr-2" Style="color: white;">Contacto</MudButton>
-        <MudSpacer />
+        <div class="d-none d-md-flex align-right">
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="color: white;" @onclick="@(() => NavigationManager.NavigateTo("/login"))">
-            Ingresar
-        </MudButton>
+            <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Class="ml-2 white--text"
+                        @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                Ingresar
+            </MudButton>
+        </div>
+        <div class="d-flex d-md-none">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                           Color="Color.Inherit"
+                           Class="ml-auto white--text"
+                           OnClick="@(() => _drawerOpen = !_drawerOpen)" />
+        </div>
+
+        
     </MudAppBar>
 
+    <MudDrawer @bind-Open="_drawerOpen" Variant="DrawerVariant.Temporary" Class=" d-md-none">
+        <MudNavMenu>
+            <div style="height: 60px; width: auto;" class="d-flex align-center">
+                <MudImage Src="/ImagenesC/LogoCasobi_SinFondo.png"
+                          Class="h-100"
+                          Style="object-fit: contain;"
+                          Alt="CASOBI S.A.C. Logo" />
+            </div>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Inicio</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Servicios</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Obras</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Clientes</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Nosotros</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.Prefix" Class="white--text">Contacto</MudNavLink>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                Ingresar
+            </MudButton>
+            <MudSpacer />
+
+            <MudIconButton Href="https://www.facebook.com/casobiSAC/" Icon="@Icons.Custom.Brands.Facebook" />
+            <MudIconButton Href="https://www.instagram.com/casobiSAC/" Icon="@Icons.Custom.Brands.Instagram" />
+            <MudIconButton Href="https://wa.me/51902077345" Icon="@Icons.Custom.Brands.WhatsApp" />
+
+        </MudNavMenu>
+    </MudDrawer>
+
     <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Class="py-4">
         @Body
+        </MudContainer>
     </MudMainContent>
     <MudPaper Elevation="4" Class="pa-4" Style="background-color: #1A237E !important;">
         <MudContainer MaxWidth="MaxWidth.Large">
@@ -48,3 +93,6 @@
         </MudContainer>
     </MudPaper>
 </MudLayout>
+@code {
+    private bool _drawerOpen = false;
+}

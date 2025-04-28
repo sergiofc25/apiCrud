@@ -1,11 +1,4 @@
 ﻿ @inherits LayoutComponentBase
- @using Newtonsoft.Json
- @using Model.DTO.v1
- @inject IHttpClientFactory ClientFactory
- @using Blazored.LocalStorage
- @using System.Net.Http.Headers
- @inject ILocalStorageService localStorage
- @inject NavigationManager NavigationManager
 
 <MudThemeProvider>
 </MudThemeProvider>
@@ -16,26 +9,7 @@
 
     <main>
         <div class="top-row px-4">
-            <MudMenu>
-                <ActivatorContent>
-                    <MudButton variant="Variant.Text"
-                               color="Color.Inherit"
-                               endIcon="@Icons.Material.Filled.ArrowDropDown"
-                               class="ml-auto user-menu-button"
-                               style="text-transform: none;">
-                        <MudAvatar Size="Size.Small" Class="mr-2" Style="background-color: #4CAF50;">
-                            <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Color="Color.Inherit" />
-                        </MudAvatar>
-                        <span class="user-name">@usuario.Usu_NomApellidos</span>
-                    </MudButton>
-                </ActivatorContent>
-
-                <ChildContent>
-                    <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="@(async () => await Btn_LogOut())">
-                        Cerrar sesión
-                    </MudMenuItem>
-               </ChildContent>
-            </MudMenu>
+            <UsuarioActual/>
         </div>
 
         <article class="content px-4">
@@ -44,66 +18,3 @@
     </main>
 </div>
 <CascadingBlazoredModal></CascadingBlazoredModal>
-@code {
-    
-    private MudForm? form;
-    private DTO_Usuario_Obten_x_Correo usuario = new DTO_Usuario_Obten_x_Correo();
-    private string errorMessage = string.Empty;
-    private bool _processing = false;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await GetUsuario();
-        }
-    }
-    private async Task GetUsuario()
-    {
-        try
-        {
-            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
-            var token = await localStorage.GetItemAsync<string>("authToken");
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            var response = await client.GetAsync("api/v1/Usuario/Obten_Usuario_Logeado");
-            Console.WriteLine($"Response Status: {response.StatusCode}");
-
-            if (response.IsSuccessStatusCode)
-            {
-                string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Response Body: {responseBody}");
-                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Usuario_Obten_x_Correo>>(responseBody);
-
-                if (result != null && result.IsSuccessful)
-                {
-                    usuario = result.Data;
-                    Console.WriteLine($"Usuario Count: {usuario.ToString}");
-                }
-                else
-                {
-                    Console.WriteLine("Response not successful or no data.");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode}");
-            }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error al cargar usuario: {ex.Message}";
-            Console.WriteLine(ex.Message);
-        }
-        StateHasChanged();
-    }
-    private async Task Btn_LogOut()
-    {
-        await localStorage.ClearAsync();
-        NavigationManager.NavigateTo("/login", forceLoad: true);
-    }
-
-}
