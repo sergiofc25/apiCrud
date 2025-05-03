@@ -1,0 +1,21 @@
+{
+  "name": "CASOBI",
+  "short_name": "CASOBI",
+  "id": "./",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#03173d",
+  "icons": [
+    {
+      "src": "Icono.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Icono.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

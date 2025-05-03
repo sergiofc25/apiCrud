@@ -42,6 +42,47 @@ public class PartidaController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [HttpGet("Obten_x_Id/{Par_Id}")]
+    public async Task<IActionResult> Obten_x_Id(int Par_Id)
+    {
+        try
+        {
+            var Partida = await _PartidaService.Obten_x_Id(Par_Id);
+
+            if (Partida is null)
+                return NotFound();
+            return Ok(new DTO_Response<DTO_Partida_Obten_x_Id> { IsSuccessful = true, Data = _mapper.Map<DTO_Partida_Obten_x_Id>(Partida) });
+
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error interno del servidor.");
+        }
+    }
+    [HttpPost("Crea")]
+    public async Task<IActionResult> Crea([FromBody] DTO_Partida_Crea eDTO_Partida_Crea)
+    {
+        try
+        {
+            if (eDTO_Partida_Crea is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulo." });
+
+            var Partida = _mapper.Map<Ent_Partida>(eDTO_Partida_Crea);
+
+            Partida.Par_Id = await _PartidaService.Crea(Partida);
+
+            var PartidaDTO = _mapper.Map<DTO_Partida_Obten_x_Id>(Partida);
+
+            return Ok(new DTO_Response<DTO_Partida_Obten_x_Id>
+            {
+                Data = _mapper.Map<DTO_Partida_Obten_x_Id>(Partida),
+                IsSuccessful = true
+            });
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error interno del servidor.");
+        }
+    }
 
 }
 

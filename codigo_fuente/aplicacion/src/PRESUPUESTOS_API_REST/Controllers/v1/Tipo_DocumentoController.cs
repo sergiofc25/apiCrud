@@ -16,7 +16,7 @@ namespace PRESUPUESTOS_API_REST.Controllers.v1;
 [Route("api/v{version:apiVersion}/[Controller]")]
 [ApiVersion("1")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class Tipo_DocumentoController : ControllerBase
 {
     private readonly ITipo_DocumentoService _Tipo_DocumentoService;

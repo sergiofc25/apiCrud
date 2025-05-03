@@ -54,66 +54,66 @@ public class PartidaRepository: Repository, IPartidaRepository
 
         return Lst_Partida;
     }
-    //public IEnumerable<Ent_Partida> Obten_x_Presupuesto(int Pre_Id)
-    //{
-    //    var Lst_Partida = new List<Ent_Partida>();
+    public Ent_Partida Obten_x_Id(int Par_Id)
+    {
+        using var oCmd = CreateCommand("SP_Partida_Obten_x_Id");
 
-    //    using var oCmd = CreateCommand("SP_Partida_SubPresupuesto_Obten_x_Presupuesto_v4");
-    //    oCmd.CommandType = CommandType.StoredProcedure;
-    //    oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
+        oCmd.CommandType = CommandType.StoredProcedure;
 
-    //    using var oDR = oCmd.ExecuteReader();
+        oCmd.Parameters.AddWithValue("Par_Id", Par_Id);
 
-    //    while (oDR.Read())
-    //    {
-    //        var Partida = new Ent_Partida
-    //        {
-    //            eSubPresupuesto = new()
-    //            {
-    //                // Para SubPre_Id (int en lugar de int?)
-    //                SubPre_Id = oDR.IsDBNull(oDR.GetOrdinal("SubPre_Id")) ?
-    //                           0 : // Valor por defecto cuando es NULL
-    //                           oDR.GetInt32(oDR.GetOrdinal("SubPre_Id")),
+        using var oDR = oCmd.ExecuteReader(CommandBehavior.SingleRow);
 
-    //                SubPre_Nombre = oDR.IsDBNull(oDR.GetOrdinal("SubPre_Nombre")) ?
-    //                               null :
-    //                               oDR.GetString(oDR.GetOrdinal("SubPre_Nombre")),
+        if (oDR.HasRows)
+        {
+            oDR.Read();
 
-    //                SubPre_Nivel = oDR.GetInt32(oDR.GetOrdinal("Nivel")),
-    //                SubPre_Orden = oDR.GetInt32(oDR.GetOrdinal("Orden")),
-    //                SubPre_Ruta = oDR.GetString(oDR.GetOrdinal("Ruta")),
-    //                SubPre_TieneHijos = oDR.GetByte(oDR.GetOrdinal("TieneHijos")) != 0,
+            return new Ent_Partida
+            {
+                Par_Id = oDR.GetInt32(oDR.GetOrdinal("Par_Id")),
+                Par_Nombre = oDR.GetString(oDR.GetOrdinal("Par_Nombre")),
+                Par_RenEquipo = oDR.GetDecimal(oDR.GetOrdinal("Par_RenEquipo")),
+                Par_RenManObra = oDR.GetDecimal(oDR.GetOrdinal("Par_RenManObra")),
+                eUnidad_Medida = new()
+                {
+                    UniMed_Nombre = oDR.GetString(oDR.GetOrdinal("UniMed_Nombre")),
+                    UniMed_Abreviatura = oDR.GetString(oDR.GetOrdinal("UniMed_Abreviatura")),
+                },
+                eSubPresupuesto = new()
+                {
+                    SubPre_Id = oDR.GetInt32(oDR.GetOrdinal("SubPre_Id")),
+                },
+                Par_Estado = oDR.GetByte(oDR.GetOrdinal("Par_Estado")) != 0 ? true : false,
+            };
+        }
 
-    //                ePresupuesto = new()
-    //                {
-    //                    // Para Pre_Id (int en lugar de int?)
-    //                    Pre_Id = oDR.IsDBNull(oDR.GetOrdinal("Pre_Id")) ?
-    //                             0 : // Valor por defecto cuando es NULL
-    //                             oDR.GetInt32(oDR.GetOrdinal("Pre_Id"))
-    //                },
-    //            },
+        return null;
+    }
+    public int Crea(Ent_Partida Ent_Partida)
+    {
+        using var oCmd = CreateCommand("SP_Partida_Crea");
 
-    //            // Para Par_Id (int en lugar de int?)
-    //            Par_Id = oDR.IsDBNull(oDR.GetOrdinal("Par_Id")) ?
-    //                     0 : // Valor por defecto cuando es NULL
-    //                     oDR.GetInt32(oDR.GetOrdinal("Par_Id")),
+        oCmd.CommandType = CommandType.StoredProcedure;
 
-    //            Par_Nombre = oDR.IsDBNull(oDR.GetOrdinal("Par_Nombre")) ?
-    //                         null :
-    //                         oDR.GetString(oDR.GetOrdinal("Par_Nombre")),
-    //        };
+        oCmd.Parameters.AddWithValue("Par_Nombre", Ent_Partida.Par_Nombre);
+        oCmd.Parameters.AddWithValue("Par_RenManObra", Ent_Partida.Par_RenManObra);
+        oCmd.Parameters.AddWithValue("Par_RenEquipo", Ent_Partida.Par_RenEquipo);
+        oCmd.Parameters.AddWithValue("UniMed_Nombre", Ent_Partida.eUnidad_Medida.UniMed_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Id", Ent_Partida.eSubPresupuesto.SubPre_Id);
 
-    //        // Para SubPre_Padre_Id (ya que parece aceptar int?)
-    //        int padreIdOrdinal = oDR.GetOrdinal("SubPre_Padre_Id");
-    //        Partida.eSubPresupuesto.Padre_Id = oDR.IsDBNull(padreIdOrdinal) ?
-    //                                 (int?)null :
-    //                                 oDR.GetInt32(padreIdOrdinal);
+        var parIdParam = new SqlParameter
+        {
+            ParameterName = "@Par_Id",
+            SqlDbType = SqlDbType.Int,
+            Direction = ParameterDirection.Output
+        };
+        oCmd.Parameters.Add(parIdParam);
 
-    //        Lst_Partida.Add(Partida);
-    //    }
+        oCmd.ExecuteNonQuery();
 
-    //    return Lst_Partida;
-    //}
+        int parId = Convert.ToInt32(parIdParam.Value);
 
+        return parId;
+    }
 }
 

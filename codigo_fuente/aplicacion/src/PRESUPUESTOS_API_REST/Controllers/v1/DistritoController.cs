@@ -16,7 +16,7 @@ namespace PRESUPUESTOS_API_REST.Controllers.v1;
 [Route("api/v{version:apiVersion}/[Controller]")]
 [ApiVersion("1")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class DistritoController : ControllerBase
 {
     private readonly IDistritoService _DistritoService;

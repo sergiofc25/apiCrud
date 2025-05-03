@@ -322,6 +322,41 @@ public class MappingProfile : Profile
            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Nombre))
            .ForMember(destino => destino.Par_Estado,
            opt => opt.MapFrom(origen => origen.Par_Estado));
+        CreateMap<Ent_Partida, DTO_Partida_Obten_x_Id>()
+            .ForMember(destino => destino.Par_Id,
+            opt => opt.MapFrom(origen => origen.Par_Id))
+            .ForMember(destino => destino.Par_Nombre,
+            opt => opt.MapFrom(origen => origen.Par_Nombre))
+            .ForMember(destino => destino.Par_RenEquipo,
+            opt => opt.MapFrom(origen => origen.Par_RenEquipo))
+            .ForMember(destino => destino.Par_RenManObra,
+            opt => opt.MapFrom(origen => origen.Par_RenManObra))
+            .ForMember(destino => destino.UniMed_Nombre,
+            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Nombre))
+            .ForMember(destino => destino.UniMed_Abreviatura,
+            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+            .ForMember(destino => destino.SubPre_Id,
+            opt => opt.MapFrom(origen => origen.eSubPresupuesto.SubPre_Id))
+            .ForMember(destino => destino.Par_Estado,
+            opt => opt.MapFrom(origen => origen.Par_Estado));
+        CreateMap<DTO_Partida_Crea, Ent_Partida>()
+            .ForPath(destino => destino.Par_Nombre,
+            opt => opt.MapFrom(origen => origen.Par_Nombre))
+            .ForPath(destino => destino.Par_RenManObra,
+            opt => opt.MapFrom(origen => origen.Par_RenManObra))
+            .ForPath(destino => destino.Par_RenEquipo,
+            opt => opt.MapFrom(origen => origen.Par_RenEquipo))
+            .ForPath(destino => destino.eUnidad_Medida.UniMed_Nombre,
+            opt => opt.MapFrom(origen => origen.UniMed_Nombre))
+            .ForPath(destino => destino.eSubPresupuesto.SubPre_Id,
+            opt => opt.MapFrom(origen => origen.SubPre_Id));
+
+        //UNIDAD_MEDIDA
+        CreateMap<Ent_Unidad_Medida, DTO_Unidad_Medida_Obten>()
+            .ForMember(destino => destino.UniMed_Nombre,
+            opt => opt.MapFrom(origen => origen.UniMed_Nombre))
+            .ForMember(destino => destino.UniMed_Abreviatura,
+            opt => opt.MapFrom(origen => origen.UniMed_Abreviatura));
     }
 
 } 

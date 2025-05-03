@@ -38,7 +38,8 @@
             Hover="true"
             Striped="true"
             Breakpoint="Breakpoint.Sm"
-            Height="466px">
+            Height="466px"
+            Loading="@isLoading">
 
                 <HeaderContent>
                     <MudTh Style="width: 150px;">Item</MudTh>
@@ -121,6 +122,10 @@
                         </MudButton>
                     </MudToolBar>
                 </ToolBarContent>
+                <LoadingContent>
+                    <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+                </LoadingContent>
+
             </MudTable>
         </MudPaper>
     </MudItem>
@@ -134,6 +139,7 @@
     private IEnumerable<DTO_Presupuesto_Obten_x_Id> presupuesto = new List<DTO_Presupuesto_Obten_x_Id>();
     private bool _processing = false;
     private string errorMessage = string.Empty;
+    private bool isLoading = true; // Estado inicial de carga
 
     // Clase para combinar subpresupuestos y partidas
     private class CombinedItem
@@ -146,6 +152,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        isLoading = true;
+
         await LoadPresupuesto();
 
         var token = await localStorage.GetItemAsync<string>("authToken");
@@ -158,6 +166,8 @@
         await LoadSubPresupuestos();
         await LoadPartidas();
         CombineItems();
+        isLoading = false;
+
     }
 
     // Método para verificar si un subpresupuesto tiene partidas
