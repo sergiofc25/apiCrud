@@ -83,6 +83,48 @@ public class PartidaController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [HttpPut("Actualiza/{Par_Id}")]
+    public async Task<IActionResult> Actualiza(int Par_Id, [FromBody] DTO_Partida_Actualiza eDTO_Partida_Actualiza)
+    {
+        try
+        {
+            if (eDTO_Partida_Actualiza is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
+
+            var Partida_Existente = await _PartidaService.Obten_x_Id(Par_Id);
+
+            var Partida_Actualiza = _mapper.Map(eDTO_Partida_Actualiza, Partida_Existente);
+
+            await _PartidaService.Actualiza(Partida_Actualiza);
+
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
+        }
+    }
+    [HttpPut("Inhabilita/{Par_Id}")]
+    public async Task<IActionResult> Inhabilita(int Par_Id, [FromBody] DTO_Partida_Inhabilita eDTO_Partida_Inhabilita)
+    {
+        try
+        {
+            if (eDTO_Partida_Inhabilita is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
+
+            var Partida_Existente = await _PartidaService.Obten_x_Id(Par_Id);
+
+            if (Partida_Existente is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos no existes." });
+
+            var Partida = _mapper.Map(eDTO_Partida_Inhabilita, Partida_Existente);
+
+            await _PartidaService.Inhabilita(Partida.Par_Id, Partida.Par_Estado);
+
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
+        }
+    }
 
 }
 

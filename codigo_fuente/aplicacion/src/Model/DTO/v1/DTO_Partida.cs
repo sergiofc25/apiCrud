@@ -38,5 +38,17 @@ public class DTO_Partida_Crea
     public string? Par_RenEquipo { get; set; }
     public string? UniMed_Nombre { get; set; }
     public string? SubPre_Id { get; set; }
+}
+public class DTO_Partida_Actualiza
+{
+    public string? Par_Nombre { get; set; }
+    public string? Par_RenManObra { get; set; }
+    public string? Par_RenEquipo { get; set; }
+    public string? UniMed_Nombre { get; set; }
+    public string? Par_Estado { get; set; }
 
+}
+public class DTO_Partida_Inhabilita
+{
+    public string? Par_Estado { get; set; }
 }

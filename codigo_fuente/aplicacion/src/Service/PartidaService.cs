@@ -13,9 +13,9 @@ public interface IPartidaService
 {
     Task<IEnumerable<Ent_Partida>> Obten_x_SubPresupuesto(int SubPre_id);
     Task<Ent_Partida> Obten_x_Id(int Par_Id);
-
     Task<int> Crea(Ent_Partida Partida);
-
+    Task<int> Actualiza(Ent_Partida Partida);
+    Task<bool> Inhabilita(int Par_Id, bool Par_Estado);
 
 }
 public class PartidaService : IPartidaService
@@ -62,7 +62,44 @@ public class PartidaService : IPartidaService
             return Par_Id;
         });
     }
+    public async Task<int> Actualiza(Ent_Partida Partida)
+    {
+        return await Task.Run(() =>
+        {
+            using var context = _unitOfWork.Create();
 
+            var CantidadAfectado = context.Repositories.PartidaRepository.Actualiza(Partida);
+
+            if (CantidadAfectado > 0)
+            {
+                context.SaveChanges();
+
+                return CantidadAfectado;
+            }
+
+            return CantidadAfectado;
+        });
+    }
+    public async Task<bool> Inhabilita(int Par_Id, bool Par_Estado)
+    {
+        return await Task.Run(() => {
+
+            using var context = _unitOfWork.Create();
+
+            int CantidadAfectado = context.Repositories.PartidaRepository.Inhabilita(Par_Id, Par_Estado);
+
+            if (CantidadAfectado > 0)
+            {
+                context.SaveChanges();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        });
+    }
 
 }
 

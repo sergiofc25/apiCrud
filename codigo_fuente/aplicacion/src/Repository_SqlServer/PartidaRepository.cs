@@ -115,5 +115,29 @@ public class PartidaRepository: Repository, IPartidaRepository
 
         return parId;
     }
+    public int Actualiza(Ent_Partida Ent_Partida)
+    {
+        using var oCmd = CreateCommand("SP_Partida_Actualiza");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Par_Id", Ent_Partida.Par_Id);
+        oCmd.Parameters.AddWithValue("Par_Nombre", Ent_Partida.Par_Nombre);
+        oCmd.Parameters.AddWithValue("Par_RenManObra", Ent_Partida.Par_RenManObra);
+        oCmd.Parameters.AddWithValue("Par_RenEquipo", Ent_Partida.Par_RenEquipo);
+        oCmd.Parameters.AddWithValue("UniMed_Nombre", Ent_Partida.eUnidad_Medida.UniMed_Nombre);
+        oCmd.Parameters.AddWithValue("Par_Estado", Ent_Partida.Par_Estado);
+        return oCmd.ExecuteNonQuery();
+    }
+    public int Inhabilita(int Par_Id, bool Par_Estado)
+    {
+        using var oCmd = CreateCommand("SP_Partida_Inhabilita");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Par_Id", Par_Id);
+        oCmd.Parameters.AddWithValue("Par_Estado", Par_Estado);
+        return oCmd.ExecuteNonQuery();
+    }
 }
 

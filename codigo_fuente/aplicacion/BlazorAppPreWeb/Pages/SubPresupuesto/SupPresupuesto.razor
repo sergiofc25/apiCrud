@@ -103,9 +103,9 @@
                         else
                         {
                             <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDropDown">
-                                <MudMenuItem OnClick="@(() => Console.WriteLine("Ver Partida"))">
+                                <MudMenuItem OnClick="@(() => NavigationManager.NavigateTo($"/partida_actualiza/{context.Id}"))">
                                     <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Class="mr-2" Color="Color.Info" />
-                                    <span style="color: var(--mud-palette-info)">Mostrar Partida</span>
+                                    <span style="color: var(--mud-palette-info)">Ver Partida</span>
                                 </MudMenuItem>
                             </MudMenu>
                         }
