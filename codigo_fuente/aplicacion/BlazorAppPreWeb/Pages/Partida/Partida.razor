@@ -1,4 +1,4 @@
-﻿@page "/partida_actualiza/{Par_Id}"
+﻿@page "/partida"
 @using Newtonsoft.Json
 @using MudBlazor
 @using Model.DTO.v1
@@ -24,10 +24,10 @@
         <MudPaper Class="pa-4" Elevation="3">
             <MudGrid>
                 <MudItem xs="6">
-                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Partida</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary">@(partida?.Par_Nombre ?? "N/A")</MudText>
                 </MudItem>
                 <MudItem xs="6" Class="ml-2">
-                    <MudText Typo="Typo.h6" Color="Color.Primary">@(partida?.Par_Nombre ?? "N/A")</MudText>
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Datos de Partida</MudText>
                 </MudItem>
             </MudGrid>
         </MudPaper>
@@ -87,6 +87,18 @@
             }
         </MudPaper>
     </MudItem>
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="3">
+            <MudItem xs="6">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Análisis de Costos</MudText>
+            </MudItem>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudPaper Class="pa-5" Elevation="3">
+
+        </MudPaper>
+    </MudItem>
 </MudGrid>
 
 @code {
@@ -99,14 +111,29 @@
     private string errorMessage = string.Empty;
     bool disabled = true;
 
+
     protected override async Task OnInitializedAsync()
     {
-        await LoadPartida();
+        Par_Id = NavigationManager.HistoryEntryState?.ToString();
+
+        if (string.IsNullOrEmpty(Par_Id))
+        {
+            Par_Id = await localStorage.GetItemAsync<string>("currentPartidaId");
+        }
         await GetUnidadMedida();
 
+        if (!string.IsNullOrEmpty(Par_Id))
+        {
+            await LoadPartida(Par_Id);
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/partida"); // Redirige si no hay ID  
+        }
 
     }
-    private async Task LoadPartida()
+
+    private async Task LoadPartida(string Par_Id)
     {
         _processing = true;
         try
@@ -119,20 +146,22 @@
 
             if (response.IsSuccessStatusCode)
             {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Partida_Obten_x_Id>>(responseBody);
+                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Partida_Obten_x_Id>>(
+                    await response.Content.ReadAsStringAsync());
 
                 partida = result?.Data ?? new DTO_Partida_Obten_x_Id();
+
+                // Asignar unidad de medida DESPUÉS de cargar partida
+                if (partida != null && !string.IsNullOrEmpty(partida.UniMed_Nombre))
+                {
+                    selectedUnidadMedida = unidadmedidas.FirstOrDefault(u =>
+                        u.UniMed_Nombre == partida.UniMed_Nombre) ?? new DTO_Unidad_Medida_Obten();
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Error: {ex.Message}";
         }
         finally
         {
             _processing = false;
-            StateHasChanged();
         }
     }
     private async Task<IEnumerable<DTO_Unidad_Medida_Obten>> SearchUnidadMedidas(string searchText)
@@ -159,41 +188,25 @@
         {
             var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
             var token = await localStorage.GetItemAsync<string>("authToken");
-            if (token != null)
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await client.GetAsync("api/v1/Unidad_Medida/Obten");
-            Console.WriteLine($"Response Status: {response.StatusCode}");
 
             if (response.IsSuccessStatusCode)
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Response Body: {responseBody}");
+                var responseBody = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Unidad_Medida_Obten>>>(responseBody);
 
-                if (result != null && result.IsSuccessful)
+                if (result?.IsSuccessful == true)
                 {
                     unidadmedidas = result.Data;
-                    selectedUnidadMedida = unidadmedidas.FirstOrDefault(unid => unid.UniMed_Nombre == partida.UniMed_Nombre);
                 }
-                else
-                {
-                    Console.WriteLine("Response not successful or no data.");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
-            errorMessage = $"Error al cargar unidades de medida: {ex.Message}";
-            Console.WriteLine(ex.Message);
+            errorMessage = $"Error al cargar unidades: {ex.Message}";
         }
-        StateHasChanged();
     }
     private async Task ActualizarPartida()
     {

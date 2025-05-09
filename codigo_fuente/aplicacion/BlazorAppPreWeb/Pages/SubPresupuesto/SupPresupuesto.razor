@@ -103,7 +103,7 @@
                         else
                         {
                             <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDropDown">
-                                <MudMenuItem OnClick="@(() => NavigationManager.NavigateTo($"/partida_actualiza/{context.Id}"))">
+                                <MudMenuItem OnClick="@(() => NavigateToPartida(context.Id))">
                                     <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Class="mr-2" Color="Color.Info" />
                                     <span style="color: var(--mud-palette-info)">Ver Partida</span>
                                 </MudMenuItem>
@@ -370,5 +370,14 @@
     private void Btn_Eliminar_Partida_Click(string Par_Id)
     {
         NavigationManager.NavigateTo($"/partida_elimina/{Par_Id}");
+    }
+    private async Task NavigateToPartida(string Par_Id)
+    {
+        await localStorage.SetItemAsync("currentPartidaId", Par_Id);
+
+        NavigationManager.NavigateTo("/partida", new NavigationOptions
+        {
+            HistoryEntryState = Par_Id
+        });
     }
 }
