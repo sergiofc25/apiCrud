@@ -371,6 +371,28 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.UniMed_Nombre))
             .ForMember(destino => destino.UniMed_Abreviatura,
             opt => opt.MapFrom(origen => origen.UniMed_Abreviatura));
+        //RECURSO
+        CreateMap<Ent_Recurso, DTO_Recurso_Obten_x_Partida>()
+            .ForMember(destino => destino.Rec_Id,
+            opt => opt.MapFrom(origen => origen.Rec_Id))
+            .ForMember(destino => destino.Rec_IndUnificado,
+            opt => opt.MapFrom(origen => origen.Rec_IndUnificado))
+            .ForMember(destino => destino.Rec_Nombre,
+            opt => opt.MapFrom(origen => origen.Rec_Nombre))
+            .ForMember(destino => destino.TipRec_Nombre,
+            opt => opt.MapFrom(origen => origen.eTipo_Recurso.TipRec_Nombre))
+            .ForMember(destino => destino.UniMed_Abreviatura,
+            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+            .ForMember(destino => destino.Rec_Cuadrilla,
+            opt => opt.MapFrom(origen => origen.ePartida_Recurso.Rec_Cuadrilla))
+            .ForMember(destino => destino.Rec_Cantidad,
+            opt => opt.MapFrom(origen => origen.ePartida_Recurso.Rec_Cantidad))
+            .ForMember(destino => destino.DRP_Precio,
+            opt => opt.MapFrom(origen => origen.eRecurso_Presupuesto.DRP_Precio))
+            .ForMember(destino => destino.DetParRec_Precio_HM,
+            opt => opt.MapFrom(origen => origen.ePartida_Recurso.DetParRec_Precio_HM))
+            .ForMember(destino => destino.DetParRec_PrecioUnitario,
+            opt => opt.MapFrom(origen => origen.ePartida_Recurso.DetParRec_PrecioUnitario));
     }
 
 } 

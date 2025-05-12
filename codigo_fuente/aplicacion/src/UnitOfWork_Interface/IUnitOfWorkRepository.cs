@@ -20,5 +20,6 @@ namespace UnitOfWork_Interface
         ISubPresupuestoRepository SubPresupuestoRepository { get; }
         IPartidaRepository PartidaRepository { get; }
         IUnidad_MedidaRepository Unidad_MedidaRepository { get; }
+        IRecursoRepository RecursoRepository { get; }
     }
 }
