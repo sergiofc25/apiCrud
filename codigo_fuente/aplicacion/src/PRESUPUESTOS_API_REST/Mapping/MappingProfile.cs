@@ -393,6 +393,45 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.ePartida_Recurso.DetParRec_Precio_HM))
             .ForMember(destino => destino.DetParRec_PrecioUnitario,
             opt => opt.MapFrom(origen => origen.ePartida_Recurso.DetParRec_PrecioUnitario));
+        CreateMap<DTO_Recurso_Crea_APU, Ent_Recurso>()
+            .ForPath(destino => destino.ePartida_Recurso.ePartida.Par_Id,
+            opt => opt.MapFrom(origen => origen.Par_Id))
+            .ForPath(destino => destino.ePartida_Recurso.eRecurso.Rec_Id,
+            opt => opt.MapFrom(origen => origen.Rec_Id))
+            .ForPath(destino => destino.ePartida_Recurso.Rec_Cantidad,
+            opt => opt.MapFrom(origen => origen.Rec_Cantidad))
+            .ForPath(destino => destino.ePartida_Recurso.Rec_Cuadrilla,
+            opt => opt.MapFrom(origen => origen.Rec_Cuadrilla))
+            .ForPath(destino => destino.eRecurso_Presupuesto.DRP_Precio,
+            opt => opt.MapFrom(origen => origen.DRP_Precio));
+        CreateMap<Ent_Recurso, DTO_Recurso_Obten>()
+            .ForMember(destino => destino.Rec_Id,
+            opt => opt.MapFrom(origen => origen.Rec_Id))
+            .ForMember(destino => destino.Rec_IndUnificado,
+            opt => opt.MapFrom(origen => origen.Rec_IndUnificado))
+            .ForMember(destino => destino.Rec_Nombre,
+            opt => opt.MapFrom(origen => origen.Rec_Nombre))
+            .ForMember(destino => destino.UniMed_Abreviatura,
+            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+            .ForMember(destino => destino.TipRec_Nombre,
+            opt => opt.MapFrom(origen => origen.eTipo_Recurso.TipRec_Nombre));
+        CreateMap<Ent_Recurso, DTO_Recurso_Obten_Precio_x_Partida>()
+            .ForMember(destino => destino.Rec_Id,
+            opt => opt.MapFrom(origen => origen.Rec_Id))
+            .ForMember(destino => destino.Rec_IndUnificado,
+            opt => opt.MapFrom(origen => origen.Rec_IndUnificado))
+            .ForMember(destino => destino.Rec_Nombre,
+            opt => opt.MapFrom(origen => origen.Rec_Nombre))
+            .ForMember(destino => destino.UniMed_Abreviatura,
+            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+            .ForMember(destino => destino.TipRec_Nombre,
+            opt => opt.MapFrom(origen => origen.eTipo_Recurso.TipRec_Nombre))
+            .ForMember(destino => destino.DRP_Precio,
+            opt => opt.MapFrom(origen => origen.eRecurso_Presupuesto.DRP_Precio));
+        //TIPO_RECURSO
+        CreateMap<Ent_Tipo_Recurso, DTO_Tipo_Recurso_Obten>()
+            .ForMember(destino => destino.TipRec_Nombre,
+            opt => opt.MapFrom(origen => origen.TipRec_Nombre));
     }
 
 } 

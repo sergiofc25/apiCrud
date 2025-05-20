@@ -13,9 +13,7 @@ namespace UnitOfWork_SqlServer
     {
         public UnitOfWorkSqlServerAdapter(string connectionString)
         {
-            // Agrega esto temporalmente para debug
-            Console.WriteLine($"CADENA DE CONEXIÓN USADA: {connectionString}");
-            //
+            //Console.WriteLine($"CADENA DE CONEXIÓN USADA: {connectionString}");
             _context = new SqlConnection(connectionString);
             _context.Open();
 

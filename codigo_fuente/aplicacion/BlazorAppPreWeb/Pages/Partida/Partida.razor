@@ -96,17 +96,92 @@
     </MudItem>
     <MudItem xs="12">
         <MudPaper Class="pa-5" Elevation="3">
+            <MudButton onclick="@(() => NavigateToRecursoAsignaRecurso(Par_Id))"
+                       Disabled="@disabled"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Asignar Recurso
+            </MudButton>
+        </MudPaper>
+        <MudPaper Class="pa-5" Elevation="3">
+            <MudTable Items="@recursos"
+                      Hover="true"
+                      Breakpoint="Breakpoint.Sm"
+                      Height="500px"
+                      FixedHeader="true"
+                      GroupBy="@_groupDefinition"
+                      Dense="true"
+                      Bordered="true"
+                      Striped="true">
 
+                <HeaderContent>
+                    <MudTh>Índice Unificado</MudTh>
+                    <MudTh>Nombre</MudTh>
+                    <MudTh>Unidad de Medida</MudTh>
+                    <MudTh>Cuadrilla</MudTh>
+                    <MudTh>Cantidad</MudTh>
+                    <MudTh>Precio</MudTh>
+                    <MudTh>Parcial</MudTh>
+                    <MudTh>Acciones</MudTh>
+                </HeaderContent>
+
+                <GroupHeaderTemplate>
+                    <MudTh Style="text-align:center">
+                        @($"{context.Key}")
+                    </MudTh>
+                </GroupHeaderTemplate>
+
+                <RowTemplate>
+                    <MudTd DataLabel="Índice Unificado">@context.Rec_IndUnificado</MudTd>
+                    <MudTd DataLabel="Nombre">@context.Rec_Nombre</MudTd>
+                    <MudTd DataLabel="Unidad de Medida">@context.UniMed_Abreviatura</MudTd>
+                    <MudTd DataLabel="Cuadrilla">@context.Rec_Cuadrilla</MudTd>
+                    <MudTd DataLabel="Cantidad">@context.Rec_Cantidad</MudTd>
+                    <MudTd DataLabel="Precio">
+                        @(context.Rec_Nombre == "Herramientas manuales (%MO)" ? context.DetParRec_Precio_HM : context.DRP_Precio)
+                    </MudTd>
+                    <MudTd DataLabel="Parcial">@context.DetParRec_PrecioUnitario</MudTd>
+                    <MudTd DataLabel="Acciones">
+                        <!-- botones de acción -->
+                    </MudTd>
+                </RowTemplate>
+
+                <GroupFooterTemplate>
+                    <MudTh>
+                        <MudDivider Class="my-2" />
+                    </MudTh>
+                </GroupFooterTemplate>
+
+                <NoRecordsContent>
+                    <MudText>No se encontraron registros.</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>Un momento por favor...</MudText>
+                </LoadingContent>
+            </MudTable>
         </MudPaper>
     </MudItem>
 </MudGrid>
+<style>
+    .mud-table-cell-custom-group {
+        font-weight: 500;
+        background-color: var(--mud-palette-background-grey);
+    }
 
+    .mud-table-cell-custom-group-footer {
+        padding-bottom: 16px;
+        text-align: right;
+    }
+</style>
 @code {
     [Parameter] public string Par_Id { get; set; }
     private DTO_Partida_Obten_x_Id partida;
     private MudForm? form;
     private List<DTO_Unidad_Medida_Obten> unidadmedidas = new List<DTO_Unidad_Medida_Obten>();
     private DTO_Unidad_Medida_Obten selectedUnidadMedida { get; set; } = new DTO_Unidad_Medida_Obten();
+    private IEnumerable<DTO_Recurso_Obten_x_Partida> recursos = new List<DTO_Recurso_Obten_x_Partida>();
+
+
     private bool _processing = false;
     private string errorMessage = string.Empty;
     bool disabled = true;
@@ -120,6 +195,7 @@
         {
             Par_Id = await localStorage.GetItemAsync<string>("currentPartidaId");
         }
+        await LoadRecursos();
         await GetUnidadMedida();
 
         if (!string.IsNullOrEmpty(Par_Id))
@@ -132,6 +208,13 @@
         }
 
     }
+    private TableGroupDefinition<DTO_Recurso_Obten_x_Partida> _groupDefinition = new()
+        {
+            GroupName = "Tipo de Recurso",
+            Indentation = false,
+            Expandable = true,
+            Selector = (e) => e.TipRec_Nombre
+        };
 
     private async Task LoadPartida(string Par_Id)
     {
@@ -304,6 +387,50 @@
             await EliminarPartida();
         }
     }
+    private async Task LoadRecursos()
+    {
+        _processing = true;
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                await localStorage.GetItemAsync<string>("authToken"));
 
+            var response = await client.GetAsync($"api/v1/Recurso/Obten_x_Partida/{Par_Id}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Recurso_Obten_x_Partida>>>(responseBody);
+
+                recursos = result?.Data ?? new List<DTO_Recurso_Obten_x_Partida>();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task NavigateToRecursoAsignaRecurso(string Par_Id)
+    {
+        try
+        {
+            // Guardar el Par_Id en localStorage antes de navegar
+            await localStorage.SetItemAsync("currentPartidaId", Par_Id);
+
+            // Redirigir a la nueva página
+            NavigationManager.NavigateTo($"/recurso_asigna_precio");
+        }
+        catch (Exception ex)
+        {
+            // Manejar errores (opcional)
+            Console.WriteLine($"Error al navegar: {ex.Message}");
+        }
+    }
 }

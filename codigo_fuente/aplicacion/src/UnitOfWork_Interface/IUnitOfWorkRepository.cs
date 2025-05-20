@@ -21,5 +21,6 @@ namespace UnitOfWork_Interface
         IPartidaRepository PartidaRepository { get; }
         IUnidad_MedidaRepository Unidad_MedidaRepository { get; }
         IRecursoRepository RecursoRepository { get; }
+        ITipo_RecursoRepository Tipo_RecursoRepository { get; }
     }
 }

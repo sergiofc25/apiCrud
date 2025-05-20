@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ArkJuWzf0vQ=",
+  "dgSpecHash": "pClAI1w0srg=",
   "success": true,
   "projectFilePath": "D:\\ProyectosPrueba\\PRESUPUESTOS\\codigo_fuente\\aplicacion\\BlazorAppPreWeb\\BlazorAppPreWeb.csproj",
   "expectedPackageFiles": [
@@ -39,11 +39,11 @@
     "C:\\Users\\user\\.nuget\\packages\\microsoft.jsinterop\\9.0.4\\microsoft.jsinterop.9.0.4.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.jsinterop.webassembly\\9.0.4\\microsoft.jsinterop.webassembly.9.0.4.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.net.http.headers\\9.0.4\\microsoft.net.http.headers.9.0.4.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.4\\microsoft.net.illink.tasks.9.0.4.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\9.0.4\\microsoft.net.sdk.webassembly.pack.9.0.4.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.5\\microsoft.net.illink.tasks.9.0.5.nupkg.sha512",
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.sdk.webassembly.pack\\9.0.5\\microsoft.net.sdk.webassembly.pack.9.0.5.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\mudblazor\\6.9.0\\mudblazor.6.9.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\9.0.4\\microsoft.netcore.app.runtime.mono.browser-wasm.9.0.4.nupkg.sha512"
+    "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\9.0.5\\microsoft.netcore.app.runtime.mono.browser-wasm.9.0.5.nupkg.sha512"
   ],
   "logs": []
 }

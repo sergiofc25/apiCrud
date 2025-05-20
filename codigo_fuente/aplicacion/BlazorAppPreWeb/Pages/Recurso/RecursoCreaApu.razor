@@ -1,0 +1,449 @@
+﻿@page "/recurso_asigna_precio"
+@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@using System.Globalization;
+@using System.Linq
+@inject IDialogService DialogService
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="3">
+            <MudGrid>
+                <MudItem xs="6" Class="ml-2">
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2"> @(partida?.Par_Nombre ?? "N/A")</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+    <section style="max-width:900px; margin: 0 auto;">
+        <MudItem xs="12">
+            <MudPaper Class="pa-5" Elevation="3">
+                <MudForm Model="@recursoAPU" @ref="form">
+                    <MudGrid Class="align-center" Spacing="2">
+                        @if (recursos != null)
+                        {
+                            <MudItem xs="2" sm="2" md="2" lg="2">
+                                @if (selectedRecurso != null)
+                                {
+                                    <MudTextField @bind-Value="selectedRecurso.Rec_IndUnificado" Variant="Variant.Filled" Label="Código" Disabled="true" />
+                                }else
+                                {
+                                    <MudTextField T="String" Variant="Variant.Filled" Label="Código" Disabled="true" />
+                                }
+                            </MudItem>
+                            <MudItem xs="8" sm="8" md="8" lg="8">
+                                <MudAutocomplete T="DTO_Recurso_Obten_Precio_x_Partida"
+                                Label="Recurso"
+                                @bind-Value="selectedRecurso"
+                                ToStringFunc="@(rec => rec?.Rec_Nombre ?? "Seleccione Recurso")"
+                                SearchFunc="@SearchRecursos"
+                                Required="true"
+                                Dense="true" />
+                            </MudItem>
+                            <MudItem xs="2" sm="2" md="2" lg="2">
+                                @if (selectedRecurso != null)
+                                {
+                                    <MudTextField @bind-Value="selectedRecurso.UniMed_Abreviatura" Variant="Variant.Filled" Label="Unidad" Disabled="true" />
+                                }
+                                else
+                                {
+                                    <MudTextField T="String" Variant="Variant.Filled" Label="Unidad" Disabled="true" />
+                                }
+                            </MudItem>
+                            @if (selectedRecurso != null)
+                            {
+                                @if (selectedRecurso.TipRec_Nombre == "Material")
+                                {
+                                    <MudItem xs="12" sm="6" md="4" lg="3">
+                                        <MudNumericField @bind-Value="recursoAPU.Rec_Cantidad"
+                                        Label="Cantidad"
+                                        Required="true"
+                                        Class="mud-width-full"
+                                        Disabled="@(selectedRecurso == null)" />
+                                    </MudItem>
+                                    @if (selectedRecurso.DRP_Precio == null)
+                                    {
+                                        <MudItem xs="12" sm="6" md="4" lg="3">
+                                            <MudNumericField @bind-Value="recursoAPU.DRP_Precio"
+                                            Label="Precio"
+                                            Required="true"
+                                            Class="mud-width-full"
+                                            Disabled="@(selectedRecurso == null)" />
+                                        </MudItem>
+                                    } else
+                                    {
+                                        <MudItem xs="12" sm="6" md="4" lg="3">
+                                            <MudNumericField @bind-Value="selectedRecurso.DRP_Precio"
+                                                             Label="Precio"
+                                                             Required="true"
+                                                             Class="mud-width-full"
+                                                             Disabled="true" />
+                                        </MudItem>
+                                    }
+
+
+                                }
+                                else if ((selectedRecurso.TipRec_Nombre == "Mano de Obra" || selectedRecurso.TipRec_Nombre == "Equipo") & (selectedRecurso.Rec_Nombre != "Herramientas manuales (%MO)"))
+                                {
+                                    <MudItem xs="12" sm="6" md="4" lg="3">
+                                        <MudNumericField @bind-Value="recursoAPU.Rec_Cuadrilla"
+                                                         Label="Cuadrilla"
+                                                         Required="true"
+                                                         Class="mud-width-full"
+                                                         Disabled="@(selectedRecurso == null)" />
+                                    </MudItem>
+                                    @if (selectedRecurso.DRP_Precio == null)
+                                    {
+                                        <MudItem xs="12" sm="6" md="4" lg="3">
+                                            <MudNumericField @bind-Value="recursoAPU.DRP_Precio"
+                                                             Label="Precio"
+                                                             Required="true"
+                                                             Class="mud-width-full"
+                                                             Disabled="@(selectedRecurso == null)" />
+                                        </MudItem>
+                                    }
+                                    else
+                                    {
+                                        <MudItem xs="12" sm="6" md="4" lg="3">
+                                            <MudNumericField @bind-Value="selectedRecurso.DRP_Precio"
+                                                             Label="Precio"
+                                                             Required="true"
+                                                             Class="mud-width-full"
+                                                             Disabled="true" />
+                                        </MudItem>
+                                    }
+                                }
+                                else if (selectedRecurso.Rec_Nombre == "Herramientas manuales (%MO)")
+                                {
+                                    <MudItem xs="12" sm="6" md="4" lg="3">
+                                        <MudNumericField @bind-Value="recursoAPU.Rec_Cantidad"
+                                                         Label="Cantidad"
+                                                         Required="true"
+                                                         Class="mud-width-full"
+                                                         Disabled="@(selectedRecurso == null)" />
+                                    </MudItem>
+                                }
+                            }
+                        }
+                        <MudItem Class="d-flex justify-center align-center" xs="12" style="gap: 16px;">
+                            <MudButton Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       Disabled="@_processing"
+                                       EndIcon="@Icons.Material.Filled.Send"
+                                       OnClick="@(async () => await CrearApu())">
+                                @if (_processing)
+                                {
+                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                                    <MudText Class="ms-2">Creando...</MudText>
+                                }
+                                else
+                                {
+                                    <MudText>Crear</MudText>
+                                }
+                            </MudButton>
+                            <MudButton Variant="Variant.Filled"
+                                       StartIcon="@Icons.Material.Filled.ArrowCircleLeft"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       OnClick="@(async () => await JSRuntime.InvokeVoidAsync("history.back"))">
+                                VOLVER
+                            </MudButton>
+                        </MudItem>
+                    </MudGrid>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+    </section>
+</MudGrid>
+
+@code {
+    [Parameter] public string Par_Id { get; set; }
+    private MudForm? form;
+    private DTO_Partida_Obten_x_Id partida;
+    private DTO_Recurso_Crea_APU recursoAPU = new DTO_Recurso_Crea_APU();
+    private List<DTO_Recurso_Obten_Precio_x_Partida> recursos = new List<DTO_Recurso_Obten_Precio_x_Partida>();
+    private DTO_Recurso_Obten_Precio_x_Partida? selectedRecurso { get; set; } = null;
+
+    private bool _processing = false;
+    private string errorMessage = string.Empty;
+    bool disabled = true;
+    protected override async Task OnInitializedAsync()
+    {
+        Par_Id = NavigationManager.HistoryEntryState?.ToString();
+        if (string.IsNullOrEmpty(Par_Id))
+        {
+            Par_Id = await localStorage.GetItemAsync<string>("currentPartidaId");
+        }
+
+        if (!string.IsNullOrEmpty(Par_Id))
+        {
+            await LoadPartida(Par_Id);
+            await GetRecurso();
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/recurso_asigna_precio");
+        }
+    }
+    private async Task LoadPartida(string Par_Id)
+    {
+        _processing = true;
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                await localStorage.GetItemAsync<string>("authToken"));
+
+            var response = await client.GetAsync($"api/v1/Partida/Obten_x_Id/{Par_Id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Partida_Obten_x_Id>>(
+                    await response.Content.ReadAsStringAsync());
+
+                partida = result?.Data ?? new DTO_Partida_Obten_x_Id();
+            }
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+    private static string RemoveDiacritics(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        text = text.Normalize(NormalizationForm.FormD);
+        var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+        return new string(chars).Normalize(NormalizationForm.FormC);
+    }
+
+    private async Task<IEnumerable<DTO_Recurso_Obten_Precio_x_Partida>> SearchRecursos(string searchText)
+    {
+        if (recursos == null || !recursos.Any())
+            return Enumerable.Empty<DTO_Recurso_Obten_Precio_x_Partida>();
+
+        if (string.IsNullOrEmpty(searchText))
+            return recursos;
+
+        var searchTextNormalized = RemoveDiacritics(searchText).ToLower();
+
+        return recursos.Where(rec =>
+        {
+            var nombreNormalized = RemoveDiacritics(rec.Rec_Nombre ?? "").ToLower();
+            var indUnificadoNormalized = RemoveDiacritics(rec.Rec_IndUnificado ?? "").ToLower();
+
+            return nombreNormalized.Contains(searchTextNormalized) ||
+                   indUnificadoNormalized.Contains(searchTextNormalized);
+        });
+    }
+    private async Task GetRecurso()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync($"api/v1/Recurso/Obten_Precio_x_Partida/{Par_Id}");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Recurso_Obten_Precio_x_Partida>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    recursos = result.Data ?? new List<DTO_Recurso_Obten_Precio_x_Partida>();
+                    Console.WriteLine($"Recurso Count: {recursos.Count}");
+                }
+                else
+                {
+                    recursos = new List<DTO_Recurso_Obten_Precio_x_Partida>();
+                }
+            }
+            else
+            {
+                recursos = new List<DTO_Recurso_Obten_Precio_x_Partida>();
+            }
+        }
+        catch (Exception ex)
+        {
+            recursos = new List<DTO_Recurso_Obten_Precio_x_Partida>();
+            errorMessage = $"Error al cargar recursos: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+    
+    // private async Task CrearApu()
+    // {
+    //     _processing = true;
+    //     StateHasChanged();
+
+    //     try
+    //     {
+    //         // Crear el DTO con los tipos correctos
+    //         var dto = new DTO_Recurso_Crea_APU
+    //             {
+    //                 Par_Id = Par_Id?.ToString(),
+    //                 Rec_Id = selectedRecurso?.Rec_Id?.ToString(),
+    //                 Rec_Cantidad = string.IsNullOrWhiteSpace(recursoAPU.Rec_Cantidad?.ToString()) ? null : recursoAPU.Rec_Cantidad?.ToString(),
+    //                 Rec_Cuadrilla = string.IsNullOrWhiteSpace(recursoAPU.Rec_Cuadrilla?.ToString()) ? null : recursoAPU.Rec_Cuadrilla?.ToString(),
+    //                 DRP_Precio = string.IsNullOrWhiteSpace(recursoAPU.DRP_Precio?.ToString()) ? null : recursoAPU.DRP_Precio?.ToString()
+    //             };
+
+    //         // Crear el objeto de envío que espera el backend
+    //         var request = new
+    //         {
+    //             eDTO_Recurso_Crea_APU = dto // El campo requerido por el API
+    //         };
+
+    //         // Serializar el objeto a JSON
+    //         var jsonContent = JsonConvert.SerializeObject(request, new JsonSerializerSettings
+    //             {
+    //                 NullValueHandling = NullValueHandling.Include,
+    //                 Formatting = Formatting.Indented
+    //             });
+
+    //         Console.WriteLine("JSON que se enviará al servidor:");
+    //         Console.WriteLine(jsonContent);
+
+    //         var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+    //         var token = await localStorage.GetItemAsync<string>("authToken");
+    //         if (token != null)
+    //         {
+    //             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    //         }
+
+    //         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+    //         var response = await client.PostAsync($"api/v1/Recurso/Crea_APU", content);
+    //         Console.WriteLine($"Response Status: {response.StatusCode}");
+
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             Console.WriteLine("Partida creada exitosamente.");
+    //             await JSRuntime.InvokeVoidAsync("history.back");
+    //         }
+    //         else
+    //         {
+    //             var errorContent = await response.Content.ReadAsStringAsync();
+    //             errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+    //             Console.WriteLine($"Error al enviar el JSON: {jsonContent}");
+    //             Console.WriteLine(errorMessage);
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         errorMessage = $"Ocurrió un error: {ex.Message}";
+    //         Console.WriteLine($"Detalles del error: {ex.Message}");
+    //         if (ex.InnerException != null)
+    //         {
+    //             Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+    //         }
+    //     }
+    //     finally
+    //     {
+    //         _processing = false;
+    //         StateHasChanged();
+    //     }
+    // }
+    private async Task CrearApu()
+    {
+        _processing = true;
+        StateHasChanged();
+
+        try
+        {
+            // 1. Crear el DTO con los valores correctamente formateados
+            var requestBody = new
+            {
+                eDTO_Recurso_Crea_APU = new
+                {
+                    Par_Id = Par_Id?.ToString(),
+                    Rec_Id = selectedRecurso?.Rec_Id?.ToString(),
+                    Rec_Cantidad = string.IsNullOrWhiteSpace(recursoAPU.Rec_Cantidad?.ToString())
+                        ? null
+                        : decimal.Parse(recursoAPU.Rec_Cantidad.ToString()).ToString(CultureInfo.InvariantCulture),
+                    Rec_Cuadrilla = string.IsNullOrWhiteSpace(recursoAPU.Rec_Cuadrilla?.ToString())
+                        ? null
+                        : decimal.Parse(recursoAPU.Rec_Cuadrilla.ToString()).ToString(CultureInfo.InvariantCulture),
+                    DRP_Precio = string.IsNullOrWhiteSpace(recursoAPU.DRP_Precio?.ToString())
+                        ? null
+                        : decimal.Parse(recursoAPU.DRP_Precio.ToString()).ToString(CultureInfo.InvariantCulture)
+                }
+            };
+
+            // 2. Configuración del serializador simplificada
+            var settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    Formatting = Formatting.Indented,
+                    Culture = CultureInfo.InvariantCulture
+                };
+
+            // 3. Serialización
+            var jsonContent = JsonConvert.SerializeObject(requestBody, settings);
+            Console.WriteLine("JSON enviado:");
+            Console.WriteLine(jsonContent);
+
+            // 4. Configuración del cliente HTTP
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            // 5. Envío de la solicitud (con la URL corregida)
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/v1/Recurso/Crea_APU", content);
+
+            // 6. Manejo de la respuesta
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Partida creada exitosamente.");
+                await JSRuntime.InvokeVoidAsync("history.back");
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                Console.WriteLine($"Error en la respuesta: {errorMessage}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+            Console.WriteLine($"Excepción: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+}
