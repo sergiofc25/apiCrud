@@ -83,6 +83,7 @@ public class PartidaRepository: Repository, IPartidaRepository
                 {
                     SubPre_Id = oDR.GetInt32(oDR.GetOrdinal("SubPre_Id")),
                 },
+                Par_PreUnitario = oDR.IsDBNull(oDR.GetOrdinal("Par_PreUnitario")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Par_PreUnitario")),
                 Par_Estado = oDR.GetByte(oDR.GetOrdinal("Par_Estado")) != 0 ? true : false,
             };
         }

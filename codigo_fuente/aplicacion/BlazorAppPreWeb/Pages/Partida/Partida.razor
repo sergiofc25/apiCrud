@@ -35,11 +35,11 @@
     <MudItem xs="12">
         <MudPaper Class="pa-5 d-flex justify-end" Elevation="3">
             <MudSwitch T="bool"
-                        @bind-Checked="disabled"
-                        Color="Color.Primary"
-                        Label="Editar"
-                        Class="mt-2" />
-         </MudPaper>
+            @bind-Checked="disabled"
+            Color="Color.Primary"
+            Label="Editar"
+            Class="mt-2" />
+        </MudPaper>
         <MudPaper Class="pa-5" Elevation="3">
             @if (partida != null)
             {
@@ -50,13 +50,13 @@
                     <MudGrid Class="align-center" Spacing="2">
                         <MudItem xs="12" sm="8" md="8" lg="8">
                             <MudAutocomplete T="DTO_Unidad_Medida_Obten"
-                                                Label="Buscar unidad medida"
-                                                @bind-Value="selectedUnidadMedida"
-                                                ToStringFunc="@(unid => unid?.UniMed_Nombre ?? "Seleccione unidad")"
-                                                SearchFunc="@SearchUnidadMedidas"
-                                                Dense="true"
-                                                Disabled="@disabled"
-                                                Class="mud-width-full" />
+                            Label="Buscar unidad medida"
+                            @bind-Value="selectedUnidadMedida"
+                            ToStringFunc="@(unid => unid?.UniMed_Nombre ?? "Seleccione unidad")"
+                            SearchFunc="@SearchUnidadMedidas"
+                            Dense="true"
+                            Disabled="@disabled"
+                            Class="mud-width-full" />
                         </MudItem>
                         <MudItem xs="12" sm="4" md="4" lg="4">
                             <MudTextField @bind-Value="selectedUnidadMedida.UniMed_Abreviatura" Variant="Variant.Filled" Disabled="true" />
@@ -74,9 +74,9 @@
                         }
                     </MudButton>
                     <MudButton @onclick="OpenDialogAsyncEliminaPartida"
-                               Disabled="@disabled"
-                               Variant="Variant.Filled"
-                               Color="Color.Secondary">
+                    Disabled="@disabled"
+                    Variant="Variant.Filled"
+                    Color="Color.Secondary">
                         Eliminar Partida
                     </MudButton>
                 </MudForm>
@@ -95,24 +95,31 @@
         </MudPaper>
     </MudItem>
     <MudItem xs="12">
+        <MudPaper Class="pa-4" Elevation="3">
+            @if (partida != null)
+            {
+                <MudText Typo="Typo.h6" Color="Color.Primary">Precio Unitario de partida @(partida.Par_PreUnitario)</MudText>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
         <MudPaper Class="pa-5" Elevation="3">
             <MudButton onclick="@(() => NavigateToRecursoAsignaRecurso(Par_Id))"
-                       Disabled="@disabled"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary">
+            Variant="Variant.Filled"
+            Color="Color.Primary">
                 Asignar Recurso
             </MudButton>
         </MudPaper>
         <MudPaper Class="pa-5" Elevation="3">
             <MudTable Items="@recursos"
-                      Hover="true"
-                      Breakpoint="Breakpoint.Sm"
-                      Height="500px"
-                      FixedHeader="true"
-                      GroupBy="@_groupDefinition"
-                      Dense="true"
-                      Bordered="true"
-                      Striped="true">
+            Hover="true"
+            Breakpoint="Breakpoint.Sm"
+            Height="500px"
+            FixedHeader="true"
+            GroupBy="@_groupDefinition"
+            Dense="true"
+            Bordered="true"
+            Striped="true">
 
                 <HeaderContent>
                     <MudTh>Índice Unificado</MudTh>
@@ -160,6 +167,7 @@
                 </LoadingContent>
             </MudTable>
         </MudPaper>
+
     </MudItem>
 </MudGrid>
 <style>

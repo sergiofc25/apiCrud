@@ -1,0 +1,34 @@
+﻿@using MudBlazor
+@using MudBlazor.Dialog
+@using Model.DTO.v1
+
+<MudDialog>
+    <DialogContent>
+        <MudText>¿Está seguro que desea inhabilitar el recurso @Recurso?.Rec_Nombre?</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel"
+                   Variant="Variant.Text"
+                   Color="Color.Error">
+            Cancelar
+        </MudButton>
+        <MudButton OnClick="Submit"
+                   Variant="Variant.Filled"
+                   Color="Color.Secondary">
+            Confirmar
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public DTO_Recurso_Obten_Paginado Recurso { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+}
+
+}

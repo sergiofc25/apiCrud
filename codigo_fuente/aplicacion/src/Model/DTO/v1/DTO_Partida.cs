@@ -28,6 +28,7 @@ public class DTO_Partida_Obten_x_Id
     public string? UniMed_Nombre { get; set; }
     public string? UniMed_Abreviatura { get; set; }
     public string? SubPre_Id { get; set; }
+    public string? Par_PreUnitario { get; set; }
     public string? Par_Estado { get; set; }
 }
 

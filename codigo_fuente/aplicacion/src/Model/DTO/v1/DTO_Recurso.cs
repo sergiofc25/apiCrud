@@ -46,3 +46,41 @@ public class DTO_Recurso_Obten_Precio_x_Partida
     public string? TipRec_Nombre { get; set; }
     public string? DRP_Precio { get; set; }
 }
+public class DTO_Recurso_Obten_Paginado
+{
+    public string? Rec_Id { get; set; }
+    public string? Rec_IndUnificado { get; set; }
+    public string? Rec_Nombre { get; set; }
+    public string? UniMed_Abreviatura { get; set; }
+    public string? UniMed_Nombre { get; set; }
+    public string? TipRec_Nombre { get; set; }
+    public string? Rec_Estado { get; set; }
+}
+public class DTO_Recurso_Obten_x_Id
+{
+    public string? Rec_Id { get; set; }
+    public string? Rec_IndUnificado { get; set; }
+    public string? Rec_Nombre { get; set; }
+    public string? UniMed_Nombre { get; set; }
+    public string? UniMed_Abreviatura { get; set; }
+    public string? TipRec_Nombre { get; set; }
+    public string? Rec_Estado { get; set; }
+}
+public class DTO_Recurso_Crea
+{
+    public string? Rec_IndUnificado { get; set; }
+    public string? Rec_Nombre { get; set; }
+    public string? UniMed_Nombre { get; set; }
+    public string? TipRec_Nombre { get; set; }
+}
+public class DTO_Recurso_Actualiza
+{
+    public string? Rec_IndUnificado { get; set; }
+    public string? Rec_Nombre { get; set; }
+    public string? UniMed_Nombre { get; set; }
+    public string? TipRec_Nombre { get; set; }
+}
+public class DTO_Recurso_Actualiza_Condicion
+{
+    public string? Rec_Estado { get; set; }
+}
