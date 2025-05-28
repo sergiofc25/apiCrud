@@ -29,7 +29,7 @@
 
                 <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
-                               Size="Size.Small" OnClick="Btn_Nuevo_Recurso_Click">NUEVO</MudButton>
+                               Size="Size.Small" @onclick="@(() => Btn_Nuevo_Recurso_Click())">NUEVO</MudButton>
                 </MudItem>
             </MudItem>
         </MudPaper>
@@ -68,7 +68,7 @@
                     <MudTd DataLabel="Acciones">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit" 
                                     Variant="Variant.Filled" 
-                                    Color="Color.Warning" 
+                                    Color="Color.Primary" 
                                     Size="Size.Small" @onclick="@(() => Btn_Actualizar_Recurso_Click(@context.Rec_Id))">
                         </MudIconButton>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
@@ -206,7 +206,7 @@
             {
                 await LoadRecursos();
 
-                await JSRuntime.InvokeVoidAsync("alert", "Recurso eliminado correctamente");
+                // await JSRuntime.InvokeVoidAsync("alert", "Recurso eliminado correctamente");
             }
             else
             {
@@ -245,19 +245,44 @@
             await EliminarRecurso(recurso);
         }
     }
-
-    private void Btn_Nuevo_Recurso_Click()
+    private async Task Btn_Nuevo_Recurso_Click()
     {
-        NavigationManager.NavigateTo("/recurso_crea");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+        var dialog = DialogService.Show<RecursoCreaDialog>("Crear Nuevo Recurso", options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadRecursos();
+        }
     }
 
-    private void Btn_Actualizar_Recurso_Click(string Rec_Id)
+    private async Task Btn_Actualizar_Recurso_Click(string rec_Id)
     {
-        NavigationManager.NavigateTo($"/recurso_actualiza/{Rec_Id}");
-    }
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
 
-    private void Btn_Eliminar_Recurso_Click(string Rec_Id)
-    {
-        NavigationManager.NavigateTo($"/recurso_actualiza_condicion/{Rec_Id}");
+        var parameters = new DialogParameters();
+        parameters.Add("Rec_Id", rec_Id);
+
+        var dialog = DialogService.Show<RecursoActualizaDialog>("Actualizar Recurso", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadRecursos();
+        }
     }
 }

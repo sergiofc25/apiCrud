@@ -20,5 +20,7 @@ namespace Repository_Interface
         string Actualiza(Ent_Recurso Recurso);
         //Task<string> Actualiza(ManzanaModel Ent_Manzana);
         int Actualiza_Condicion(int Rec_Id, bool Rec_Estado);
+        //int Actualiza_APU(Ent_Recurso Ent_Recurso);
+
     }
 }

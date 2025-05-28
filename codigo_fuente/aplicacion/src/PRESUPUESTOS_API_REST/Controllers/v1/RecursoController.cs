@@ -13,7 +13,7 @@ namespace PRESUPUESTOS_API_REST.Controllers.v1;
 [Route("api/v{version:apiVersion}/[Controller]")]
 [ApiVersion("1")]
 [ApiController]
-//[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class RecursoController : ControllerBase
 {
     private readonly IRecursoService _RecursoService;
@@ -227,35 +227,7 @@ public class RecursoController : ControllerBase
             });
         }
     }
-    //[HttpPut("Actualiza/{Rec_Id}")]
-    //public async Task<IActionResult> Actualiza(int Rec_Id, [FromBody] DTO_Recurso_Actualiza eDTO_Recurso_Actualiza)
-    //{
-    //    try
-    //    {
-    //        if (eDTO_Recurso_Actualiza is null)
-    //            return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
-
-    //        var Recurso_Existente = await _RecursoService.Obten_x_Id(Rec_Id);
-
-    //        if (Recurso_Existente is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos no existes." });
-
-    //        var Recurso_Actualiza = _mapper.Map(eDTO_Recurso_Actualiza, Recurso_Existente);
-
-    //        var mensajeError = await _RecursoService.Actualiza(Recurso_Actualiza);
-
-    //        if (mensajeError == string.Empty)
-    //            return Ok(new DTO_Response<object>
-    //            {
-    //                IsSuccessful = true
-    //            });
-
-    //        return BadRequest(new DTO_Response<object> { ErrorMessage = mensajeError });
-    //    }
-    //    catch (Exception)
-    //    {
-    //        return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
-    //    }
-    //}
+    
     [HttpPut("Actualiza/{Rec_Id}")]
     public async Task<IActionResult> Actualiza(int Rec_Id, [FromBody] DTO_Recurso_Actualiza eDTO_Recurso_Actualiza)
     {

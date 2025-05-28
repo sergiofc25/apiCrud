@@ -1,0 +1,289 @@
+﻿@using Model.DTO.v1
+@using MudBlazor
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Linq
+@using System.Text
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Validation="@formValidation">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="recursoActualizar.Rec_IndUnificado"
+                                  Label="Código"
+                                  Required="true"
+                                  RequiredError="El código es requerido"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="recursoActualizar.Rec_Nombre"
+                                  Label="Nombre"
+                                  Required="true"
+                                  RequiredError="El nombre es requerido"
+                                  Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudAutocomplete T="DTO_Unidad_Medida_Obten"
+                                     Label="Unidad de Medida"
+                                     @bind-Value="selectedUnidadMedida"
+                                     ToStringFunc="@(unid => unid?.UniMed_Nombre ?? "Seleccione Unidad de Medida")"
+                                     SearchFunc="@SearchUnidadMedidas"
+                                     Required="true"
+                                     Dense="true" />
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudTextField @bind-Value="selectedUnidadMedida.UniMed_Abreviatura"
+                                  Variant="Variant.Filled"
+                                  Disabled="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="DTO_Tipo_Recurso_Obten"
+                               Label="Tipo de Recurso"
+                               @bind-Value="selectedTipoRecurso"
+                               ToStringFunc="@(tip => tip?.TipRec_Nombre ?? "Seleccione tipo de recurso")"
+                               Dense="true"
+                               Class="mud-width-full">
+                        @foreach (var tiporecurso in tiporecursos)
+                        {
+                            <MudSelectItem Value="@tiporecurso">@tiporecurso.TipRec_Nombre</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Actualizar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Actualizar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string Rec_Id { get; set; }
+
+    private DTO_Recurso_Actualiza recursoActualizar = new DTO_Recurso_Actualiza();
+    private List<DTO_Unidad_Medida_Obten> unidadmedidas = new List<DTO_Unidad_Medida_Obten>();
+    private DTO_Unidad_Medida_Obten selectedUnidadMedida { get; set; } = new DTO_Unidad_Medida_Obten();
+    private List<DTO_Tipo_Recurso_Obten> tiporecursos = new List<DTO_Tipo_Recurso_Obten>();
+    private DTO_Tipo_Recurso_Obten selectedTipoRecurso { get; set; } = new DTO_Tipo_Recurso_Obten();
+
+    private MudForm form;
+    private bool formValidation = true;
+    private bool actualizando = false;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUnidadMedida();
+        await GetTipoRecurso();
+        await CargarRecurso();
+    }
+
+    private async Task CargarRecurso()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync($"api/v1/Recurso/Obten_x_Id/{Rec_Id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Recurso_Obten_x_Id>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    recursoActualizar = new DTO_Recurso_Actualiza
+                        {
+                            Rec_IndUnificado = result.Data.Rec_IndUnificado,
+                            Rec_Nombre = result.Data.Rec_Nombre
+                        };
+
+                    selectedUnidadMedida = unidadmedidas.FirstOrDefault(u => u.UniMed_Nombre == result.Data.UniMed_Nombre);
+                    selectedTipoRecurso = tiporecursos.FirstOrDefault(t => t.TipRec_Nombre == result.Data.TipRec_Nombre);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar el recurso: {ex.Message}";
+            Snackbar.Add(errorMessage, Severity.Error);
+        }
+    }
+
+    private async Task Actualizar()
+    {
+        actualizando = true;
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var recursoParaActualizar = new DTO_Recurso_Actualiza
+                    {
+                        Rec_IndUnificado = recursoActualizar.Rec_IndUnificado,
+                        Rec_Nombre = recursoActualizar.Rec_Nombre,
+                        UniMed_Nombre = selectedUnidadMedida?.UniMed_Nombre,
+                        TipRec_Nombre = selectedTipoRecurso?.TipRec_Nombre
+                    };
+
+                var response = await client.PutAsJsonAsync($"api/v1/Recurso/Actualiza/{Rec_Id}", recursoParaActualizar);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Snackbar.Add("Recurso actualizado exitosamente", Severity.Success);
+                    MudDialog.Close(DialogResult.Ok(true));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Snackbar.Add($"Error al actualizar recurso: {errorContent}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                actualizando = false;
+            }
+        }
+        else
+        {
+            actualizando = false;
+        }
+    }
+
+    private async Task<IEnumerable<DTO_Unidad_Medida_Obten>> SearchUnidadMedidas(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return unidadmedidas;
+
+        return unidadmedidas.Where(unid =>
+            RemoveDiacritics(unid.UniMed_Nombre ?? "")
+                .Contains(RemoveDiacritics(searchText), StringComparison.OrdinalIgnoreCase));
+    }
+    private static string RemoveDiacritics(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        text = text.Normalize(NormalizationForm.FormD);
+        var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+        return new string(chars).Normalize(NormalizationForm.FormC);
+    }
+    private async Task GetUnidadMedida()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Unidad_Medida/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Unidad_Medida_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    unidadmedidas = result.Data;
+                    Console.WriteLine($"UnidadMedida Count: {unidadmedidas.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar unidades de medida: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+    private async Task GetTipoRecurso()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Tipo_Recurso/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Tipo_Recurso_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    tiporecursos = result.Data;
+                    Console.WriteLine($"TipRec Count: {tiporecursos.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar tipos de recursos: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
+    }
+}

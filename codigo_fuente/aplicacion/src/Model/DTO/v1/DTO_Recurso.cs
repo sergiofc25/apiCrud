@@ -15,6 +15,7 @@ public class DTO_Recurso_Obten_x_Partida
     public string? Rec_Nombre { get; set; }
     public string? TipRec_Nombre { get; set; }
     public string? UniMed_Abreviatura { get; set; }
+    public string? DetParRec_Id { get; set; }
     public decimal? Rec_Cuadrilla { get; set; }
     public decimal? Rec_Cantidad { get; set; }
     public decimal? DRP_Precio { get; set; }

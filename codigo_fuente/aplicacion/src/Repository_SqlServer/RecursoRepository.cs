@@ -22,7 +22,7 @@ public class RecursoRepository: Repository, IRecursoRepository
     {
         var Lst_Recurso = new List<Ent_Recurso>();
 
-        using var oCmd = CreateCommand("SP_Recurso_Obten_x_Partida");
+        using var oCmd = CreateCommand("SP_Recurso_Obten_x_Partida_APU");
         oCmd.CommandType = CommandType.StoredProcedure;
         oCmd.Parameters.AddWithValue("Par_Id", Par_Id);
 
@@ -45,6 +45,7 @@ public class RecursoRepository: Repository, IRecursoRepository
                 },
                 ePartida_Recurso = new Ent_Partida_Recurso
                 {
+                    DetParRec_Id = oDR.GetInt32(oDR.GetOrdinal("DetParRec_Id")),
                     Rec_Cantidad = oDR.IsDBNull(oDR.GetOrdinal("Rec_Cantidad")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Rec_Cantidad")),
                     Rec_Cuadrilla = oDR.IsDBNull(oDR.GetOrdinal("Rec_Cuadrilla")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Rec_Cuadrilla")),
                     DetParRec_Precio_HM = oDR.IsDBNull(oDR.GetOrdinal("DetParRec_Precio_HM")) ? null : oDR.GetDecimal(oDR.GetOrdinal("DetParRec_Precio_HM")),
@@ -76,7 +77,7 @@ public class RecursoRepository: Repository, IRecursoRepository
         }
         if (Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla.HasValue)
         {
-            oCmd.Parameters.AddWithValue("@Rec_Cuadrilla", Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla);
+            oCmd.Parameters.AddWithValue("Rec_Cuadrilla", Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla);
         }
         if (Ent_Recurso.eRecurso_Presupuesto.DRP_Precio.HasValue)
         {
@@ -282,5 +283,30 @@ public class RecursoRepository: Repository, IRecursoRepository
         oCmd.Parameters.AddWithValue("Rec_Estado", Rec_Estado);
         return oCmd.ExecuteNonQuery();
     }
+    //public int Actualiza_APU(Ent_Recurso Ent_Recurso)
+    //{
+    //    using var oCmd = CreateCommand("SP_Recurso_Actualiza_APU");
+
+    //    oCmd.CommandType = CommandType.StoredProcedure;
+
+    //    oCmd.Parameters.AddWithValue("DetParRec_Id", Ent_Recurso.ePartida_Recurso.DetParRec_Id);
+    //    //oCmd.Parameters.AddWithValue("Rec_Cantidad", Ent_Recurso.ePartida_Recurso.Rec_Cantidad);
+    //    //oCmd.Parameters.AddWithValue("Rec_Cuadrilla", Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla);
+    //    //oCmd.Parameters.AddWithValue("DRP_Precio", Ent_Recurso.eRecurso_Presupuesto.DRP_Precio);
+    //    if (Ent_Recurso.ePartida_Recurso.Rec_Cantidad.HasValue)
+    //    {
+    //        oCmd.Parameters.AddWithValue("Rec_Cantidad", Ent_Recurso.ePartida_Recurso.Rec_Cantidad);
+    //    }
+    //    if (Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla.HasValue)
+    //    {
+    //        oCmd.Parameters.AddWithValue("Rec_Cuadrilla", Ent_Recurso.ePartida_Recurso.Rec_Cuadrilla);
+    //    }
+    //    if (Ent_Recurso.eRecurso_Presupuesto.DRP_Precio.HasValue)
+    //    {
+    //        oCmd.Parameters.AddWithValue("DRP_Precio", Ent_Recurso.eRecurso_Presupuesto.DRP_Precio);
+    //    }
+
+    //    return oCmd.ExecuteNonQuery();
+    //}
 }
 

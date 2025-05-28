@@ -149,7 +149,16 @@
                     </MudTd>
                     <MudTd DataLabel="Parcial">@context.DetParRec_PrecioUnitario</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <!-- botones de acción -->
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Small" @onclick="@(() => Btn_Actualizar_Partida_Recurso_APU_Click(@context.DetParRec_Id))">
+                        </MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                        Variant="Variant.Filled"
+                        Color="Color.Error"
+                        Size="Size.Small" @onclick="@(() => OpenDeleteDialog(context.DetParRec_Id))">
+                        </MudIconButton>
                     </MudTd>
                 </RowTemplate>
 
@@ -172,13 +181,13 @@
 </MudGrid>
 <style>
     .mud-table-cell-custom-group {
-        font-weight: 500;
-        background-color: var(--mud-palette-background-grey);
+    font-weight: 500;
+    background-color: var(--mud-palette-background-grey);
     }
 
     .mud-table-cell-custom-group-footer {
-        padding-bottom: 16px;
-        text-align: right;
+    padding-bottom: 16px;
+    text-align: right;
     }
 </style>
 @code {
@@ -302,7 +311,7 @@
     private async Task ActualizarPartida()
     {
         if (partida == null || selectedUnidadMedida == null) return;
-        
+
         partida.UniMed_Nombre = selectedUnidadMedida.UniMed_Nombre;
 
         _processing = true;
@@ -424,7 +433,49 @@
             StateHasChanged();
         }
     }
+    private async Task OpenDeleteDialog(string DetParRec_Id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "DetParRec_Id", DetParRec_Id }
+        };
 
+        var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.ExtraSmall,
+                FullWidth = true
+            };
+
+        var dialog = DialogService.Show<PartidaRecursoEliminaAPU>("Confirmar Eliminación", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled && (bool)result.Data)
+        {
+            await LoadRecursos();
+        }
+    }
+    private async Task Btn_Actualizar_Partida_Recurso_APU_Click(string DetParRec_Id)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+        var parameters = new DialogParameters();
+        parameters.Add("DetParRec_Id", DetParRec_Id);
+
+        var dialog = DialogService.Show<PartidaRecursoActualizaAPUDialog>("Actualizar Valores", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadRecursos();
+        }
+    }
     private async Task NavigateToRecursoAsignaRecurso(string Par_Id)
     {
         try

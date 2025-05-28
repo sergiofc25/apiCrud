@@ -367,6 +367,7 @@ public class MappingProfile : Profile
             .ForPath(destino => destino.Par_Estado,
             opt => opt.MapFrom(origen => origen.Par_Estado));
 
+
         //UNIDAD_MEDIDA
         CreateMap<Ent_Unidad_Medida, DTO_Unidad_Medida_Obten>()
             .ForMember(destino => destino.UniMed_Nombre,
@@ -385,6 +386,8 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.eTipo_Recurso.TipRec_Nombre))
             .ForMember(destino => destino.UniMed_Abreviatura,
             opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+            .ForMember(destino => destino.DetParRec_Id,
+            opt => opt.MapFrom(origen => origen.ePartida_Recurso.DetParRec_Id))
             .ForMember(destino => destino.Rec_Cuadrilla,
             opt => opt.MapFrom(origen => origen.ePartida_Recurso.Rec_Cuadrilla))
             .ForMember(destino => destino.Rec_Cantidad,
@@ -481,11 +484,31 @@ public class MappingProfile : Profile
         CreateMap<DTO_Recurso_Actualiza_Condicion, Ent_Recurso>()
             .ForPath(destino => destino.Rec_Estado,
             opt => opt.MapFrom(origen => origen.Rec_Estado));
-
         //TIPO_RECURSO
         CreateMap<Ent_Tipo_Recurso, DTO_Tipo_Recurso_Obten>()
             .ForMember(destino => destino.TipRec_Nombre,
             opt => opt.MapFrom(origen => origen.TipRec_Nombre));
+        //PARTIDA_RECURSO
+        CreateMap<Ent_Partida_Recurso, DTO_Partida_Recurso_Obten_x_Id_APU>()
+            .ForMember(destino => destino.DetParRec_Id,
+            opt => opt.MapFrom(origen => origen.DetParRec_Id))
+            .ForMember(destino => destino.Rec_Cantidad,
+            opt => opt.MapFrom(origen => origen.Rec_Cantidad))
+            .ForMember(destino => destino.Rec_Cuadrilla,
+            opt => opt.MapFrom(origen => origen.Rec_Cuadrilla))
+            .ForMember(destino => destino.DRP_Precio,
+            opt => opt.MapFrom(origen => origen.eRecurso.eRecurso_Presupuesto.DRP_Precio))
+            .ForMember(destino => destino.Rec_Nombre,
+            opt => opt.MapFrom(origen => origen.eRecurso.Rec_Nombre))
+            .ForMember(destino => destino.TipRec_Nombre,
+            opt => opt.MapFrom(origen => origen.eRecurso.eTipo_Recurso.TipRec_Nombre));
+        CreateMap<DTO_Partida_Recurso_Actualiza_APU, Ent_Partida_Recurso>()
+           .ForPath(destino => destino.Rec_Cantidad,
+           opt => opt.MapFrom(origen => origen.Rec_Cantidad))
+           .ForPath(destino => destino.Rec_Cuadrilla,
+           opt => opt.MapFrom(origen => origen.Rec_Cuadrilla))
+           .ForPath(destino => destino.eRecurso.eRecurso_Presupuesto.DRP_Precio,
+           opt => opt.MapFrom(origen => origen.DRP_Precio));
     }
 
 } 

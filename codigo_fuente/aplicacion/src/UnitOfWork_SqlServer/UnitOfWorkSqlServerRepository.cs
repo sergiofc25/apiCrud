@@ -25,6 +25,7 @@ namespace UnitOfWork_SqlServer
         public IUnidad_MedidaRepository Unidad_MedidaRepository { get; }
         public IRecursoRepository RecursoRepository { get; }
         public ITipo_RecursoRepository Tipo_RecursoRepository { get; }
+        public IPartida_RecursoRepository Partida_RecursoRepository { get; }
         public UnitOfWorkSqlServerRepository(SqlConnection context, SqlTransaction transaction)
         {
             ClienteRepository = new ClienteRepository(context, transaction);
@@ -49,6 +50,8 @@ namespace UnitOfWork_SqlServer
             RecursoRepository = new RecursoRepository(context, transaction);
             
             Tipo_RecursoRepository = new Tipo_RecursoRepository(context, transaction);
+            
+            Partida_RecursoRepository = new Partida_RecursoRepository(context, transaction);
 
         }
         
