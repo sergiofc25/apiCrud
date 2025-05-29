@@ -38,4 +38,8 @@ builder.Services.AddBlazoredModal();
 // Autenticación
 builder.Services.AddAuthorizationCore();
 
+// Usuario Actual
+builder.Services.AddScoped<UserStateService>();
+
+
 await builder.Build().RunAsync();

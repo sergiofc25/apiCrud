@@ -103,7 +103,9 @@ public class MappingProfile : Profile
             .ForMember(destino => destino.Usu_FecHoraRegistro,
             opt => opt.MapFrom(origen => origen.Usu_FecHoraRegistro))
             .ForMember(destino => destino.Usu_Observacion,
-            opt => opt.MapFrom(origen => origen.Usu_Observacion));
+            opt => opt.MapFrom(origen => origen.Usu_Observacion))
+            .ForMember(destino => destino.Usu_Estado,
+            opt => opt.MapFrom(origen => origen.Usu_Estado));
 
         CreateMap<Ent_Usuario, DTO_Usuario_Obten_x_Id>()
             .ForMember(destino => destino.Usu_Id,
@@ -509,6 +511,10 @@ public class MappingProfile : Profile
            opt => opt.MapFrom(origen => origen.Rec_Cuadrilla))
            .ForPath(destino => destino.eRecurso.eRecurso_Presupuesto.DRP_Precio,
            opt => opt.MapFrom(origen => origen.DRP_Precio));
+        //ROL
+        CreateMap<Ent_Rol, DTO_Rol_Obten>()
+            .ForMember(destino => destino.Rol_Nombre,
+            opt => opt.MapFrom(origen => origen.Rol_Nombre));
     }
 
 } 

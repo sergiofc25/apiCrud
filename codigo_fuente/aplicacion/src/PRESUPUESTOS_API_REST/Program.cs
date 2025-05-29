@@ -59,6 +59,7 @@ builder.Services.AddTransient<IUnidad_MedidaService, Unidad_MedidaService>();
 builder.Services.AddTransient<IRecursoService, RecursoService>();
 builder.Services.AddTransient<ITipo_RecursoService, Tipo_RecursoService>();
 builder.Services.AddTransient<IPartida_RecursoService, Partida_RecursoService>();
+builder.Services.AddTransient<IRolService, RolService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 
 //var jwtSettings = builder.Configuration.GetSection("JWTSettings");

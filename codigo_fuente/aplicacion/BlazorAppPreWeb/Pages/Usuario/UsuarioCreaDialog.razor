@@ -1,0 +1,184 @@
+﻿@using Model.DTO.v1
+@using MudBlazor
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Linq
+@using System.Text
+
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Validation="@formValidation">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="nuevoUsuario.Usu_Correo"
+                    Label="Usuario"
+                    Required="true"
+                    RequiredError="El usuario es requerido"
+                    Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="nuevoUsuario.Usu_NomApellidos"
+                    Label="Nombres"
+                    Required="true"
+                    RequiredError="El Nombre es requerido"
+                    Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudSelect T="DTO_Rol_Obten" Label="Roles"
+                    @bind-Value="selectedRol"
+                    ToStringFunc="@(r => r?.Rol_Nombre ?? "Seleccione Rol")"
+                    Dense="true" Class="mud-width-full">
+                        @foreach (var rol in roles)
+                        {
+                            <MudSelectItem Value="@rol">@rol.Rol_Nombre</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="nuevoUsuario.Usu_Clave"
+                                    Label="Contraseña"
+                                    Required="true"
+                                    RequiredError="La Contraseña es requerida"
+                                    Immediate="true"
+                                    Adornment="Adornment.End"
+                                    AdornmentIcon="@(showPassword ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)"
+                                    AdornmentColor="Color.Primary"
+                                    OnAdornmentClick="@(() => showPassword = !showPassword)"
+                                    InputIcon="@Icons.Material.Filled.Lock"
+                                    InputType="@(showPassword ? InputType.Text : InputType.Password)" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private DTO_Usuario_Crea nuevoUsuario = new DTO_Usuario_Crea();
+    private List<DTO_Rol_Obten> roles = new List<DTO_Rol_Obten>();
+    private DTO_Rol_Obten selectedRol { get; set; } = new DTO_Rol_Obten();
+
+    private MudForm form;
+    private bool formValidation = true;
+    private bool guardando = false;
+    private string errorMessage = string.Empty;
+    private bool showPassword = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetRol();
+    }
+    private async Task Guardar()
+    {
+        guardando = true;
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var usuarioParaEnviar = new DTO_Usuario_Crea
+                    {
+                        Usu_Correo = nuevoUsuario.Usu_Correo,
+                        Usu_NomApellidos = nuevoUsuario.Usu_NomApellidos,
+                        Rol_Nombre = selectedRol.Rol_Nombre,
+                        Usu_Clave = nuevoUsuario?.Usu_Clave
+                    };
+
+                var response = await client.PostAsJsonAsync("api/v1/Usuario/Crea", usuarioParaEnviar);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Snackbar.Add("Usuario creado exitosamente", Severity.Success);
+                    MudDialog.Close(DialogResult.Ok(true));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    Snackbar.Add($"Error al crear usuario: {errorContent}", Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                guardando = false;
+            }
+        }
+        else
+        {
+            guardando = false;
+        }
+    }
+    
+    private async Task GetRol()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Rol/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Rol_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    roles = result.Data;
+                    Console.WriteLine($"TipRec Count: {roles.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar tipos de recursos: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
+    }
+}

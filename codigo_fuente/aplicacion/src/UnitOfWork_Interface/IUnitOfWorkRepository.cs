@@ -23,5 +23,6 @@ namespace UnitOfWork_Interface
         IRecursoRepository RecursoRepository { get; }
         ITipo_RecursoRepository Tipo_RecursoRepository { get; }
         IPartida_RecursoRepository Partida_RecursoRepository { get; }
+        IRolRepository RolRepository { get; }
     }
 }

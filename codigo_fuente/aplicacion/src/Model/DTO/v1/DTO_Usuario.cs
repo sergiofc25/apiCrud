@@ -20,6 +20,7 @@ public class DTO_Usuario_Obten_Paginado
     public string? Rol_Nombre { get; set; }
     public string? Usu_FecHoraRegistro { get; set; }
     public string? Usu_Observacion { get; set; }
+    public string? Usu_Estado { get; set; }
 }
 public class DTO_Usuario_Obten_x_Id
 {

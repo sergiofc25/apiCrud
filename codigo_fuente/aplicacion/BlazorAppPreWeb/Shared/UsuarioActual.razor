@@ -5,6 +5,8 @@
  @using System.Net.Http.Headers
  @inject ILocalStorageService localStorage
  @inject NavigationManager NavigationManager
+ @inject UserStateService UserStateService
+
 
 <MudMenu>
     <ActivatorContent>
@@ -64,6 +66,7 @@
                 if (result != null && result.IsSuccessful)
                 {
                     usuario = result.Data;
+                    UserStateService.SetUser(usuario);
                     Console.WriteLine($"Usuario Count: {usuario.ToString}");
                 }
                 else

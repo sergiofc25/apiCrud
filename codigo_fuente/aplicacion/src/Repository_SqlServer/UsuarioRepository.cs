@@ -241,10 +241,10 @@ public class UsuarioRepository: Repository, IUsuarioRepository
 
         oCmd.Parameters.AddWithValue("Usu_Id", Ent_Usuario.Usu_Id);
         oCmd.Parameters.AddWithValue("Usu_Correo", Ent_Usuario.Usu_Correo);
-        oCmd.Parameters.AddWithValue("Usu_Clave", Ent_Usuario.Usu_Clave);
+        oCmd.Parameters.AddWithValue("Usu_Clave", (object)Ent_Usuario.Usu_Clave ?? DBNull.Value);
         oCmd.Parameters.AddWithValue("Usu_NomApellidos", Ent_Usuario.Usu_NomApellidos);
         oCmd.Parameters.AddWithValue("Rol_Nombre", Ent_Usuario.eRol.Rol_Nombre);
-        oCmd.Parameters.AddWithValue("Usu_Observacion", Ent_Usuario.Usu_Observacion);
+        oCmd.Parameters.AddWithValue("Usu_Observacion", (object)Ent_Usuario.Usu_Observacion ?? DBNull.Value);
 
         return oCmd.ExecuteNonQuery();
     }

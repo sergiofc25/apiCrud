@@ -30,8 +30,8 @@ public class UsuarioController : ControllerBase
         _mapper = mapper;
     }
     [Authorize(Roles = "Administrador")]
-    [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}/{PorCorreo}")]
-    public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, string PorCorreo = " ")
+    [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}")]
+    public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, [FromQuery] string? PorCorreo = null)
     {
         try
         {
@@ -61,7 +61,7 @@ public class UsuarioController : ControllerBase
         }
     }
     [Authorize(Roles = "Administrador")]
-    [HttpGet("{Usu_Id}", Name = "Usuario_Obten_x_Id")]
+    [HttpGet("Obten_x_Id/{Usu_Id}")]
     public async Task<IActionResult> Obten_x_Id(int Usu_Id)
     {
         try
