@@ -150,9 +150,9 @@
                     <MudTd DataLabel="Parcial">@context.DetParRec_PrecioUnitario</MudTd>
                     <MudTd DataLabel="Acciones">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Size="Size.Small" @onclick="@(() => Btn_Actualizar_Partida_Recurso_APU_Click(@context.DetParRec_Id))">
+                        Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        Size="Size.Small" @onclick="@(() => Btn_Actualizar_Partida_Recurso_APU_Click(@context.DetParRec_Id))">
                         </MudIconButton>
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                         Variant="Variant.Filled"
@@ -329,7 +329,9 @@
             var response = await client.PutAsync($"api/v1/Partida/Actualiza/{Par_Id}", content);
             if (response.IsSuccessStatusCode)
             {
-                NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                //NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                await LoadPartida(Par_Id);
+                await LoadRecursos();
             }
             else
             {
@@ -453,6 +455,7 @@
         if (!result.Cancelled && (bool)result.Data)
         {
             await LoadRecursos();
+            await LoadPartida(Par_Id);
         }
     }
     private async Task Btn_Actualizar_Partida_Recurso_APU_Click(string DetParRec_Id)
@@ -474,6 +477,7 @@
         if (!result.Cancelled)
         {
             await LoadRecursos();
+            await LoadPartida(Par_Id);
         }
     }
     private async Task NavigateToRecursoAsignaRecurso(string Par_Id)
