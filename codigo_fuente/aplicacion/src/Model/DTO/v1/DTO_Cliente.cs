@@ -14,7 +14,7 @@ public class DTO_Cliente_Obten_Paginado
     public string? Cli_Abreviatura { get; set; }
     public string? Cli_NumDocumento { get; set; }
     public string? TipDoc_Nombre { get; set; }
-    //public bool Cli_Estado { get; set; }
+    public string? Cli_Estado { get; set; }
 }
 public class DTO_Cliente_Obten_Nombre
 {

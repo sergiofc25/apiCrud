@@ -7,8 +7,14 @@
 @using MudBlazor
 @using Blazored.LocalStorage
 @using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@using System.Net.Http.Headers
 @inject ILocalStorageService localStorage
 @inject IModalService model
+@inject IDialogService DialogService
+
 
 <PageTitle>Clientes Paginados</PageTitle>
 
@@ -59,12 +65,18 @@
                     <MudTd DataLabel="Número de Documento">@context.Cli_NumDocumento</MudTd>
                     <MudTd DataLabel="Tipo de Documento">@context.TipDoc_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Cliente_Click(@context.Cli_Id))">
-                            Actualizar
-                        </MudButton>
-                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Small" @onclick="@(() => Btn_Eliminar_Cliente_Click(@context.Cli_Id))">
-                            Eliminar
-                        </MudButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Primary"
+                                       Size="Size.Small" @onclick="@(() => Btn_Actualizar_Cliente_Click(@context.Cli_Id))">
+                        </MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       @onclick="@(() => Btn_Eliminar_Cliente_Click(context))"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Error"
+                                       Disabled="@(context.Cli_Estado == "False")"
+                                       Title="Eliminar recurso">
+                        </MudIconButton>
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
@@ -91,6 +103,8 @@
     private int numeroPagina = 1;
     private string searchTerm = string.Empty;
     private bool cargando = true;
+    private string errorMessage = string.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -167,6 +181,69 @@
         numeroPagina = 1; // Reset to first page when searching
         _ = LoadClients();
     }
+    private async Task EliminarCliente(DTO_Cliente_Obten_Paginado cliente)
+    {
+        if (cliente == null) return;
+
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var requestData = new { Cli_Id = cliente.Cli_Id, Cli_Estado = "False" };
+            var content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"api/v1/Cliente/Actualiza_Condicion/{cliente.Cli_Id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadClients();
+
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+    private async Task Btn_Eliminar_Cliente_Click(DTO_Cliente_Obten_Paginado cliente)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true
+            };
+
+        var parameters = new DialogParameters();
+        parameters.Add("Cliente", cliente);
+
+        var dialog = DialogService.Show<ClienteEliminaDialog>("Eliminar Cliente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled && result.Data is bool confirmado && confirmado)
+        {
+            await EliminarCliente(cliente);
+        }
+    }
 
     private void Btn_Nuevo_Cliente_Click()
     {
@@ -176,10 +253,5 @@
     private void Btn_Actualizar_Cliente_Click(string Cli_Id)
     {
         NavigationManager.NavigateTo($"/cliente_actualiza/{Cli_Id}");
-    }
-
-    private void Btn_Eliminar_Cliente_Click(string Cli_Id)
-    {
-        NavigationManager.NavigateTo($"/cliente_actualiza_condicion/{Cli_Id}");
     }
 }
