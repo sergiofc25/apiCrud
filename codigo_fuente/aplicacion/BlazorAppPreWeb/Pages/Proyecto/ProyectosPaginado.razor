@@ -5,10 +5,12 @@
 @inject IHttpClientFactory ClientFactory
 @using Model.DTO.v1
 @using MudBlazor
+@using System.Text
 @using Blazored.LocalStorage
 @using System.Net.Http.Headers
 @inject ILocalStorageService localStorage
 @inject IModalService model
+@inject IDialogService DialogService
 
 <PageTitle>Proyectos Paginados</PageTitle>
 
@@ -69,13 +71,24 @@
                     <MudTd DataLabel="Provincia">@context.Prov_Nombre</MudTd>
                     <MudTd DataLabel="Distrito">@context.Dist_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye" Variant="Variant.Filled" Color="Color.Warning" Size="Size.Medium" @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))" />
-                        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))">
-                            Actualizar
-                        </MudButton> *@
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))" />
-
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Medium" @onclick="@(() => Btn_Eliminar_Proyecto_Click(@context.Pre_Id))" />
+                        <MudIconButton 
+                            Icon="@Icons.Material.Filled.RemoveRedEye" 
+                            Variant="Variant.Filled" 
+                            Color="Color.Warning" 
+                            Size="Size.Medium" 
+                            @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))" />
+                        <MudIconButton 
+                            Icon="@Icons.Material.Filled.Edit" 
+                            Variant="Variant.Filled" 
+                            Color="Color.Primary" 
+                            Size="Size.Medium" 
+                            @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       @onclick="@(() => Btn_Eliminar_Proyecto_Click(context))"
+                                       Variant="Variant.Filled"
+                                       Color="Color.Error"
+                                       Title="Eliminar proyecto">
+                        </MudIconButton>
 
                     </MudTd>
                 </RowTemplate>
@@ -103,6 +116,8 @@
     private int numeroPagina = 1;
     private string searchTerm = string.Empty;
     private bool cargando = true;
+    private string errorMessage = string.Empty;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -166,6 +181,69 @@
             StateHasChanged();
         }
     }
+    private async Task EliminarProyecto(DTO_Presupuesto_Obten_Paginado proyecto)
+    {
+        if (proyecto == null) return;
+
+        cargando = true;
+        StateHasChanged();
+
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var requestData = new { Pre_Id = proyecto.Pre_Id, Pre_Estado = "False" };
+            var content = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"api/v1/Presupuesto/Actualiza_Condicion/{proyecto.Pre_Id}", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadClients();
+
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+        finally
+        {
+            cargando = false;
+            StateHasChanged();
+        }
+    }
+    private async Task Btn_Eliminar_Proyecto_Click(DTO_Presupuesto_Obten_Paginado proyecto)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true
+            };
+
+        var parameters = new DialogParameters();
+        parameters.Add("Proyecto", proyecto);
+
+        var dialog = DialogService.Show<ProyectoEliminaDialog>("Eliminar Proyecto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled && result.Data is bool confirmado && confirmado)
+        {
+            await EliminarProyecto(proyecto);
+        }
+    }
 
     private void PageChanged(int page)
     {
@@ -193,8 +271,4 @@
         NavigationManager.NavigateTo($"/proyecto_actualiza/{Pre_Id}");
     }
 
-    private void Btn_Eliminar_Proyecto_Click(string Pre_Id)
-    {
-        NavigationManager.NavigateTo($"/proyecto_actualiza_condicion/{Pre_Id}");
-    }
 }

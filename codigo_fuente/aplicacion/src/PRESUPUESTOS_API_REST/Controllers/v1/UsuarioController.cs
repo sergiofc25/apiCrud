@@ -29,7 +29,7 @@ public class UsuarioController : ControllerBase
         _UsuarioService = UsuarioService;
         _mapper = mapper;
     }
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "SU, Administrador")]
     [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}")]
     public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, [FromQuery] string? PorCorreo = null)
     {
@@ -60,7 +60,7 @@ public class UsuarioController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "SU, Administrador")]
     [HttpGet("Obten_x_Id/{Usu_Id}")]
     public async Task<IActionResult> Obten_x_Id(int Usu_Id)
     {
@@ -78,7 +78,7 @@ public class UsuarioController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "SU, Administrador")]
     [HttpPost("Crea")]
     public async Task<IActionResult> Crea([FromBody] DTO_Usuario_Crea eDTO_Usuario_Crea)
     {
@@ -108,7 +108,7 @@ public class UsuarioController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "SU, Administrador")]
     [HttpPut("Actualiza/{Usu_Id}")]
     public async Task<IActionResult> Actualiza(int Usu_Id, [FromBody] DTO_Usuario_Actualiza eDTO_Usuario_Actualiza)
     {
@@ -139,7 +139,7 @@ public class UsuarioController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
-    [Authorize(Roles = "Administrador")]
+    [Authorize(Roles = "SU")]
     [HttpPut("Actualiza_Condicion/{Usu_Id}")]
     public async Task<IActionResult> Actualiza_Condicion(int Usu_Id, [FromBody] DTO_Usuario_Actualiza_Condicion eDTO_Usuario_Actualiza_Condicion)
     {
