@@ -59,6 +59,7 @@ public class PartidaController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea")]
     public async Task<IActionResult> Crea([FromBody] DTO_Partida_Crea eDTO_Partida_Crea)
     {
@@ -83,6 +84,7 @@ public class PartidaController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza/{Par_Id}")]
     public async Task<IActionResult> Actualiza(int Par_Id, [FromBody] DTO_Partida_Actualiza eDTO_Partida_Actualiza)
     {
@@ -103,6 +105,7 @@ public class PartidaController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Inhabilita/{Par_Id}")]
     public async Task<IActionResult> Inhabilita(int Par_Id, [FromBody] DTO_Partida_Inhabilita eDTO_Partida_Inhabilita)
     {

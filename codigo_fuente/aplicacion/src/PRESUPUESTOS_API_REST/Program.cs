@@ -121,6 +121,12 @@ builder.Services.AddHttpClient();
 builder.Services.AddApiVersioning();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("NotInvitado", policy =>
+        policy.RequireAssertion(context =>
+            !context.User.IsInRole("Invitado"))); // Niega acceso si el usuario tiene el rol
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

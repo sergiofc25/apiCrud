@@ -24,8 +24,8 @@ public class Partida_RecursoController : ControllerBase
         _Partida_RecursoService = Partida_RecursoService;
         _mapper = mapper;
     }
-    
-    
+
+    [Authorize(Policy = "NotInvitado")]
     [HttpDelete("Elimina_APU/{DetParRec_Id}")]
     public async Task<IActionResult> Elimina_APU(int DetParRec_Id)
     {
@@ -76,6 +76,7 @@ public class Partida_RecursoController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza_APU/{DetParRec_Id}")]
     public async Task<IActionResult> Actualiza_APU(int DetParRec_Id, [FromBody] DTO_Partida_Recurso_Actualiza_APU eDTO_Partida_Recurso_Actualiza_APU)
     {

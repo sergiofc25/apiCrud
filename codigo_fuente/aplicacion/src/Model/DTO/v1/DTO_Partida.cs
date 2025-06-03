@@ -17,6 +17,10 @@ public class DTO_Partida_Obten_x_SubPresupuesto
     public string? Par_RenManObra { get; set; }
     public string? Par_RenEquipo { get; set; }
     public string? UniMed_Nombre { get; set; }
+    public string? UniMed_Abreviatura { get; set; }
+    public decimal? Par_PreUnitario { get; set; }
+    public decimal? Par_Metrado { get; set; }
+    public decimal? Par_PreUnitarioFinal { get; set; }
     public string? Par_Estado { get; set; }
 }
 public class DTO_Partida_Obten_x_Id

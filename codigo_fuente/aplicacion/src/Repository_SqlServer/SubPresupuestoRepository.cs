@@ -97,7 +97,7 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
 
         oCmd.Parameters.AddWithValue("Pre_Id", Ent_SubPresupuesto.ePresupuesto.Pre_Id);
         oCmd.Parameters.AddWithValue("Padre_Id", Ent_SubPresupuesto.Padre_Id);
-        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre.ToUpper());
         oCmd.Parameters.AddWithValue("SubPre_Nivel", Ent_SubPresupuesto.SubPre_Nivel);
         oCmd.Parameters.AddWithValue("SubPre_Orden", Ent_SubPresupuesto.SubPre_Orden);
 
@@ -122,7 +122,7 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         oCmd.CommandType = CommandType.StoredProcedure;
 
         oCmd.Parameters.AddWithValue("SubPre_Padre_Id", SubPre_Padre_Id);
-        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre.ToUpper());
 
         var subPreIdParam = new SqlParameter
         {
@@ -145,7 +145,7 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         oCmd.CommandType = CommandType.StoredProcedure;
 
         oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
-        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre.ToUpper());
 
         var subPreIdParam = new SqlParameter
         {
@@ -168,7 +168,7 @@ public class SubPresupuestoRepository: Repository, ISubPresupuestoRepository
         oCmd.CommandType = CommandType.StoredProcedure;
 
         oCmd.Parameters.AddWithValue("SubPre_Id", Ent_SubPresupuesto.SubPre_Id);
-        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre);
+        oCmd.Parameters.AddWithValue("SubPre_Nombre", Ent_SubPresupuesto.SubPre_Nombre.ToUpper());
 
         return oCmd.ExecuteNonQuery();
     }

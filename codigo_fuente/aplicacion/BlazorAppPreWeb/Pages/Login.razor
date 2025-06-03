@@ -194,7 +194,8 @@
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    errorMessage = $"Error en la solicitud de autenticación: {response.StatusCode} - {response.ReasonPhrase}. Detalles: {errorContent}";
+                    // errorMessage = $"Error en la solicitud de autenticación: {response.StatusCode} - {response.ReasonPhrase}. Detalles: {errorContent}";
+                    errorMessage = "Usuario o Contraseña Incorrecta";
                 }
             }
             catch (Exception ex)

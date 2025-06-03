@@ -30,6 +30,15 @@
             </MudGrid>
         </MudPaper>
     </MudItem>
+    <MudItem xs="12">
+        <MudPaper Class="pa-5 d-flex justify-end" Elevation="3">
+            <MudSwitch T="bool"
+                       @bind-Checked="disabled"
+                       Color="Color.Primary"
+                       Label="Editar Metrados / Cantidades"
+                       Class="mt-2" />
+        </MudPaper>
+    </MudItem>
     <MudItem xs="12" Class="mt-4">
         <MudPaper Class="pa-4" Elevation="3">
             <MudTable Items="@combinedItems"
@@ -44,6 +53,10 @@
                 <HeaderContent>
                     <MudTh Style="width: 150px;">Item</MudTh>
                     <MudTh>Nombre</MudTh>
+                    <MudTh Style="width: 200;">Metrado</MudTh>
+                    <MudTh>Unidad</MudTh>
+                    <MudTh>Precio</MudTh>
+                    <MudTh>Parcial</MudTh>
                     <MudTh Style="width: 120px;">Tipo</MudTh>
                     <MudTh Style="width: 120px;">Acciones</MudTh>
                 </HeaderContent>
@@ -58,6 +71,26 @@
                         <div style="margin-left: @(GetIndentLevel(context.Ruta))px">
                             @context.Nombre
                         </div>
+                    </MudTd>
+
+                    <MudTd DataLabel="Metrado" Style="padding: 6px 8px; width: 200px;">
+                        @if (context.EsPartida)
+                        {
+                            <MudNumericField @bind-Value="@context.Metrado"
+                                                Label="Metrado"
+                                                Required
+                                                Disabled="@disabled"
+                                                Style="max-width: 100px;" />   
+                        }
+                    </MudTd>
+                    <MudTd DataLabel="Unidad" Style="padding: 6px 8px;">
+                            @context.Unidad
+                    </MudTd>
+                    <MudTd DataLabel="Precio" Style="padding: 6px 8px;">
+                            @context.PrecioUnitarioP
+                    </MudTd>
+                    <MudTd DataLabel="Parcial" Style="padding: 6px 8px;">
+                        @context.PrecioUnitarioFinal
                     </MudTd>
                     <MudTd DataLabel="Tipo" Style="padding: 6px 8px;">
                         @if (context.EsPartida)
@@ -139,14 +172,20 @@
     private IEnumerable<DTO_Presupuesto_Obten_x_Id> presupuesto = new List<DTO_Presupuesto_Obten_x_Id>();
     private bool _processing = false;
     private string errorMessage = string.Empty;
-    private bool isLoading = true; // Estado inicial de carga
+    private bool isLoading = true;
+    bool disabled = true;
+
 
     // Clase para combinar subpresupuestos y partidas
     private class CombinedItem
     {
         public string Id { get; set; }
         public string Nombre { get; set; }
+        public decimal? Metrado { get; set; }
+        public string Unidad { get; set; }
         public string Ruta { get; set; }
+        public decimal? PrecioUnitarioP { get; set; }
+        public decimal? PrecioUnitarioFinal { get; set; }
         public bool EsPartida { get; set; }
     }
 
@@ -318,6 +357,10 @@
                     {
                         Id = part.Par_Id,
                         Nombre = part.Par_Nombre,
+                        Unidad = part.UniMed_Abreviatura,
+                        PrecioUnitarioP = part.Par_PreUnitario,
+                        PrecioUnitarioFinal = part.Par_PreUnitarioFinal,
+                        Metrado = part.Par_Metrado,
                         Ruta = part.Par_Ruta,
                         EsPartida = true
                     });

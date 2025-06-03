@@ -11,8 +11,10 @@
 @inject ILocalStorageService localStorage
 @inject IModalService model
 @inject IDialogService DialogService
+@inject UserStateService UserStateService
 
 <PageTitle>Proyectos Paginados</PageTitle>
+
 
 <MudGrid>
     <MudItem xs="12">
@@ -24,7 +26,7 @@
 
                 <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
-                               Size="Size.Small" OnClick="Btn_Nuevo_Proyecto_Click">NUEVO</MudButton>
+                    Size="Size.Small" OnClick="Btn_Nuevo_Proyecto_Click">NUEVO</MudButton>
                 </MudItem>
             </MudItem>
         </MudPaper>
@@ -33,16 +35,16 @@
     <MudItem xs="12">
         <MudPaper Class="pa-5" Elevation="3">
             <MudTable Items="@presupuestos" RowsPerPage="@registroPagina" FixedHeader="true" Dense="true"
-                      Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@cargando"
-                      LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
+            Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@cargando"
+            LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Listado de Proyectos</MudText>
                 </ToolBarContent>
                 <ToolBarContent>
                     <MudItem Class="d-flex align-center justify-center mud-width-full pb-5" xs="12">
                         <MudTextField T="string" Value="@searchTerm" ValueChanged="@(value => OnSearch(value))"
-                                      Placeholder="Buscar por Nombre" Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                        Placeholder="Buscar por Nombre" Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
                         </MudTextField>
                     </MudItem>
                 </ToolBarContent>
@@ -71,24 +73,46 @@
                     <MudTd DataLabel="Provincia">@context.Prov_Nombre</MudTd>
                     <MudTd DataLabel="Distrito">@context.Dist_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <MudIconButton 
-                            Icon="@Icons.Material.Filled.RemoveRedEye" 
-                            Variant="Variant.Filled" 
-                            Color="Color.Warning" 
-                            Size="Size.Medium" 
+                        @if (UserStateService.CurrentUser?.Rol_Nombre == "Invitado")
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                            Variant="Variant.Filled"
+                            Color="Color.Warning"
+                            Size="Size.Medium"
                             @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))" />
-                        <MudIconButton 
-                            Icon="@Icons.Material.Filled.Edit" 
-                            Variant="Variant.Filled" 
-                            Color="Color.Primary" 
-                            Size="Size.Medium" 
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Disabled="true"
+                            Size="Size.Medium"
                             @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))" />
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       @onclick="@(() => Btn_Eliminar_Proyecto_Click(context))"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Error"
-                                       Title="Eliminar proyecto">
-                        </MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                            @onclick="@(() => Btn_Eliminar_Proyecto_Click(context))"
+                            Variant="Variant.Filled"
+                            Color="Color.Error"
+                            Disabled="true"
+                            Title="Eliminar proyecto">
+                            </MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Warning"
+                                           Size="Size.Medium"
+                                           @onclick="@(() => Btn_Mostrar_SubPresupuestos_Click(@context.Pre_Id))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Medium"
+                                           @onclick="@(() => Btn_Actualizar_Proyecto_Click(@context.Pre_Id))" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           @onclick="@(() => Btn_Eliminar_Proyecto_Click(context))"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Error"
+                                           Title="Eliminar proyecto">
+                            </MudIconButton>
+                        }
 
                     </MudTd>
                 </RowTemplate>

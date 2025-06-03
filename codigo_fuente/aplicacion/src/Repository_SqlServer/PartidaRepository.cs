@@ -44,8 +44,12 @@ public class PartidaRepository: Repository, IPartidaRepository
                 Par_RenEquipo = oDR.GetDecimal(oDR.GetOrdinal("Par_RenEquipo")),
                 eUnidad_Medida = new()
                 {
-                    UniMed_Nombre = oDR.GetString(oDR.GetOrdinal("UniMed_Nombre"))
+                    UniMed_Nombre = oDR.GetString(oDR.GetOrdinal("UniMed_Nombre")),
+                    UniMed_Abreviatura = oDR.GetString(oDR.GetOrdinal("UniMed_Abreviatura"))
                 },
+                Par_PreUnitario = oDR.IsDBNull(oDR.GetOrdinal("Par_PreUnitario")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Par_PreUnitario")),
+                Par_Metrado = oDR.IsDBNull(oDR.GetOrdinal("Par_Metrado")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Par_Metrado")),
+                Par_PreUnitarioFinal = oDR.IsDBNull(oDR.GetOrdinal("Par_PreUnitarioFinal")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Par_PreUnitarioFinal")),
                 Par_Estado = oDR.GetByte(oDR.GetOrdinal("Par_Estado")) != 0 ? true : false
             };
 

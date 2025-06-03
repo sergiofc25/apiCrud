@@ -59,6 +59,7 @@ public class SubPresupuestoController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea")]
     public async Task<IActionResult> Crea([FromBody] DTO_SubPresupuesto_Crea eDTO_SubPresupuesto_Crea)
     {
@@ -83,6 +84,7 @@ public class SubPresupuestoController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea_D/{SubPre_Padre_Id}")]
     public async Task<IActionResult> Crea_D(int SubPre_Padre_Id, [FromBody] DTO_SubPresupuesto_Crea_Dentro eDTO_SubPresupuesto_Crea_Dentro)
     {
@@ -123,6 +125,7 @@ public class SubPresupuestoController : ControllerBase
             });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea_Primer_Nivel/{Pre_Id}")]
     public async Task<IActionResult> Crea_Primer_Nivel(int Pre_Id, [FromBody] DTO_SubPresupuesto_Crea_Primer_Nivel eDTO_SubPresupuesto_Crea_Primer_Nivel)
     {
@@ -181,6 +184,7 @@ public class SubPresupuestoController : ControllerBase
             });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza/{SubPre_Id}")]
     public async Task<IActionResult> Actualiza(int SubPre_Id, [FromBody] DTO_SubPresupuesto_Actualiza_Nombre eDTO_SubPresupuesto_Actualiza_Nombre)
     {
@@ -203,6 +207,7 @@ public class SubPresupuestoController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpDelete("Elimina/{SubPre_Id}")]
     public async Task<IActionResult> Elimina(int SubPre_Id)
     {

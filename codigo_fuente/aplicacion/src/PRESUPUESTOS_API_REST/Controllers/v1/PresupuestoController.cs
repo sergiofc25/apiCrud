@@ -54,7 +54,6 @@ public class PresupuestoController : ControllerBase
         }
     }
 
-    //[HttpGet("{Pre_Id}", Name = "Presupuesto_Obten_x_Id")]
     [HttpGet("Obten_x_Id/{Pre_Id}")]
     public async Task<IActionResult> Obten_x_Id(int Pre_Id)
     {
@@ -72,7 +71,7 @@ public class PresupuestoController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
-
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea")]
     public async Task<IActionResult> Crea([FromBody] DTO_Presupuesto_Crea eDTO_Presupuesto_Crea)
     {
@@ -107,6 +106,7 @@ public class PresupuestoController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza/{Pre_Id}")]
     public async Task<IActionResult> Actualiza(int Pre_Id, [FromBody] DTO_Presupuesto_Actualiza eDTO_Presupuesto_Actualiza)
     {
@@ -137,7 +137,7 @@ public class PresupuestoController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
-
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza_Condicion/{Pre_Id}")]
     public async Task<IActionResult> Actualiza_Condicion(int Pre_Id, [FromBody] DTO_Presupuesto_Actualiza_Condicion eDTO_Presupuesto_Actualiza_Condicion)
     {

@@ -24,9 +24,7 @@ public class ClienteController : ControllerBase
         _ClienteService = clienteService;
         _mapper = mapper;
     }
-    //[Authorize(Roles = "Administrador")]
     [HttpGet("Obten_Paginado/{RegistroPagina}/{NumeroPagina}")]
-    //[HttpGet("{RegistroPagina}/{NumeroPagina}/{PorNDocumento}", Name = "Obten_Paginado")]
     public async Task<IActionResult> Obten_Paginado(int RegistroPagina, int NumeroPagina, [FromQuery] string? PorNDocumento = null)
     {
         try
@@ -114,7 +112,7 @@ public class ClienteController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
-
+    [Authorize(Policy = "NotInvitado")]
     [HttpPost("Crea")]
     public async Task<IActionResult> Crea([FromBody] DTO_Cliente_Crea eDTO_Cliente_Crea)
     {
@@ -153,6 +151,7 @@ public class ClienteController : ControllerBase
             return StatusCode(500, "Error interno del servidor.");
         }
     }
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza/{Cli_Id}")]
     public async Task<IActionResult> Actualiza(int Cli_Id, [FromBody] DTO_Cliente_Actualiza eDTO_Cliente_Actualiza)
     {
@@ -187,7 +186,7 @@ public class ClienteController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
-
+    [Authorize(Policy = "NotInvitado")]
     [HttpPut("Actualiza_Condicion/{Cli_Id}")]
     public async Task<IActionResult> Actualiza_Condicion(int Cli_Id, [FromBody] DTO_Cliente_Actualiza_Condicion eDTO_Cliente_Actualiza_Condicion)
     {

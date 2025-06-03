@@ -14,6 +14,8 @@
 @inject ILocalStorageService localStorage
 @inject IModalService model
 @inject IDialogService DialogService
+@inject UserStateService UserStateService
+
 
 
 <PageTitle>Clientes Paginados</PageTitle>
@@ -28,7 +30,7 @@
 
                 <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
-                               Size="Size.Small" OnClick="Btn_Nuevo_Cliente_Click">NUEVO</MudButton>
+                    Size="Size.Small" OnClick="Btn_Nuevo_Cliente_Click">NUEVO</MudButton>
                 </MudItem>
             </MudItem>
         </MudPaper>
@@ -37,21 +39,21 @@
     <MudItem xs="12">
         <MudPaper Class="pa-5" Elevation="3">
             <MudTable Items="@clientes" RowsPerPage="@registroPagina" FixedHeader="true" Dense="true"
-                      Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@cargando"
-                      LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
+            Hover="true" Striped="true" Breakpoint="Breakpoint.Sm" Loading="@cargando"
+            LoadingProgressColor="Color.Primary" Height="466px" Elevation="3">
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Listado de Clientes</MudText>
                 </ToolBarContent>
                 <ToolBarContent>
                     <MudItem Class="d-flex align-center justify-center mud-width-full pb-5" xs="12">
                         <MudTextField T="string" Value="@searchTerm" ValueChanged="@(value => OnSearch(value))"
-                                      Placeholder="Buscar por N° de documento" Adornment="Adornment.Start"
-                                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
+                        Placeholder="Buscar por N° de documento" Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0">
                         </MudTextField>
                     </MudItem>
                 </ToolBarContent>
                 <HeaderContent>
-                   
+
                     <MudTh>Nombre</MudTh>
                     <MudTh>Abreviatura</MudTh>
                     <MudTh>Número de Documento</MudTh>
@@ -59,24 +61,44 @@
                     <MudTh>Acciones</MudTh>
                 </HeaderContent>
                 <RowTemplate>
-                    
+
                     <MudTd DataLabel="Nombre">@context.Cli_NomApeRazSocial</MudTd>
                     <MudTd DataLabel="Abreviatura">@context.Cli_Abreviatura</MudTd>
                     <MudTd DataLabel="Número de Documento">@context.Cli_NumDocumento</MudTd>
                     <MudTd DataLabel="Tipo de Documento">@context.TipDoc_Nombre</MudTd>
                     <MudTd DataLabel="Acciones">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Primary"
-                                       Size="Size.Small" @onclick="@(() => Btn_Actualizar_Cliente_Click(@context.Cli_Id))">
-                        </MudIconButton>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       @onclick="@(() => Btn_Eliminar_Cliente_Click(context))"
-                                       Variant="Variant.Filled"
-                                       Color="Color.Error"
-                                       Disabled="@(context.Cli_Estado == "False")"
-                                       Title="Eliminar recurso">
-                        </MudIconButton>
+                        @if(UserStateService.CurrentUser?.Rol_Nombre == "Invitado")
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            Disabled="true"
+                            Size="Size.Small" @onclick="@(() => Btn_Actualizar_Cliente_Click(@context.Cli_Id))">
+                            </MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                            @onclick="@(() => Btn_Eliminar_Cliente_Click(context))"
+                            Variant="Variant.Filled"
+                            Color="Color.Error"
+                            Disabled="true"
+                            Title="Eliminar recurso">
+                            </MudIconButton>
+                        }
+                        else
+                        {
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           Size="Size.Small" @onclick="@(() => Btn_Actualizar_Cliente_Click(@context.Cli_Id))">
+                            </MudIconButton>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           @onclick="@(() => Btn_Eliminar_Cliente_Click(context))"
+                                           Variant="Variant.Filled"
+                                           Color="Color.Error"
+                                           Disabled="@(context.Cli_Estado == "False")"
+                                           Title="Eliminar recurso">
+                            </MudIconButton>
+                        }
+                        
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>

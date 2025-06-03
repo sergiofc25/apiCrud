@@ -322,6 +322,14 @@ public class MappingProfile : Profile
            opt => opt.MapFrom(origen => origen.Par_RenEquipo))
            .ForMember(destino => destino.UniMed_Nombre,
            opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Nombre))
+           .ForMember(destino => destino.UniMed_Abreviatura,
+           opt => opt.MapFrom(origen => origen.eUnidad_Medida.UniMed_Abreviatura))
+           .ForMember(destino => destino.Par_PreUnitario,
+           opt => opt.MapFrom(origen => origen.Par_PreUnitario))
+           .ForMember(destino => destino.Par_Metrado,
+           opt => opt.MapFrom(origen => origen.Par_Metrado))
+           .ForMember(destino => destino.Par_PreUnitarioFinal,
+           opt => opt.MapFrom(origen => origen.Par_PreUnitarioFinal))
            .ForMember(destino => destino.Par_Estado,
            opt => opt.MapFrom(origen => origen.Par_Estado));
         CreateMap<Ent_Partida, DTO_Partida_Obten_x_Id>()
