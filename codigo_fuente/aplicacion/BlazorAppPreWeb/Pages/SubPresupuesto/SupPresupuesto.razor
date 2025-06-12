@@ -76,11 +76,14 @@
                     <MudTd DataLabel="Metrado" Style="padding: 6px 8px; width: 200px;">
                         @if (context.EsPartida)
                         {
-                            <MudNumericField @bind-Value="@context.Metrado"
-                                                Label="Metrado"
-                                                Required
-                                                Disabled="@disabled"
-                                                Style="max-width: 100px;" />   
+                            <MudNumericField T="decimal?"
+                                             Value="@context.Metrado"
+                                             ValueChanged="@(newValue => OnMetradoChanged(context.Id, newValue))"
+                                             Label="Metrado"
+                                             Required
+                                             Disabled="@disabled"
+                                             Style="max-width: 100px;"
+                                             Immediate="true" />
                         }
                     </MudTd>
                     <MudTd DataLabel="Unidad" Style="padding: 6px 8px;">
@@ -170,6 +173,8 @@
     private IEnumerable<DTO_Partida_Obten_x_SubPresupuesto> partidas = new List<DTO_Partida_Obten_x_SubPresupuesto>();
     private List<CombinedItem> combinedItems = new List<CombinedItem>();
     private IEnumerable<DTO_Presupuesto_Obten_x_Id> presupuesto = new List<DTO_Presupuesto_Obten_x_Id>();
+    private DTO_Partida_Actualiza_Metrado partia_actualiza_metrado = new DTO_Partida_Actualiza_Metrado();
+
     private bool _processing = false;
     private string errorMessage = string.Empty;
     private bool isLoading = true;
@@ -207,6 +212,24 @@
         CombineItems();
         isLoading = false;
 
+    }
+    private async Task OnMetradoChanged(string partidaId, decimal? newMetrado)
+    {
+        var partida = combinedItems.FirstOrDefault(p => p.Id == partidaId);
+        if (partida != null && partida.Metrado != newMetrado)
+        {
+            if (newMetrado.HasValue)
+            {
+                var partidaActualizaMetrado = new DTO_Partida_Actualiza_Metrado
+                    {
+                        Par_Metrado = newMetrado.Value
+                    };
+
+                partia_actualiza_metrado = partidaActualizaMetrado;
+                await Actualizar_Metrado(partidaId);
+            }
+        }
+        
     }
 
     // Método para verificar si un subpresupuesto tiene partidas
@@ -331,6 +354,44 @@
         {
             _processing = false;
             StateHasChanged();
+        }
+    }
+    private async Task Actualizar_Metrado(string partidaId)
+    {
+        if (!int.TryParse(partidaId, out int Par_Id))
+        {
+            Snackbar.Add("Error: ID de partida no válido", Severity.Error);
+            return;
+        }
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer",
+                await localStorage.GetItemAsync<string>("authToken")
+            );
+
+            var response = await client.PutAsJsonAsync(
+                $"api/v1/Partida/Actualiza_Metrado/{Par_Id}",
+                partia_actualiza_metrado
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Metrado actualizado correctamente", Severity.Success);
+                await LoadPartidas(); // Recargar datos para reflejar cambios
+                CombineItems();     // Reconstruir la lista combinada
+                StateHasChanged();   // Forzar actualización de UI
+
+            }
+            else
+            {
+                Snackbar.Add("Error al actualizar el metrado", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
         }
     }
 

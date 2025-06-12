@@ -144,5 +144,15 @@ public class PartidaRepository: Repository, IPartidaRepository
         oCmd.Parameters.AddWithValue("Par_Estado", Par_Estado);
         return oCmd.ExecuteNonQuery();
     }
+    public int Actualiza_Metrado(int Par_Id, decimal Par_Metrado)
+    {
+        using var oCmd = CreateCommand("SP_Partida_Actualiza_Metrado");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Par_Id", Par_Id);
+        oCmd.Parameters.AddWithValue("Par_Metrado", Par_Metrado);
+        return oCmd.ExecuteNonQuery();
+    }
 }
 

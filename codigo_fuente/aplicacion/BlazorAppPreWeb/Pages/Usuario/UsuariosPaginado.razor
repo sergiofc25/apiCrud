@@ -60,6 +60,7 @@
                     <MudTh>Rol</MudTh>
                     <MudTh>Fecha Registro</MudTh>
                     <MudTh>Observación</MudTh>
+                    <MudTh>Acciones</MudTh>
                 </HeaderContent>
                 <RowTemplate>
 
@@ -71,26 +72,27 @@
                     @if(@context.Rol_Nombre != "SU")
                     {
                         <MudTd DataLabel="Acciones">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit" 
-                        Variant="Variant.Filled" 
-                        Color="Color.Primary" 
-                        Size="Size.Small" 
-                        Title="Editar Usuario"
-                        @onclick="@(() => Btn_Actualizar_Usuario_Click(@context.Usu_Id))">
-                        </MudIconButton>
-                        @if (UserStateService.CurrentUser.Rol_Nombre == "SU")
-                        {
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-
-                                           @onclick="@(() => OpenDialogAsyncEliminaRecurso(context))"
-                                            Variant="Variant.Filled"
-                                            Color="Color.Error"
-                                            Disabled="@(context.Usu_Estado == "False")"
-                                            Title="Eliminar Usuario">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                            Variant="Variant.Filled" 
+                            Color="Color.Primary" 
+                            Size="Size.Small" 
+                            Title="Editar Usuario"
+                            @onclick="@(() => Btn_Actualizar_Usuario_Click(@context.Usu_Id))">
                             </MudIconButton>
-                        }
+                            
+                            @if (UserStateService.CurrentUser.Rol_Nombre == "SU")
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+
+                                               @onclick="@(() => OpenDialogAsyncEliminaRecurso(context))"
+                                                Variant="Variant.Filled"
+                                                Color="Color.Error"
+                                                Disabled="@(context.Usu_Estado == "False")"
+                                                Title="Eliminar Usuario">
+                                </MudIconButton>
+                            }
                         
-                    </MudTd>
+                        </MudTd>
                     }
                 </RowTemplate>
                 <PagerContent>

@@ -128,6 +128,29 @@ public class PartidaController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
+    [HttpPut("Actualiza_Metrado/{Par_Id}")]
+    public async Task<IActionResult> Actualiza_Metrado(int Par_Id, [FromBody] DTO_Partida_Actualiza_Metrado eDTO_Partida_Actualiza_Metrado)
+    {
+        try
+        {
+            if (eDTO_Partida_Actualiza_Metrado is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
 
+            var Partida_Existente = await _PartidaService.Obten_x_Id(Par_Id);
+
+            if (Partida_Existente is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos no existes." });
+
+            var Partida = _mapper.Map(eDTO_Partida_Actualiza_Metrado, Partida_Existente);
+
+            await _PartidaService.Actualiza_Metrado(Partida.Par_Id, Partida.Par_Metrado ?? 1m);
+
+
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
+        }
+    }
 }
 

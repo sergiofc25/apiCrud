@@ -57,3 +57,7 @@ public class DTO_Partida_Inhabilita
 {
     public string? Par_Estado { get; set; }
 }
+public class DTO_Partida_Actualiza_Metrado
+{
+    public decimal? Par_Metrado { get; set; }
+}

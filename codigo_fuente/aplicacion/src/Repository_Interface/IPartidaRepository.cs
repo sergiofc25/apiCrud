@@ -14,6 +14,6 @@ namespace Repository_Interface
         int Crea(Ent_Partida Partida);
         int Actualiza(Ent_Partida Partida);
         int Inhabilita(int Par_Id, bool Par_Estado);//Cambia estado y desvincula de subpresupuesto (actualiza a null SubPre_Id)
-
+        int Actualiza_Metrado(int Par_Id, decimal Par_Metrado);
     }
 }

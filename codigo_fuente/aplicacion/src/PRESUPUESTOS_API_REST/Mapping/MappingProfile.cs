@@ -376,6 +376,9 @@ public class MappingProfile : Profile
         CreateMap<DTO_Partida_Inhabilita, Ent_Partida>()
             .ForPath(destino => destino.Par_Estado,
             opt => opt.MapFrom(origen => origen.Par_Estado));
+        CreateMap<DTO_Partida_Actualiza_Metrado, Ent_Partida>()
+            .ForPath(destino => destino.Par_Metrado,
+            opt => opt.MapFrom(origen => origen.Par_Metrado));
 
 
         //UNIDAD_MEDIDA

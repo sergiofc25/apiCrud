@@ -16,6 +16,7 @@ public interface IPartidaService
     Task<int> Crea(Ent_Partida Partida);
     Task<int> Actualiza(Ent_Partida Partida);
     Task<bool> Inhabilita(int Par_Id, bool Par_Estado);
+    Task<int> Actualiza_Metrado(int Par_Id, decimal Par_Metrado);
 
 }
 public class PartidaService : IPartidaService
@@ -98,6 +99,24 @@ public class PartidaService : IPartidaService
             {
                 return false;
             }
+        });
+    }
+    public async Task<int> Actualiza_Metrado(int Par_Id, decimal Par_Metrado)
+    {
+        return await Task.Run(() =>
+        {
+            using var context = _unitOfWork.Create();
+
+            var CantidadAfectado = context.Repositories.PartidaRepository.Actualiza_Metrado(Par_Id, Par_Metrado);
+
+            if (CantidadAfectado > 0)
+            {
+                context.SaveChanges();
+
+                return CantidadAfectado;
+            }
+
+            return CantidadAfectado;
         });
     }
 
