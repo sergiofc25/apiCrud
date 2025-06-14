@@ -26,6 +26,15 @@ public class DTO_Presupuesto_Obten_x_Id
     public string? Dep_Nombre { get; set; }
     public string? Prov_Nombre { get; set; }
     public string? Dist_Nombre { get; set; }
+    public decimal? Pre_CostoDirecto { get; set; }
+    public int? Pre_PGastosGenerales { get; set; }
+    public int? Pre_PUtilidad { get; set; }
+    public decimal? Pre_SubTotal { get; set; }
+    public int? Pre_PIGV { get; set; }
+    public decimal? Pre_TotalPresupuesto { get; set; }
+    public decimal? Pre_GastosGenerales { get; set; }
+    public decimal? Pre_Utilidad { get; set; }
+    public decimal? Pre_IGV { get; set; }
     public string? Pre_Jornal { get; set; }
     public string? Pre_Estado { get; set; }
 

@@ -212,6 +212,24 @@ public class MappingProfile : Profile
             opt => opt.MapFrom(origen => origen.eProvincia.Prov_Nombre))
             .ForMember(destino => destino.Dist_Nombre,
             opt => opt.MapFrom(origen => origen.eDistrito.Dist_Nombre))
+            .ForMember(destino => destino.Pre_CostoDirecto,
+            opt => opt.MapFrom(origen => origen.Pre_CostoDirecto))
+            .ForMember(destino => destino.Pre_PGastosGenerales,
+            opt => opt.MapFrom(origen => origen.Pre_PGastosGenerales))
+            .ForMember(destino => destino.Pre_PUtilidad,
+            opt => opt.MapFrom(origen => origen.Pre_PUtilidad))
+            .ForMember(destino => destino.Pre_SubTotal,
+            opt => opt.MapFrom(origen => origen.Pre_SubTotal))
+            .ForMember(destino => destino.Pre_PIGV,
+            opt => opt.MapFrom(origen => origen.Pre_PIGV))
+            .ForMember(destino => destino.Pre_TotalPresupuesto,
+            opt => opt.MapFrom(origen => origen.Pre_TotalPresupuesto))
+            .ForMember(destino => destino.Pre_GastosGenerales,
+            opt => opt.MapFrom(origen => origen.Pre_GastosGenerales))
+            .ForMember(destino => destino.Pre_Utilidad,
+            opt => opt.MapFrom(origen => origen.Pre_Utilidad))
+            .ForMember(destino => destino.Pre_IGV,
+            opt => opt.MapFrom(origen => origen.Pre_IGV))
             .ForMember(destino => destino.Pre_Jornal,
             opt => opt.MapFrom(origen => origen.Pre_Jornal))
             .ForMember(destino => destino.Pre_Estado,
