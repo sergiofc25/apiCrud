@@ -13,6 +13,8 @@ public interface IPresupuestoService
     Task<int> Existente(int Pre_Id, string Pre_Nombre, bool Pre_Estado);
     Task<int> Actualiza(Ent_Presupuesto Presupuesto);
     Task<bool> Actualiza_Condicion(int Pre_Id, bool Pre_Estado);
+    Task<int> Actualiza_Presupuesto_Total(int Pre_Id, decimal Pre_PGastosGenerales, decimal Pre_PUtilidad);
+
 }
 public class PresupuestoService : IPresupuestoService
 {
@@ -118,6 +120,23 @@ public class PresupuestoService : IPresupuestoService
             }
         });
     }
+    public async Task<int> Actualiza_Presupuesto_Total(int Pre_Id, decimal Pre_PGastosGenerales, decimal Pre_PUtilidad)
+    {
+        return await Task.Run(() =>
+        {
+            using var context = _unitOfWork.Create();
 
+            var CantidadAfectado = context.Repositories.PresupuestoRepository.Actualiza_Presupuesto_Total(Pre_Id, Pre_PGastosGenerales, Pre_PUtilidad);
+
+            if (CantidadAfectado > 0)
+            {
+                context.SaveChanges();
+
+                return CantidadAfectado;
+            }
+
+            return CantidadAfectado;
+        });
+    }
 }
 

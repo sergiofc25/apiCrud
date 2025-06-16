@@ -102,8 +102,8 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
                 eProvincia = new() { Prov_Nombre = oDR.GetString(oDR.GetOrdinal("Prov_Nombre")), },
                 eDistrito = new() { Dist_Nombre = oDR.GetString(oDR.GetOrdinal("Dist_Nombre")), },
                 Pre_CostoDirecto = oDR.IsDBNull(oDR.GetOrdinal("Pre_CostoDirecto")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Pre_CostoDirecto")),
-                Pre_PGastosGenerales = oDR.IsDBNull(oDR.GetOrdinal("Pre_PGastosGenerales")) ? null : oDR.GetInt32(oDR.GetOrdinal("Pre_PGastosGenerales")),
-                Pre_PUtilidad = oDR.IsDBNull(oDR.GetOrdinal("Pre_PUtilidad")) ? null : oDR.GetInt32(oDR.GetOrdinal("Pre_PUtilidad")),
+                Pre_PGastosGenerales = oDR.IsDBNull(oDR.GetOrdinal("Pre_PGastosGenerales")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Pre_PGastosGenerales")),
+                Pre_PUtilidad = oDR.IsDBNull(oDR.GetOrdinal("Pre_PUtilidad")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Pre_PUtilidad")),
                 Pre_SubTotal = oDR.IsDBNull(oDR.GetOrdinal("Pre_SubTotal")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Pre_SubTotal")),
                 Pre_PIGV = oDR.IsDBNull(oDR.GetOrdinal("Pre_PIGV")) ? null : oDR.GetInt32(oDR.GetOrdinal("Pre_PIGV")),
                 Pre_TotalPresupuesto = oDR.IsDBNull(oDR.GetOrdinal("Pre_TotalPresupuesto")) ? null : oDR.GetDecimal(oDR.GetOrdinal("Pre_TotalPresupuesto")),
@@ -193,7 +193,6 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
         return oCmd.ExecuteNonQuery();
     }
 
-
     public int Actualiza_Condicion(int Pre_Id, bool Pre_Estado)
     {
         using var oCmd = CreateCommand("SP_Presupuesto_Actualiza_Estado");
@@ -202,6 +201,17 @@ public class PresupuestoRepository: Repository, IPresupuestoRepository
 
         oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
         oCmd.Parameters.AddWithValue("Pre_Estado", Pre_Estado);
+        return oCmd.ExecuteNonQuery();
+    }
+    public int Actualiza_Presupuesto_Total(int Pre_Id, decimal Pre_PGastosGenerales, decimal Pre_PUtilidad)
+    {
+        using var oCmd = CreateCommand("SP_Presupuesto_Actualiza_Presupuesto_Total");
+
+        oCmd.CommandType = CommandType.StoredProcedure;
+
+        oCmd.Parameters.AddWithValue("Pre_Id", Pre_Id);
+        oCmd.Parameters.AddWithValue("Pre_PGastosGenerales", Pre_PGastosGenerales);
+        oCmd.Parameters.AddWithValue("Pre_PUtilidad", Pre_PUtilidad);
         return oCmd.ExecuteNonQuery();
     }
 }

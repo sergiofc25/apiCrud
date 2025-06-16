@@ -160,6 +160,29 @@ public class PresupuestoController : ControllerBase
             return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
         }
     }
+    [Authorize(Policy = "NotInvitado")]
+    [HttpPut("Actualiza_Presupuesto_Total/{Pre_Id}")]
+    public async Task<IActionResult> Actualiza_Prsupuesto_Total(int Pre_Id, [FromBody] DTO_Presupuesto_Actualiza_Presupuesto_Total eDTO_Presupuesto_Actualiza_Presupuesto_Total)
+    {
+        try
+        {
+            if (eDTO_Presupuesto_Actualiza_Presupuesto_Total is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos nulos." });
 
+            var Presupuesto_Existente = await _PresupuestoService.Obten_x_Id(Pre_Id);
+
+            if (Presupuesto_Existente is null) return BadRequest(new DTO_Response<object> { ErrorMessage = "Datos no existes." });
+
+            var Presupuesto = _mapper.Map(eDTO_Presupuesto_Actualiza_Presupuesto_Total, Presupuesto_Existente);
+
+            await _PresupuestoService.Actualiza_Presupuesto_Total(Presupuesto.Pre_Id, Presupuesto.Pre_PGastosGenerales ?? 1m, Presupuesto.Pre_PUtilidad ?? 1m);
+
+
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, new DTO_Response<object> { ErrorMessage = "Error interno del servidor." });
+        }
+    }
 }
 

@@ -21,8 +21,8 @@ namespace Model.Entitie
         public Ent_Provincia eProvincia { get; set; } = new();
         public Ent_Distrito eDistrito { get; set; } = new();
         public decimal? Pre_CostoDirecto { get; set; }
-        public int? Pre_PGastosGenerales { get; set; }
-        public int? Pre_PUtilidad { get; set; }
+        public decimal? Pre_PGastosGenerales { get; set; }
+        public decimal? Pre_PUtilidad { get; set; }
         public decimal? Pre_SubTotal { get; set; }
         public int? Pre_PIGV { get; set; }
         public decimal? Pre_TotalPresupuesto { get; set; }

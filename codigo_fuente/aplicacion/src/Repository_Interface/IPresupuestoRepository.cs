@@ -11,5 +11,6 @@ namespace Repository_Interface
         int Existente(int Pre_Id, string Pre_Nombre, bool Pre_Estado);
         int Actualiza(Ent_Presupuesto Ent_Presupuesto);
         int Actualiza_Condicion(int Pre_Id, bool Pre_Estado);
+        int Actualiza_Presupuesto_Total(int Pre_Id, decimal Pre_PGastosGenerales, decimal Pre_PUtilidad);
     }
 }

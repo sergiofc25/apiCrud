@@ -81,7 +81,7 @@
                                              Required
                                              Disabled="@disabled"
                                              Style="max-width: 100px;"
-                                             Immediate="true" />
+                                             DebounceInterval="3000" /> <!-- Espera 3seg después del último cambio -->
                         }
                     </MudTd>
                     <MudTd DataLabel="Unidad" Style="padding: 6px 8px;">
@@ -163,68 +163,90 @@
             </MudTable>
         </MudPaper>
     </MudItem>
-    <MudPaper Class="pa-4" Elevation="3">
-        <MudGrid>
-            <MudItem xs="12">
-                <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Totales:</MudText>
-            </MudItem>
+    <MudItem xs="12" Class="mt-4">
+        <MudPaper Class="pa-4" Elevation="3">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="ml-2">Totales:</MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Costo Directo:</MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_CostoDirecto)</MudText>
-            </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Costo Directo:</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_CostoDirecto)</MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2 d-flex align-items-center">
-                    Gastos Generales (%
-                    <MudNumericField T="int?" @bind-Value="presupuesto.Pre_PGastosGenerales"
-                                     Class="d-inline-block mx-1"
-                                     Style="width: 60px;"
-                                     HideSpinButtons="true"
-                                     Margin="Margin.Dense"
-                                     Immediate="true"
-                                     Adornment="Adornment.None" />
-                    ):
-                </MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">
-                    @(presupuesto.Pre_GastosGenerales)
-                </MudText>
-            </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2 d-flex align-items-center">
+                        Gastos Generales (%
+                        <MudNumericField T="decimal?" @bind-Value="presupuesto.Pre_PGastosGenerales"
+                                         Class="d-inline-block mx-1"
+                                         Style="width: 60px;"
+                                         HideSpinButtons="true"
+                                         Margin="Margin.Dense"
+                                         Immediate="true"
+                                         Adornment="Adornment.None" />
+                        ):
+                    </MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">
+                        @(presupuesto.Pre_GastosGenerales)
+                    </MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2 d-flex align-items-center">
-                    Utilidad(%
-                    <MudNumericField T="int?" @bind-Value="presupuesto.Pre_PUtilidad"
-                                     Class="d-inline-block mx-1"
-                                     Style="width: 60px;"
-                                     HideSpinButtons="true"
-                                     Margin="Margin.Dense"
-                                     Immediate="true"
-                                     Adornment="Adornment.None" />
-                    ):
-                </MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">
-                    @(presupuesto.Pre_Utilidad)
-                </MudText>
-            </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2 d-flex align-items-center">
+                        Utilidad(%
+                        <MudNumericField T="decimal?" @bind-Value="presupuesto.Pre_PUtilidad"
+                                         Class="d-inline-block mx-1"
+                                         Style="width: 60px;"
+                                         HideSpinButtons="true"
+                                         Margin="Margin.Dense"
+                                         Immediate="true"
+                                         Adornment="Adornment.None" />
+                        ):
+                    </MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">
+                        @(presupuesto.Pre_Utilidad)
+                    </MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Sub Total:</MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_SubTotal)</MudText>
-            </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Sub Total:</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_SubTotal)</MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Impuesto IGV(% @(presupuesto.Pre_PIGV)):</MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_IGV)</MudText>
-            </MudItem>
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">Impuesto IGV(% @(presupuesto.Pre_PIGV)):</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_IGV)</MudText>
+                </MudItem>
 
-            <MudItem xs="12" Class="d-flex justify-space-between">
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">TOTAL PRESUPUESTO:</MudText>
-                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_TotalPresupuesto)</MudText>
-            </MudItem>
-        </MudGrid>
-    </MudPaper>
-    
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="ml-2">TOTAL PRESUPUESTO:</MudText>
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mr-2">@(presupuesto.Pre_TotalPresupuesto)</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" Class="mt-4">
+        <MudPaper Class="pa-4" Elevation="3">
+            <MudGrid>
+                <MudItem xs="12" Class="d-flex">
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarPresupuestoTotal())">
+                        @if (_processing)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
+                            <MudText Class="ms-2">Actualizando...</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Obtener Presupuesto</MudText>
+                        }
+                    </MudButton>
+                </MudItem>
+
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+
 </MudGrid>
 
 @code {
@@ -234,6 +256,7 @@
     private List<CombinedItem> combinedItems = new List<CombinedItem>();
     private DTO_Presupuesto_Obten_x_Id presupuesto = new DTO_Presupuesto_Obten_x_Id();
     private DTO_Partida_Actualiza_Metrado partia_actualiza_metrado = new DTO_Partida_Actualiza_Metrado();
+    private DTO_Presupuesto_Actualiza_Presupuesto_Total presupuesto_actualiza_total = new DTO_Presupuesto_Actualiza_Presupuesto_Total();
 
     private bool _processing = false;
     private string errorMessage = string.Empty;
@@ -489,7 +512,46 @@
         // Ordenar por ruta
         combinedItems = combinedItems.OrderBy(x => x.Ruta).ToList();
     }
+    private async Task ActualizarPresupuestoTotal()
+    {
+        if (presupuesto == null) return;
 
+        presupuesto_actualiza_total.Pre_PGastosGenerales = presupuesto.Pre_PGastosGenerales;
+        presupuesto_actualiza_total.Pre_PUtilidad = presupuesto.Pre_PUtilidad;
+
+        _processing = true;
+        StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
+
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var content = new StringContent(JsonConvert.SerializeObject(presupuesto), System.Text.Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"api/v1/Presupuesto/Actualiza_Presupuesto_Total/{Pre_Id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadPresupuesto();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
     private int GetIndentLevel(string ruta)
     {
         if (string.IsNullOrEmpty(ruta))
