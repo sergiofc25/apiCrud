@@ -129,7 +129,7 @@ public class RecursoRepository: Repository, IRecursoRepository
     {
         var Lst_Recurso = new List<Ent_Recurso>();
 
-        using var oCmd = CreateCommand("SP_Recurso_Obten_Precio_x_Partida");
+        using var oCmd = CreateCommand("SP_Recurso_Obten_Precio_x_Partida_v2");
 
         oCmd.CommandType = CommandType.StoredProcedure;
         oCmd.Parameters.AddWithValue("Par_Id", Par_Id);
