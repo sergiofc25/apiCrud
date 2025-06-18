@@ -62,7 +62,7 @@
         addLine(`Gastos Generales (${totals.gastosGeneralesPercent}%):`, 'gastosGenerales');
         addLine(`Utilidad (${totals.utilidadPercent}%):`, 'utilidad');
         addLine("Sub Total:", 'subTotal');
-        addLine(`IGV (${totals.iGVPercent}%):`, 'iGV');
+        addLine(`IGV (${totals.igvPercent}%):`, 'igv');
         addLine("TOTAL GENERAL:", 'total');
 
         // 5) Guardar
