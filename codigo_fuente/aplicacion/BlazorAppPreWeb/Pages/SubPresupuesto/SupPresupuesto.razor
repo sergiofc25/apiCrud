@@ -11,7 +11,8 @@
 @inject IDialogService DialogService
 @inject IModalService model
 @using System.Linq
-
+@using System.Globalization
+@inject IJSRuntime JSRuntime
 
 <PageTitle>SubPresupuestos y Partidas de proyecto</PageTitle>
 
@@ -229,7 +230,15 @@
     <MudItem xs="12" Class="mt-4">
         <MudPaper Class="pa-4" Elevation="3">
             <MudGrid>
-                <MudItem xs="12" Class="d-flex">
+                <MudItem xs="12" Class="d-flex justify-space-between">
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Warning"
+                               Size="Size.Small"
+                               EndIcon="@Icons.Material.Filled.PictureAsPdf"
+                               OnClick="@ExportToPdf"
+                               Disabled="@isLoading">
+                        Exportar a PDF
+                    </MudButton>
                     <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarPresupuestoTotal())">
                         @if (_processing)
                         {
@@ -549,6 +558,113 @@
         finally
         {
             _processing = false;
+            StateHasChanged();
+        }
+    }
+    private async Task ExportToPdf()
+    {
+        isLoading = true;
+        StateHasChanged();
+
+        try
+        {
+            Console.WriteLine("Preparando datos para exportación...");
+
+            // Validar datos esenciales
+            if (combinedItems == null || combinedItems.Count == 0)
+            {
+                throw new Exception("No hay datos de partidas/subpresupuestos para exportar");
+            }
+
+            if (presupuesto == null)
+            {
+                throw new Exception("Datos del presupuesto principal no disponibles");
+            }
+
+            // Función para formatear valores con manejo de errores
+            string SafeFormat(object value, string format = "N2")
+            {
+                if (value == null) return "";
+
+                try
+                {
+                    if (value is decimal decimalValue)
+                    {
+                        return decimalValue.ToString(format, CultureInfo.InvariantCulture);
+                    }
+                    return value.ToString();
+                }
+                catch
+                {
+                    return "";
+                }
+            }
+
+            Console.WriteLine("Procesando datos de la tabla...");
+            var tableData = combinedItems.Select(item => new
+            {
+                Item = item.Ruta ?? "N/A",
+                Nombre = (item.Nombre != null && item.Nombre.Length > 80) ?
+                         item.Nombre.Substring(0, 77) + "..." :
+                         item.Nombre ?? "",
+                Metrado = item.EsPartida ? SafeFormat(item.Metrado) : "",
+                Unidad = (item.Unidad != null && item.Unidad.Length > 5) ?
+                         item.Unidad.Substring(0, 5) :
+                         item.Unidad ?? "",
+                Precio = SafeFormat(item.PrecioUnitarioP),
+                Parcial = SafeFormat(item.PrecioUnitarioFinal)
+            }).ToList();
+
+            Console.WriteLine("Preparando totales...");
+            var totals = new
+            {
+                CostoDirecto = SafeFormat(presupuesto.Pre_CostoDirecto),
+                GastosGenerales = SafeFormat(presupuesto.Pre_GastosGenerales),
+                GastosGeneralesPercent = SafeFormat(presupuesto.Pre_PGastosGenerales),
+                Utilidad = SafeFormat(presupuesto.Pre_Utilidad),
+                UtilidadPercent = SafeFormat(presupuesto.Pre_PUtilidad),
+                SubTotal = SafeFormat(presupuesto.Pre_SubTotal),
+                IGV = SafeFormat(presupuesto.Pre_IGV),
+                IGVPercent = SafeFormat(presupuesto.Pre_PIGV),
+                Total = SafeFormat(presupuesto.Pre_TotalPresupuesto)
+            };
+
+            Console.WriteLine("Invocando generador de PDF...");
+            // Verificar que JSRuntime está disponible
+            if (JSRuntime == null)
+            {
+                throw new Exception("No se puede acceder al runtime de JavaScript");
+            }
+
+            // Llamar a la función JavaScript con timeout
+            var success = await JSRuntime.InvokeAsync<bool>("generatePdf",
+                new
+                {
+                    title = presupuesto.Pre_Nombre ?? "Presupuesto sin nombre",
+                    tableData,
+                    totals
+                });
+
+            if (!success)
+            {
+                throw new Exception("La generación del PDF no fue exitosa");
+            }
+
+            Snackbar.Add("PDF exportado correctamente", Severity.Success);
+        }
+        catch (JSException jsEx)
+        {
+            Console.Error.WriteLine($"Error de JavaScript: {jsEx.Message}");
+            Snackbar.Add($"Error al generar PDF: {jsEx.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error general: {ex.Message}");
+            Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
             StateHasChanged();
         }
     }
