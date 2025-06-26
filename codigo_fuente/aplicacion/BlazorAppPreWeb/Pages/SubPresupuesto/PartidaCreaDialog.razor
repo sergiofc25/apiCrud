@@ -1,0 +1,208 @@
+﻿@using Newtonsoft.Json
+@using MudBlazor
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@inject NavigationManager NavigationManager
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@using System.Text
+@using System.Net
+@using System.Reflection.Metadata
+@inject ILocalStorageService localStorage
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+@using System.Globalization;
+@using System.Linq
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Validation="@formValidation">
+            <MudGrid>
+                <MudGrid Class="align-center" Spacing="2">
+                    <MudItem xs="12" sm="8" md="8" lg="8">
+                        <MudTextField @bind-Value="partida.Par_Nombre"
+                                      Label="Nombre"
+                                      Required="true"
+                                      RequiredError="El Nombre es requerido"
+                                      Immediate="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="8" md="8" lg="8">
+                        <MudNumericField @bind-Value="partida.Par_RenManObra"
+                                         Label="Rendimiento de Mano de Obra"
+                                         Required="true"
+                                         RequiredError="El Valor es Requerido"
+                                         Immediate="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="8" md="8" lg="8">
+                        <MudNumericField @bind-Value="partida.Par_RenEquipo"
+                                         Label="Rendimiento de Mano de Equipo"
+                                         Required="true"
+                                         RequiredError="El Valor es Requerido"
+                                         Immediate="true" />
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Class="align-center" Spacing="2">
+                    <MudItem xs="12" sm="8" md="8" lg="8">
+                        <MudAutocomplete T="DTO_Unidad_Medida_Obten"
+                                            Label="Unidad de Medida"
+                                            @bind-Value="selectedUnidadMedida"
+                                            ToStringFunc="@(unid => unid?.UniMed_Nombre ?? "Seleccione Unidad de Medida")"
+                                            SearchFunc="@SearchUnidadMedidas"
+                                            Required="true"
+                                            Dense="true" />
+                    </MudItem>
+                    <MudItem xs="12" sm="4" md="4" lg="4">
+                        <MudTextField @bind-Value="selectedUnidadMedida.UniMed_Abreviatura" Variant="Variant.Filled" Disabled="true" />
+                    </MudItem>
+                </MudGrid>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string SubPre_Id { get; set; }
+    private MudForm? form;
+    private DTO_Partida_Crea partida = new DTO_Partida_Crea();
+    private List<DTO_Unidad_Medida_Obten> unidadmedidas = new List<DTO_Unidad_Medida_Obten>();
+    private DTO_Unidad_Medida_Obten selectedUnidadMedida { get; set; } = new DTO_Unidad_Medida_Obten();
+    
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+    private bool formValidation = true;
+    private bool guardando = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUnidadMedida();
+    }
+
+    private async Task<IEnumerable<DTO_Unidad_Medida_Obten>> SearchUnidadMedidas(string searchText)
+    {
+        if (string.IsNullOrEmpty(searchText))
+            return unidadmedidas;
+
+        return unidadmedidas.Where(unid =>
+            RemoveDiacritics(unid.UniMed_Nombre ?? "")
+                .Contains(RemoveDiacritics(searchText), StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string RemoveDiacritics(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return text;
+
+        text = text.Normalize(NormalizationForm.FormD);
+        var chars = text.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
+        return new string(chars).Normalize(NormalizationForm.FormC);
+    }
+    private async Task GetUnidadMedida()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await client.GetAsync("api/v1/Unidad_Medida/Obten");
+            Console.WriteLine($"Response Status: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Response Body: {responseBody}");
+                var result = JsonConvert.DeserializeObject<DTO_Response<List<DTO_Unidad_Medida_Obten>>>(responseBody);
+
+                if (result != null && result.IsSuccessful)
+                {
+                    unidadmedidas = result.Data;
+                    Console.WriteLine($"UnidadMedida Count: {unidadmedidas.Count}");
+                }
+                else
+                {
+                    Console.WriteLine("Response not successful or no data.");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al cargar unidades de medida: {ex.Message}";
+            Console.WriteLine(ex.Message);
+        }
+        StateHasChanged();
+    }
+    private async Task Guardar()
+    {
+        if (form != null && form.IsValid)
+        {
+            _processing = true;
+            StateHasChanged();
+
+            try
+            {
+                // Prepara el objeto para enviar al backend
+                var PartidaParaEnviar = new
+                {
+                    Par_Nombre = partida.Par_Nombre,
+                    Par_RenManObra = partida.Par_RenManObra,
+                    Par_RenEquipo = partida.Par_RenEquipo,
+                    UniMed_Nombre = selectedUnidadMedida?.UniMed_Nombre,
+                    SubPre_Id = SubPre_Id,
+                };
+
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var content = new StringContent(JsonConvert.SerializeObject(PartidaParaEnviar),
+                    Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync($"api/v1/Partida/Crea", content);
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Partida creada exitosamente.");
+                    MudDialog.Close(DialogResult.Ok(true));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+                    Console.WriteLine(errorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Ocurrió un error: {ex.Message}";
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _processing = false;
+                StateHasChanged();
+            }
+        }
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
+    }
+}

@@ -1,0 +1,101 @@
+﻿@using Model.DTO.v1
+@using MudBlazor
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Linq
+@using System.Text
+
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Validation="@formValidation">
+            <MudGrid>
+                <MudTextField @bind-Value="subpresupuesto.SubPre_Nombre"
+                                Label="Nombre"
+                                Required="true"
+                                RequiredError="El Nombre es requerido"
+                                Immediate="true" />
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string Pre_Id { get; set; }
+    private DTO_SubPresupuesto_Crea_Primer_Nivel subpresupuesto = new DTO_SubPresupuesto_Crea_Primer_Nivel();
+    
+    private MudForm form;
+    private bool formValidation = true;
+    private bool guardando = false;
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+    }
+    private async Task Guardar()
+    {
+        guardando = true;
+        await form.Validate();
+
+        if (form.IsValid)
+        {
+            try
+            {
+                var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+                var token = await localStorage.GetItemAsync<string>("authToken");
+
+                if (token != null)
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
+
+                var subPresupuestoParaEnviar = new DTO_SubPresupuesto_Crea_Primer_Nivel
+                    {
+                        SubPre_Nombre = subpresupuesto.SubPre_Nombre
+                    };
+
+                var response = await client.PostAsJsonAsync($"api/v1/SubPresupuesto/Crea_Primer_Nivel/{Pre_Id}", subPresupuestoParaEnviar);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    Snackbar.Add("SubPresupuesto creado exitosamente", Severity.Success);
+                    MudDialog.Close(DialogResult.Ok(true));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    //Snackbar.Add($"Error al crear recurso: {errorContent}", Severity.Error);
+                    Console.WriteLine($"Error al crear subPresupuesto: {errorContent}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Error: {ex.Message}", Severity.Error);
+            }
+            finally
+            {
+                guardando = false;
+            }
+        }
+        else
+        {
+            guardando = false;
+        }
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
+    }
+}

@@ -1,0 +1,113 @@
+﻿@using Model.DTO.v1
+@using MudBlazor
+@using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
+@inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Linq
+@using System.Text
+
+
+<MudDialog>
+    <DialogContent>
+        <MudText>¿Está seguro que desea eliminar el subpresupuesto @subpresupuesto?.SubPre_Ruta . @subpresupuesto?.SubPre_Nombre?</MudText>
+        <MudAlert Severity="Severity.Warning">Advertencia: Se eliminarán todos los subpresupuestos y se inhabilitarán las partidas asociadas.</MudAlert>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" ButtonType="ButtonType.Submit" Color="Color.Primary">Confirmar</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string SubPre_Id { get; set; }
+    public DTO_SubPresupuesto_Obten_x_Id subpresupuesto { get; set; }
+    
+    private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSubPresupuesto();
+    }
+    private async Task LoadSubPresupuesto()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            var token = await localStorage.GetItemAsync<string>("authToken");
+            if (token != null)
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+            var response = await client.GetAsync($"api/v1/SubPresupuesto/Obten_x_Id/{SubPre_Id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadFromJsonAsync<DTO_Response<DTO_SubPresupuesto_Obten_x_Id>>();
+                if (responseBody != null && responseBody.Data != null)
+                {
+                    subpresupuesto = responseBody.Data;
+                }
+                else
+                {
+                    errorMessage = "SubPresupuesto no encontrado.";
+                }
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error: {response.StatusCode} - {errorContent}";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ocurrió un error: {ex.Message}";
+        }
+    }
+    private async Task Guardar()
+    {
+        if (subpresupuesto == null) return;
+        _processing = true;
+        try
+        {
+            var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                await localStorage.GetItemAsync<string>("authToken"));
+
+            var response = await client.DeleteAsync($"api/v1/SubPresupuesto/Elimina/{SubPre_Id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                Snackbar.Add("Subpresupuesto eliminado correctamente", Severity.Success);
+                Console.WriteLine("Subpresupuesto eliminado correctamente");
+                MudDialog.Close(DialogResult.Ok(true));
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                errorMessage = $"Error al eliminar: {errorContent}";
+                Snackbar.Add(errorMessage, Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+            Snackbar.Add(errorMessage, Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+            StateHasChanged();
+        }
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
+    }
+
+}

@@ -32,40 +32,10 @@
     </div>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <!-- 1) jsPDF UMD -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- 2) jsPDF-AutoTable (NOTA: sin “.plugin.” en el nombre) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.js"></script>
-    <!-- 3) Tu helper pdfExport.js -->
     <script src="js/pdfExport.js"></script>
-    <!--<script>
-        // Configurar jsPDF globalmente
-        window.jsPDF = window.jspdf.jsPDF;
-
-        // Función de verificación
-        function verifyPdfSetup() {
-            if (!window.jsPDF) {
-                console.error("Error: jsPDF no está disponible");
-                return false;
-            }
-            if (!window.jspdf.autotable) {
-                console.error("Error: jspdf-autotable no está disponible");
-                return false;
-            }
-            return true;
-        }
-
-        // Verificar al cargar
-        document.addEventListener('DOMContentLoaded', function () {
-            if (!verifyPdfSetup()) {
-                console.error("Las bibliotecas de PDF no se cargaron correctamente");
-            } else {
-                console.log("Bibliotecas de PDF listas");
-            }
-        });
-    </script>-->
     <script>
-        // Extrae el constructor para usarlo más fácil
         if (window.jspdf && window.jspdf.jsPDF) {
             window.jsPDF = window.jspdf.jsPDF;
         } else {

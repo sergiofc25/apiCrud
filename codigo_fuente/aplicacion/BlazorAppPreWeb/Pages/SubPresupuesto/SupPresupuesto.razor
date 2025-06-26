@@ -110,7 +110,7 @@
                             <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDropDown">
                                 @if (!HasPartidas(context.Id))
                                 {
-                                    <MudMenuItem OnClick="@(() => Btn_Nuevo_SubPresupuesto_Click(context.Id))">
+                                    <MudMenuItem OnClick="@(() => Btn_Nuevo_SubPresupuesto_D_Click(context.Id))">
                                         <MudIcon Icon="@Icons.Material.Filled.CreateNewFolder" Class="mr-2" />
                                         <span>Agregar SubPresupuesto</span>
                                     </MudMenuItem>
@@ -118,7 +118,7 @@
 
                                 @if (!SubPresupuestoTieneHijos(context.Id))
                                 {
-                                    <MudMenuItem OnClick="@(() => NavigationManager.NavigateTo($"/partida_crea/{context.Id}"))">
+                                    <MudMenuItem OnClick="@(() => Btn_Crear_Partida_Click(context.Id))">
                                         <MudIcon Icon="@Icons.Material.Filled.PostAdd" Class="mr-2" Color="Color.Warning" />
                                         <span style="color: var(--mud-palette-warning)">Agregar Partida</span>
                                     </MudMenuItem>
@@ -149,12 +149,8 @@
                 <ToolBarContent>
                     <MudToolBar>
                         <MudSpacer />
-                        <MudButton Variant="Variant.Filled"
-                                   Color="Color.Primary"
-                                   EndIcon="@Icons.Material.Filled.Add"
-                                   OnClick="@(() => Btn_Nuevo_SubPresupuestoFL_Click(Pre_Id))">
-                            Agregar Subpresupuesto
-                        </MudButton>
+                        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
+                                   Size="Size.Small" @onclick="@(() => Btn_Nuevo_SubPresupuesto_FL_Click(Pre_Id))">Agregar SubPresupuesto</MudButton>
                     </MudToolBar>
                 </ToolBarContent>
                 <LoadingContent>
@@ -603,7 +599,7 @@
             Console.WriteLine("Procesando datos de la tabla...");
             var tableData = combinedItems.Select(item => new
             {
-                Item = item.Ruta ?? "N/A",
+                Item = item.Ruta ?? "",
                 Nombre = (item.Nombre != null && item.Nombre.Length > 80) ?
                          item.Nombre.Substring(0, 77) + "..." :
                          item.Nombre ?? "",
@@ -677,40 +673,119 @@
         return nivel * 20;
     }
 
-    private void Btn_Nuevo_SubPresupuesto_Click(string SubPre_Id)
+    private async Task Btn_Nuevo_SubPresupuesto_D_Click(string Id)
     {
-        NavigationManager.NavigateTo($"/subpresupuesto_crea/{SubPre_Id}");
-    }
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var parameters = new DialogParameters();
+        parameters.Add("SubPre_Id", Id);
+        var dialog = DialogService.Show<SubPresupuestoCrea_DDialog>("Nuevo SubPresupuesto", parameters, options);
+        var result = await dialog.Result;
 
+        if (!result.Canceled)
+        {
+            await LoadSubPresupuestos();
+            await LoadPartidas();
+            CombineItems();
+        }
+    }
     private void Btn_Nuevo_Partida_Click(string SubPre_Id)
     {
         NavigationManager.NavigateTo($"/partida_crea/{SubPre_Id}");
     }
-
-    private void Btn_Nuevo_SubPresupuestoFL_Click(string Pre_Id)
+    private async Task Btn_Nuevo_SubPresupuesto_FL_Click(string Pre_Id)
     {
-        NavigationManager.NavigateTo($"/subpresupuesto_crea_fl/{Pre_Id}");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var parameters = new DialogParameters();
+        parameters.Add("Pre_Id", Pre_Id);
+        var dialog = DialogService.Show<SubPresupuestoCrea_FLDialog>("Nuevo SubPresupuesto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadSubPresupuestos();
+            await LoadPartidas();
+            CombineItems();
+        }
     }
 
-    private void Btn_Eliminar_SubPresupuesto(string SubPre_Id)
+
+    private async Task Btn_Eliminar_SubPresupuesto(string Id)
     {
-        NavigationManager.NavigateTo($"/subpresupuesto_elimina/{SubPre_Id}");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true
+            };
+
+        var parameters = new DialogParameters();
+        parameters.Add("SubPre_Id", Id);
+
+        var dialog = DialogService.Show<SubPresupuestoEliminaDialog>("Eliminar Subpresupuesto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadSubPresupuestos();
+            await LoadPartidas();
+            CombineItems();
+        }
+    }
+    private async Task Btn_Actualizar_SubPresupuesto_Click(string Id)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var parameters = new DialogParameters();
+        parameters.Add("SubPre_Id", Id);
+        var dialog = DialogService.Show<SubPresupuestoActualizaDialog>("Editar Nombre SubPresupuesto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadSubPresupuestos();
+            await LoadPartidas();
+            CombineItems();
+        }
+    }
+    private async Task Btn_Crear_Partida_Click(string Id)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var parameters = new DialogParameters();
+        parameters.Add("SubPre_Id", Id);
+        var dialog = DialogService.Show<PartidaCreaDialog>("Crear Partida", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadSubPresupuestos();
+            await LoadPartidas();
+            CombineItems();
+        }
     }
 
-    private void Btn_Actualizar_SubPresupuesto_Click(string SubPre_Id)
-    {
-        NavigationManager.NavigateTo($"/subpresupuesto_actualiza/{SubPre_Id}");
-    }
-
-    private void Btn_Actualizar_Partida_Click(string Par_Id)
-    {
-        NavigationManager.NavigateTo($"/partida_actualiza/{Par_Id}");
-    }
-
-    private void Btn_Eliminar_Partida_Click(string Par_Id)
-    {
-        NavigationManager.NavigateTo($"/partida_elimina/{Par_Id}");
-    }
     private async Task NavigateToPartida(string Par_Id)
     {
         await localStorage.SetItemAsync("currentPartidaId", Par_Id);

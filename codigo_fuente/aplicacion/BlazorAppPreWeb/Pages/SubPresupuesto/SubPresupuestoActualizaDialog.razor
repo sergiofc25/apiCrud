@@ -1,62 +1,50 @@
-﻿@page "/subpresupuesto_actualiza/{SubPre_Id}"
-@using Newtonsoft.Json
+﻿@using Model.DTO.v1
 @using MudBlazor
-@using Model.DTO.v1
-@inject IHttpClientFactory ClientFactory
-@inject NavigationManager NavigationManager
-@using Blazored.LocalStorage
 @using System.Net.Http.Headers
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
 @using Microsoft.JSInterop
-@inject IJSRuntime JSRuntime
+@using System.Globalization
+@using System.Linq
+@using System.Text
 
 
-<PageTitle>Actualizar SubPresupuesto</PageTitle>
-
-<section style="max-width:600px; margin: 0 auto;">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="3">
-                @if (subpresupuesto != null)
-                {
-                    <MudForm Model="@subpresupuesto" @ref="form" OnValidSubmit="ActualizarSubPresupuesto">
-                        <MudTextField @bind-Value="subpresupuesto.SubPre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
-
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarSubPresupuesto())">
-                                @if (_processing)
-                                {
-                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
-                                    <MudText Class="ms-2">Actualizando...</MudText>
-                                }
-                                else
-                                {
-                                    <MudText>Actualizar</MudText>
-                                }
-                            </MudButton>
-                    </MudForm>
-                }
-                else if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</section>
-
+<MudDialog>
+    <DialogContent>
+        @if (subpresupuesto != null)
+        {
+            <MudForm @ref="form" OnValidSubmit="Guardar">
+                <MudTextField @bind-Value="subpresupuesto.SubPre_Nombre"
+                              Label="Nombre"
+                              Required="true"
+                              RequiredError="El Nombre es requerido"
+                              Immediate="true" />
+            </MudForm>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" ButtonType="ButtonType.Submit" Color="Color.Primary">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string SubPre_Id { get; set; }
     private DTO_SubPresupuesto_Obten_x_Id subpresupuesto;
-    private MudForm? form;
-    private bool _processing = false;
+
+    private MudForm form;
     private string errorMessage = string.Empty;
+    private bool _processing = false;
+
 
     protected override async Task OnInitializedAsync()
     {
         await LoadSubPresupuesto();
-
     }
-
     private async Task LoadSubPresupuesto()
     {
         try
@@ -91,12 +79,10 @@
             errorMessage = $"Ocurrió un error: {ex.Message}";
         }
     }
-    private async Task ActualizarSubPresupuesto()
+    private async Task Guardar()
     {
         if (subpresupuesto == null) return;
         _processing = true;
-        StateHasChanged(); // Actualiza el UI para mostrar el estado de procesamiento
-
         try
         {
             var client = ClientFactory.CreateClient("ApiPRESUPUESTOS");
@@ -109,8 +95,8 @@
             var response = await client.PutAsync($"api/v1/SubPresupuesto/Actualiza/{SubPre_Id}", content);
             if (response.IsSuccessStatusCode)
             {
-                //NavigationManager.NavigateTo("/proyectos_paginado");
-                await JSRuntime.InvokeVoidAsync("history.back");
+                Console.WriteLine("SubPresupuesto actualizado exitosamente");
+                MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
@@ -125,7 +111,11 @@
         finally
         {
             _processing = false;
-            StateHasChanged(); // Actualiza el UI para ocultar el estado de procesamiento
+            StateHasChanged();
         }
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
     }
 }
