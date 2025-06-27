@@ -282,17 +282,48 @@
         _ = LoadClients();
     }
 
-    private void Btn_Nuevo_Proyecto_Click()
+    private async Task Btn_Nuevo_Proyecto_Click()
     {
-        NavigationManager.NavigateTo("/proyecto_crea");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+        var dialog = DialogService.Show<ProyectoCreaDialog>("Crear Nuevo Proyecto", options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadClients();
+        }
     }
     private void Btn_Mostrar_SubPresupuestos_Click(string Pre_Id)
     {
         NavigationManager.NavigateTo($"/subpresupuesto/{Pre_Id}");
     }
-    private void Btn_Actualizar_Proyecto_Click(string Pre_Id)
-    {
-        NavigationManager.NavigateTo($"/proyecto_actualiza/{Pre_Id}");
-    }
 
+    private async Task Btn_Actualizar_Proyecto_Click(string Pre_Id)
+    {
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+        var parameters = new DialogParameters();
+        parameters.Add("Pre_Id", Pre_Id);
+
+        var dialog = DialogService.Show<ProyectoActualizaDialog>("Actualizar Proyecto", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await LoadClients();
+        }
+    }
 }

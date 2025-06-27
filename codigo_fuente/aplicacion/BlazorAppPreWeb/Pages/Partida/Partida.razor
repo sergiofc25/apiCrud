@@ -110,71 +110,55 @@
                 Asignar Recurso
             </MudButton>
         </MudPaper>
-        <MudPaper Class="pa-5" Elevation="3">
-            <MudTable Items="@recursos"
-            Hover="true"
-            Breakpoint="Breakpoint.Sm"
-            Height="500px"
-            FixedHeader="true"
-            GroupBy="@_groupDefinition"
-            Dense="true"
-            Bordered="true"
-            Striped="true">
-
+        <MudPaper Class="p-4" Elevation="4" Style="border-radius:12px;">
+            <MudTable Items="@recursos" GroupIndent="0" Hover="true" Breakpoint="Breakpoint.Sm" Height="500px" FixedHeader="true" GroupBy="@_groupDefinition" Dense="false" Striped="true" Class="elevation-2 rounded-lg">
                 <HeaderContent>
-                    <MudTh>Índice Unificado</MudTh>
-                    <MudTh>Nombre</MudTh>
-                    <MudTh>Unidad de Medida</MudTh>
-                    <MudTh>Cuadrilla</MudTh>
-                    <MudTh>Cantidad</MudTh>
-                    <MudTh>Precio</MudTh>
-                    <MudTh>Parcial</MudTh>
-                    <MudTh>Acciones</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Índice Unificado</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Nombre</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Unidad</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Cuadrilla</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Cantidad</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Precio</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Parcial</MudTh>
+                    <MudTh Class="text-center font-weight-bold">Acciones</MudTh>
                 </HeaderContent>
-
                 <GroupHeaderTemplate>
-                    <MudTh Style="text-align:center">
-                        @($"{context.Key}")
-                    </MudTh>
+                    <MudTr>
+                        <!-- Usamos MudTh para que abarque todo y se centre correctamente -->
+                        <MudTh ColSpan="8" Class="text-center font-weight-bold">@context.Key</MudTh>
+                    </MudTr>
                 </GroupHeaderTemplate>
-
                 <RowTemplate>
-                    <MudTd DataLabel="Índice Unificado">@context.Rec_IndUnificado</MudTd>
+                    <MudTd DataLabel="Índice Unificado" Class="text-center">@context.Rec_IndUnificado</MudTd>
                     <MudTd DataLabel="Nombre">@context.Rec_Nombre</MudTd>
-                    <MudTd DataLabel="Unidad de Medida">@context.UniMed_Abreviatura</MudTd>
-                    <MudTd DataLabel="Cuadrilla">@context.Rec_Cuadrilla</MudTd>
-                    <MudTd DataLabel="Cantidad">@context.Rec_Cantidad</MudTd>
-                    <MudTd DataLabel="Precio">
-                        @(context.Rec_Nombre == "Herramientas manuales (%MO)" ? context.DetParRec_Precio_HM : context.DRP_Precio)
-                    </MudTd>
-                    <MudTd DataLabel="Parcial">@context.DetParRec_PrecioUnitario</MudTd>
-                    <MudTd DataLabel="Acciones">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                        Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        Size="Size.Small" @onclick="@(() => Btn_Actualizar_Partida_Recurso_APU_Click(@context.DetParRec_Id))">
-                        </MudIconButton>
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                        Variant="Variant.Filled"
-                        Color="Color.Error"
-                        Size="Size.Small" @onclick="@(() => OpenDeleteDialog(context.DetParRec_Id))">
-                        </MudIconButton>
+                    <MudTd DataLabel="Unidad" Class="text-center">@context.UniMed_Abreviatura</MudTd>
+                    <MudTd DataLabel="Cuadrilla" Class="text-center">@context.Rec_Cuadrilla</MudTd>
+                    <MudTd DataLabel="Cantidad" Class="text-end">@context.Rec_Cantidad</MudTd>
+                    <MudTd DataLabel="Precio" Class="text-end">@(context.Rec_Nombre == "Herramientas manuales (%MO)" ? context.DetParRec_Precio_HM : context.DRP_Precio)</MudTd>
+                    <MudTd DataLabel="Parcial" Class="text-end">@context.DetParRec_PrecioUnitario</MudTd>
+                    <MudTd DataLabel="Acciones" Class="text-center">
+                    <MudIconButton 
+                        Icon="@Icons.Material.Filled.Edit" 
+                        Variant="Variant.Filled" 
+                        Color="Color.Primary" 
+                        Size="Size.Small"
+                        Class="me-1" 
+                        @onclick="@(() => Btn_Actualizar_Partida_Recurso_APU_Click(@context.DetParRec_Id))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" Size="Size.Small" @onclick="() => OpenDeleteDialog(context.DetParRec_Id)" />
                     </MudTd>
                 </RowTemplate>
-
                 <GroupFooterTemplate>
-                    <MudTh>
-                        <MudDivider Class="my-2" />
-                    </MudTh>
+                    <MudTr>
+                    <MudTd ColSpan="8"><MudDivider Class="my-2" /></MudTd>
+                    </MudTr>
                 </GroupFooterTemplate>
-
                 <NoRecordsContent>
-                    <MudText>No se encontraron registros.</MudText>
+                    <MudText Class="text-secondary">No se encontraron registros.</MudText>
                 </NoRecordsContent>
                 <LoadingContent>
-                    <MudText>Un momento por favor...</MudText>
+                    <MudText Class="text-info">Un momento por favor...</MudText>
                 </LoadingContent>
-            </MudTable>
+                </MudTable>
         </MudPaper>
 
     </MudItem>

@@ -30,7 +30,7 @@
 
                 <MudItem Class="d-flex align-center justify-end mud-width-full" xs="6">
                     <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
-                    Size="Size.Small" OnClick="Btn_Nuevo_Cliente_Click">NUEVO</MudButton>
+                               Size="Size.Small" OnClick="@(() => Btn_Nuevo_Cliente_Click())">NUEVO</MudButton>
                 </MudItem>
             </MudItem>
         </MudPaper>
@@ -267,13 +267,41 @@
         }
     }
 
-    private void Btn_Nuevo_Cliente_Click()
+    private async Task Btn_Nuevo_Cliente_Click()
     {
-        NavigationManager.NavigateTo("/cliente_crea");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var dialog = DialogService.Show<ClienteCreaDialog>("Crear Cliente", options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadClients();
+        }
     }
 
-    private void Btn_Actualizar_Cliente_Click(string Cli_Id)
+    private async Task Btn_Actualizar_Cliente_Click(string Cli_Id)
     {
-        NavigationManager.NavigateTo($"/cliente_actualiza/{Cli_Id}");
+        var options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Small
+            };
+        var parameters = new DialogParameters();
+        parameters.Add("Cli_Id", Cli_Id);
+        var dialog = DialogService.Show<ClienteActualizaDialog>("Editar Cliente", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await LoadClients();
+        }
     }
 }

@@ -1,42 +1,61 @@
-﻿@page "/proyecto_crea"
-@using Newtonsoft.Json
+﻿@using Model.DTO.v1
 @using MudBlazor
-@using Model.DTO.v1
-@inject IHttpClientFactory ClientFactory
-@inject NavigationManager NavigationManager
-@using Blazored.LocalStorage
 @using System.Net.Http.Headers
-@using System.Text
-@using System.Net
-@using System.Reflection.Metadata
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
 @inject ILocalStorageService localStorage
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System.Globalization
+@using System.Linq
+@using System.Text
+@inject IDialogService DialogService
 
-<PageTitle>Crear Proyecto</PageTitle>
 
-<section style="max-width:600px; margin: 0 auto;">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="3">
-                <MudForm Model="@proyecto" @ref="form" OnValidSubmit="CrearProyecto">
-                    <MudTextField @bind-Value="usuario.Usu_NomApellidos"Label="Usuario"Required="true"Class="mud-width-full"Variant="Variant.Outlined"ReadOnly="true"Immediate="true" />
-                    <MudTextField @bind-Value="proyecto.Pre_Nombre" Label="Nombre" Required="true" Class="mud-width-full" />
-                    <MudAutocomplete T="DTO_Cliente_Obten_Nombre"
-                    Label="Buscar cliente"
-                    @bind-Value="selectedCliente"
-                    ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
-                    SearchFunc="@SearchClientes"
-                    Dense="true"
-                    Class="mud-width-full" />
-                    <MudAutocomplete T="DTO_Pais_Obten"
-                    Label="Buscar país"
-                    @bind-Value="selectedPais"
-                    ToStringFunc="@(pai => pai?.Pai_Nombre ?? "Seleccione país")"
-                    SearchFunc="@SearchPais"
-                    Dense="true"
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Validation="@formValidation">
+            <MudGrid>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="usuario.Usu_NomApellidos" 
+                    Label="Usuario" 
+                    Required="true" 
+                    Class="mud-width-full" 
+                    Variant="Variant.Outlined" 
+                    ReadOnly="true" 
+                    Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="proyecto.Pre_Nombre" 
+                    Label="Nombre" 
+                    Required="true" 
                     Class="mud-width-full"
-                    @oninput="async () => await OnPaisSelected()"
-                    Items="@pais" />
-                    <MudAutocomplete T="DTO_Departamento_Obten"
+                    Immediate="true" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudAutocomplete T="DTO_Cliente_Obten_Nombre"
+                                     Label="Buscar cliente"
+                                     @bind-Value="selectedCliente"
+                                     ToStringFunc="@(cli => cli?.Cli_NomApeRazSocial ?? "Seleccione cliente")"
+                                     SearchFunc="@SearchClientes"
+                                     Dense="true"
+                                     Class="mud-width-full" /> 
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudAutocomplete T="DTO_Pais_Obten"
+                                     Label="Buscar país"
+                                     @bind-Value="selectedPais"
+                                     ToStringFunc="@(pai => pai?.Pai_Nombre ?? "Seleccione país")"
+                                     SearchFunc="@SearchPais"
+                                     Dense="true"
+                                     Class="mud-width-full"
+                                     @oninput="async () => await OnPaisSelected()"
+                                     Items="@pais" />
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    @* <MudAutocomplete T="DTO_Departamento_Obten"
                                      Label="Buscar departamento"
                                      Value="selectedDepartamento"
                                      ValueChanged="OnDepartamentoSelected"
@@ -47,7 +66,19 @@
                                      Class="mud-width-full"
                                      Disabled="@(selectedPais == null)"
                                      Immediate="true">
+                    </MudAutocomplete> *@
+                    <MudAutocomplete T="DTO_Departamento_Obten"
+                                     Label="Buscar departamento"
+                                     ValueChanged="OnDepartamentoSelected"
+                                     ToStringFunc="@(dep => dep?.Dep_Nombre ?? "Seleccione departamento")"
+                                     SearchFunc="@SearchDepartamento"
+                                     Dense="true"
+                                     Class="mud-width-full"
+                                     Disabled="@(selectedPais == null)"
+                                     Immediate="true">
                     </MudAutocomplete>
+                </MudItem>
+                <MudItem xs="12" md="6">
                     <MudAutocomplete T="DTO_Provincia_Obten"
                                      Label="Buscar provincia"
                                      Value="selectedProvincia"
@@ -60,6 +91,8 @@
                                      Disabled="@(selectedDepartamento == null)"
                                      Immediate="true">
                     </MudAutocomplete>
+                </MudItem>
+                <MudItem xs="12" md="6">
                     <MudAutocomplete T="DTO_Distrito_Obten"
                                      Label="Buscar distrito"
                                      ValueChanged="OnDistritoSelected"
@@ -70,33 +103,29 @@
                                      Class="mud-width-full"
                                      Disabled="@(selectedProvincia == null)"
                                      @key="selectedProvincia?.Prov_Nombre"
-                                     Immediate="true">  
+                                     Immediate="true">
                     </MudAutocomplete>
-                    <MudTextField @bind-Value="proyecto.Pre_Jornal" Label="Jornal" Required="true" InputType="InputType.Number" Class="mud-width-full" />
-                    <MudItem Class="d-flex justify-center align-center" xs="12">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await CrearProyecto())">
-                            @if (_processing)
-                            {
-                                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
-                                <MudText Class="ms-2">Creando...</MudText>
-                            }
-                            else
-                            {
-                                <MudText>Crear Proyecto</MudText>
-                            }
-                        </MudButton>
-                    </MudItem>
-                </MudForm>
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</section>
+                </MudItem>
+                <MudItem xs="12" md="6">
+                    <MudTextField @bind-Value="proyecto.Pre_Jornal" 
+                    Label="Jornal" 
+                    Required="true" 
+                    InputType="InputType.Number" 
+                    Class="mud-width-full"
+                    Immediate="true" />
+                </MudItem>
+            </MudGrid>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
     private MudForm? form;
     private DTO_Presupuesto_Crea proyecto = new DTO_Presupuesto_Crea();
     private List<DTO_Cliente_Obten_Nombre> clientes = new List<DTO_Cliente_Obten_Nombre>();
@@ -114,6 +143,9 @@
 
     private string errorMessage = string.Empty;
     private bool _processing = false;
+
+    private bool formValidation = true;
+    private bool guardando = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -324,7 +356,6 @@
                 if (result?.IsSuccessful == true)
                 {
                     departamento = result.Data ?? new List<DTO_Departamento_Obten>();
-                    //selectedDepartamento = departamento.FirstOrDefault(d => d.Dep_Nombre == "LA LIBERTAD");
                 }
                 else
                 {
@@ -437,7 +468,6 @@
                 if (result?.IsSuccessful == true)
                 {
                     distrito = result.Data ?? new List<DTO_Distrito_Obten>();
-                    //selectedDepartamento = departamento.FirstOrDefault(d => d.Dep_Nombre == "LA LIBERTAD");
                 }
                 else
                 {
@@ -463,7 +493,7 @@
         selectedDistrito = nuevoDistrito;
         await InvokeAsync(StateHasChanged);
     }
-    private async Task CrearProyecto()
+    private async Task Guardar()
     {
         if (form != null && form.IsValid)
         {
@@ -500,7 +530,7 @@
                 if (response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Proyecto creado exitosamente.");
-                    NavigationManager.NavigateTo("/proyectos_paginado");
+                    MudDialog.Close(DialogResult.Ok(true));
                 }
                 else
                 {
@@ -520,5 +550,10 @@
                 StateHasChanged();
             }
         }
+    }
+
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
     }
 }

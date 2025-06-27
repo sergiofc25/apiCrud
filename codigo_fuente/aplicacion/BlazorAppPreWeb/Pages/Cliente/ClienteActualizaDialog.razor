@@ -1,5 +1,4 @@
-﻿@page "/cliente_actualiza/{Cli_Id}"
-@using Newtonsoft.Json
+﻿@using Newtonsoft.Json
 @using MudBlazor
 @using Model.DTO.v1
 @inject IHttpClientFactory ClientFactory
@@ -8,66 +7,77 @@
 @using System.Net.Http.Headers
 @inject ILocalStorageService localStorage
 
-<PageTitle>Actualizar Cliente</PageTitle>
+@inject IDialogService DialogService
 
-<section style="max-width:600px; margin: 0 auto;">
-    <MudGrid>
-        <MudItem xs="12">
-            <MudPaper Class="pa-5" Elevation="3">
-                @if (cliente != null)
-                {
-                    <MudForm Model="@cliente" @ref="form" OnValidSubmit="ActualizarCliente">
-                        <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial" Label="Nombre/Razón Social" Required="true" Class="mud-width-full" />
-                        <MudTextField @bind-Value="cliente.Cli_Abreviatura" Label="Abreviatura" Class="mud-width-full" />
-                        <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento"
-                                   @bind-Value="selectedDocumento"
-                                   ToStringFunc="@(doc => doc?.TipDoc_Nombre ?? "Seleccione tipo de documento")"
-                                   Dense="true" Class="mud-width-full">
-                            @foreach (var documento in documentos)
-                            {
-                                <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
-                            }
-                        </MudSelect>
-                        <MudTextField @bind-Value="cliente.Cli_NumDocumento"
-                                      Label="Número de Documento"
-                                      Required="true"
-                                      Class="mud-width-full"
-                                      InputType="InputType.Number"
-                                      MaxLength="@(selectedDocumento?.TipDoc_Nombre == "DNI" ? 8 : 11)"
-                                      Pattern="[0-9]*"
-                                      OnInput="@((ChangeEventArgs e) => ValidateDocumentLength(e))" />
-                        <MudItem Class="d-flex justify-center align-center" xs="12">
-                            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" Disabled="@_processing" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarCliente())">
-                                @if (_processing)
-                                {
-                                    <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
-                                    <MudText Class="ms-2">Actualizando...</MudText>
-                                }
-                                else
-                                {
-                                    <MudText>Actualizar Cliente</MudText>
-                                }
-                            </MudButton>
+<MudDialog>
+    <DialogContent>
+        @if (cliente != null)
+        {
+            <MudForm @ref="form" Validation="@formValidation">
+                <MudGrid>
+                    <MudGrid Class="align-center" Spacing="2">
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudTextField @bind-Value="cliente.Cli_NomApeRazSocial"
+                                          Label="Nombre"
+                                          Required="true"
+                                          RequiredError="El Nombre es requerido"
+                                          Immediate="true" />
                         </MudItem>
-                    </MudForm>
-                }
-                @if (!string.IsNullOrEmpty(errorMessage))
-                {
-                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mt-2">@errorMessage</MudAlert>
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</section>
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudTextField @bind-Value="cliente.Cli_Abreviatura"
+                                          Label="Abreviatura"
+                                          Required="true"
+                                          RequiredError="La abreviatura es Requerida"
+                                          Immediate="true" />
+                        </MudItem>
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudSelect T="DTO_Tipo_Documento_Obten" Label="Tipo de Documento"
+                                       @bind-Value="selectedDocumento"
+                                       ToStringFunc="@(doc => doc?.TipDoc_Nombre ?? "Seleccione tipo de documento")"
+                                       Dense="true" Class="mud-width-full">
+                                @foreach (var documento in documentos)
+                                {
+                                    <MudSelectItem Value="@documento">@documento.TipDoc_Nombre</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
+                        <MudItem xs="12" sm="8" md="8" lg="8">
+                            <MudTextField @bind-Value="cliente.Cli_NumDocumento"
+                                          Label="Número de Documento"
+                                          Required="true"
+                                          Class="mud-width-full"
+                                          InputType="InputType.Number"
+                                          MaxLength="@(selectedDocumento?.TipDoc_Nombre == "DNI" ? 8 : 11)"
+                                          Pattern="[0-9]*"
+                                          OnInput="@((ChangeEventArgs e) => ValidateDocumentLength(e))"
+                                          Immediate="true" />
+                        </MudItem>
+                    </MudGrid>
+
+                </MudGrid>
+            </MudForm>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Color="Color.Error">Cancelar</MudButton>
+        <MudButton OnClick="Guardar" Color="Color.Primary" Disabled="form == null || !form.IsValid">Guardar</MudButton>
+    </DialogActions>
+</MudDialog>
+
 
 @code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     [Parameter] public string Cli_Id { get; set; }
     private DTO_Cliente_Obten_x_Id cliente;
     private MudForm? form;
     private List<DTO_Tipo_Documento_Obten> documentos = new List<DTO_Tipo_Documento_Obten>();
     private DTO_Tipo_Documento_Obten selectedDocumento { get; set; } = new DTO_Tipo_Documento_Obten();
-    private bool _processing = false;
+    
     private string errorMessage = string.Empty;
+    private bool _processing = false;
+
+    private bool formValidation = true;
+    private bool guardando = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -169,11 +179,10 @@
         }
     }
 
-    private async Task ActualizarCliente()
+    private async Task Guardar()
     {
         if (cliente == null || documentos == null) return;
 
-        // Validación adicional de longitud
         if (selectedDocumento?.TipDoc_Nombre == "DNI" && cliente.Cli_NumDocumento?.Length != 8)
         {
             errorMessage = "El DNI debe tener exactamente 8 dígitos";
@@ -204,7 +213,8 @@
             var response = await client.PutAsync($"api/v1/Cliente/Actualiza/{Cli_Id}", content);
             if (response.IsSuccessStatusCode)
             {
-                NavigationManager.NavigateTo("/clientes_paginado");
+                Console.WriteLine("Cliente actualizado correctamente.");
+                MudDialog.Close(DialogResult.Ok(true));
             }
             else
             {
@@ -221,5 +231,9 @@
             _processing = false;
             StateHasChanged();
         }
+    }
+    private void Cancelar()
+    {
+        MudDialog.Cancel();
     }
 }
