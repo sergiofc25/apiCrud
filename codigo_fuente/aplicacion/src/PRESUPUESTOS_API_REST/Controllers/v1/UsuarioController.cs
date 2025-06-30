@@ -101,7 +101,12 @@ public class UsuarioController : ControllerBase
 
             var UsuarioDTO = _mapper.Map<DTO_Usuario_Obten_x_Id>(Usuario);
 
-            return CreatedAtRoute("Usuario_Obten_x_Id", new { Usuario.Usu_Id }, UsuarioDTO);
+            //return CreatedAtRoute("Usuario_Obten_x_Id", new { Usuario.Usu_Id }, UsuarioDTO);
+            return Ok(new DTO_Response<DTO_Usuario_Obten_x_Id>
+            {
+                Data = _mapper.Map<DTO_Usuario_Obten_x_Id>(Usuario),
+                IsSuccessful = true
+            });
         }
         catch (Exception)
         {
