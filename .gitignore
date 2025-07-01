@@ -6,6 +6,7 @@
 *.userprefs
 *.vspscc
 *.vssscc
+**/Properties/PublishProfiles/*.pubxml.user  # Nuevo: Perfiles de publicación de usuario
 
 # Rider
 .idea/
@@ -27,8 +28,8 @@ Desktop.ini
 
 ### .NET ###
 # Build y ejecución
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
 *.dll
 *.pdb
 *.exe
@@ -36,6 +37,12 @@ obj/
 *.cache
 *.webcil
 *.blazor
+*.nupkg
+*.binlog
+*.ilk
+*.AssemblyInfo.cs          # Nuevo: Archivos generados de AssemblyInfo
+*.AssemblyInfoInputs.cache # Nuevo: Cache de AssemblyInfo
+*.csproj.AssemblyReference.cache # Nuevo: Cache de referencias
 
 # Blazor WebAssembly
 wwwroot/_framework/
@@ -55,3 +62,23 @@ wwwroot/service-worker*.js
 
 # Archivos de desarrollo local
 launchSettings.json.user  # Configuraciones locales de IIS Express
+
+# Archivos específicos de .NET Core/5+/6+/7+
+artifacts/
+**/Properties/launchSettings.json
+*.jfm
+*.dotCover
+*.sbr
+*.idb
+*.opendb
+
+# MSTest
+TestResults/
+*.trx
+*.VisualState.xml
+
+# NuGet
+[Nn]u[Gg]et[Cc]ache/
+[Nn]u[Gg]et[Cc]onfig/
+*.nuget.props
+*.nuget.targets
