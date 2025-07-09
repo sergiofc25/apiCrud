@@ -1,12 +1,11 @@
-﻿ @using Newtonsoft.Json
- @using Model.DTO.v1
- @inject IHttpClientFactory ClientFactory
- @using Blazored.LocalStorage
- @using System.Net.Http.Headers
- @inject ILocalStorageService localStorage
- @inject NavigationManager NavigationManager
- @inject UserStateService UserStateService
-
+﻿@using Newtonsoft.Json
+@using Model.DTO.v1
+@inject IHttpClientFactory ClientFactory
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
+@inject ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+@inject UserStateService UserStateService
 
 <MudMenu>
     <ActivatorContent>
@@ -23,18 +22,22 @@
     </ActivatorContent>
 
     <ChildContent>
-        <MudMenuItem Icon="@Icons.Material.Filled.Logout" OnClick="@(async () => await Btn_LogOut())">
-            Cerrar sesión
-        </MudMenuItem>
+        <div class="d-flex align-center">
+            <MudTooltip Text="LogOut">
+                <MudButton Class="mx-2" OnClick="@(async () => { await Btn_LogOut(); Toggle(); })">
+                    Cerrar Sesión <MudIcon Icon="@Icons.Material.Outlined.Logout"/>
+                </MudButton>
+            </MudTooltip>
+        </div>
     </ChildContent>
 </MudMenu>
 
 @code {
-
     private MudForm? form;
     private DTO_Usuario_Obten_x_Correo usuario = new DTO_Usuario_Obten_x_Correo();
     private string errorMessage = string.Empty;
     private bool _processing = false;
+    private bool _menuOpen;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -42,6 +45,11 @@
         {
             await GetUsuario();
         }
+    }
+
+    void Toggle()
+    {
+        _menuOpen = !_menuOpen;
     }
     private async Task GetUsuario()
     {
@@ -55,34 +63,21 @@
             }
 
             var response = await client.GetAsync("api/v1/Usuario/Obten_Usuario_Logeado");
-            Console.WriteLine($"Response Status: {response.StatusCode}");
-
             if (response.IsSuccessStatusCode)
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Response Body: {responseBody}");
                 var result = JsonConvert.DeserializeObject<DTO_Response<DTO_Usuario_Obten_x_Correo>>(responseBody);
 
                 if (result != null && result.IsSuccessful)
                 {
                     usuario = result.Data;
                     UserStateService.SetUser(usuario);
-                    Console.WriteLine($"Usuario Count: {usuario.ToString}");
                 }
-                else
-                {
-                    Console.WriteLine("Response not successful or no data.");
-                }
-            }
-            else
-            {
-                Console.WriteLine($"Error: {response.StatusCode}");
             }
         }
         catch (Exception ex)
         {
             errorMessage = $"Error al cargar usuario: {ex.Message}";
-            Console.WriteLine(ex.Message);
         }
         StateHasChanged();
     }
@@ -91,5 +86,4 @@
         await localStorage.ClearAsync();
         NavigationManager.NavigateTo("/login", forceLoad: true);
     }
-
 }
