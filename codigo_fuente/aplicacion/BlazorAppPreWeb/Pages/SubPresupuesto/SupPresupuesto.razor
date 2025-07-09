@@ -32,10 +32,10 @@
     <MudItem xs="12">
         <MudPaper Class="pa-5 d-flex justify-end" Elevation="3">
             <MudSwitch T="bool"
-                       @bind-Checked="disabled"
-                       Color="Color.Primary"
-                       Label="Editar Metrados / Cantidades"
-                       Class="mt-2" />
+            @bind-Checked="disabled"
+            Color="Color.Primary"
+            Label="Editar Metrados / Cantidades"
+            Class="mt-2" />
         </MudPaper>
     </MudItem>
     <MudItem xs="12" Class="mt-4">
@@ -76,20 +76,20 @@
                         @if (context.EsPartida)
                         {
                             <MudNumericField T="decimal?"
-                                             Value="@context.Metrado"
-                                             ValueChanged="@(newValue => OnMetradoChanged(context.Id, newValue))"
-                                             Label="Metrado"
-                                             Required
-                                             Disabled="@disabled"
-                                             Style="max-width: 100px;"
-                                             DebounceInterval="3000" /> <!-- Espera 3seg después del último cambio -->
+                            Value="@context.Metrado"
+                            ValueChanged="@(newValue => OnMetradoChanged(context.Id, newValue))"
+                            Label="Metrado"
+                            Required
+                            Disabled="@disabled"
+                            Style="max-width: 100px;"
+                            DebounceInterval="3000" /> <!-- Espera 3seg después del último cambio -->
                         }
                     </MudTd>
                     <MudTd DataLabel="Unidad" Style="padding: 6px 8px;">
-                            @context.Unidad
+                        @context.Unidad
                     </MudTd>
                     <MudTd DataLabel="Precio" Style="padding: 6px 8px;">
-                            @context.PrecioUnitarioP
+                        @context.PrecioUnitarioP
                     </MudTd>
                     <MudTd DataLabel="Parcial" Style="padding: 6px 8px;">
                         @context.PrecioUnitarioFinal
@@ -104,47 +104,50 @@
                             <MudChip Color="Color.Primary" Variant="Variant.Outlined">SubPresupuesto</MudChip>
                         }
                     </MudTd>
-                    <MudTd DataLabel="Acciones" Style="width: 200px; padding: 0;">
-                        @if (!context.EsPartida)
-                        {
-                            <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDropDown">
-                                @if (!HasPartidas(context.Id))
+                    <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary">
+                        <ChildContent>
+                            <MudList>
+                                @if (!context.EsPartida)
                                 {
-                                    <MudMenuItem OnClick="@(() => Btn_Nuevo_SubPresupuesto_D_Click(context.Id))">
-                                        <MudIcon Icon="@Icons.Material.Filled.CreateNewFolder" Class="mr-2" />
-                                        <span>Agregar SubPresupuesto</span>
-                                    </MudMenuItem>
+                                    @if (!HasPartidas(context.Id))
+                                    {
+                                        <MudItem>
+                                            <MudButton Class="mx-2" Color="Color.Primary" OnClick="@(async () => { await Btn_Nuevo_SubPresupuesto_D_Click(context.Id); Toggle(); })">
+                                                Agregar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.CreateNewFolder" />
+                                            </MudButton>
+                                        </MudItem>
+                                    }
+                                    @if (!SubPresupuestoTieneHijos(context.Id))
+                                    {
+                                        <MudItem>
+                                            <MudButton Class="mx-2" Color="Color.Warning" OnClick="@(async () => { await Btn_Crear_Partida_Click(context.Id); Toggle(); })">
+                                                Agregar Partida <MudIcon Icon="@Icons.Material.Filled.PostAdd" />
+                                            </MudButton>
+                                        </MudItem>
+                                    }
+                                    <MudItem>
+                                        <MudButton Class="mx-2" Color="Color.Info" OnClick="@(async () => { await Btn_Actualizar_SubPresupuesto_Click(context.Id); Toggle(); })">
+                                            Editar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                                        </MudButton>
+                                    </MudItem>
+                                    <MudItem>
+                                        <MudButton Class="mx-2" Color="Color.Error" OnClick="@(async () => { await Btn_Eliminar_SubPresupuesto(context.Id); Toggle(); })">
+                                            Eliminar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                                        </MudButton>
+                                    </MudItem>
                                 }
-
-                                @if (!SubPresupuestoTieneHijos(context.Id))
+                                else
                                 {
-                                    <MudMenuItem OnClick="@(() => Btn_Crear_Partida_Click(context.Id))">
-                                        <MudIcon Icon="@Icons.Material.Filled.PostAdd" Class="mr-2" Color="Color.Warning" />
-                                        <span style="color: var(--mud-palette-warning)">Agregar Partida</span>
-                                    </MudMenuItem>
+                                    <MudItem>
+                                        <MudButton Class="mx-2" Color="Color.Primary" OnClick="@(async () => { await NavigateToPartida(context.Id); Toggle(); })">
+                                            Ver Partida <MudIcon Icon="@Icons.Material.Filled.Info" />
+                                        </MudButton>
+                                    </MudItem>
                                 }
+                            </MudList>
+                        </ChildContent>
+                    </MudMenu>
 
-                                <MudMenuItem OnClick="@(() => Btn_Actualizar_SubPresupuesto_Click(context.Id))">
-                                    <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-2" Color="Color.Info" />
-                                    <span style="color: var(--mud-palette-info)">Editar SubPresupuesto</span>
-                                </MudMenuItem>
-
-                                <MudMenuItem OnClick="@(() => Btn_Eliminar_SubPresupuesto(context.Id))" Color="Color.Error">
-                                    <MudIcon Icon="@Icons.Material.Filled.Delete" Class="mr-2" />
-                                    <span style="color: var(--mud-palette-error)">Eliminar SubPresupuesto</span>
-                                </MudMenuItem>
-                            </MudMenu>
-                        }
-                        else
-                        {
-                            <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowDropDown">
-                                <MudMenuItem OnClick="@(() => NavigateToPartida(context.Id))">
-                                    <MudIcon Icon="@Icons.Material.Filled.RemoveRedEye" Class="mr-2" Color="Color.Info" />
-                                    <span style="color: var(--mud-palette-info)">Ver Partida</span>
-                                </MudMenuItem>
-                            </MudMenu>
-                        }
-                    </MudTd>
                 </RowTemplate>
                 <ToolBarContent>
                     <MudToolBar>
@@ -267,6 +270,7 @@
     private string errorMessage = string.Empty;
     private bool isLoading = true;
     bool disabled = true;
+    private bool _menuOpen;
 
 
     // Clase para combinar subpresupuestos y partidas
@@ -300,6 +304,11 @@
         CombineItems();
         isLoading = false;
 
+    }
+
+    void Toggle()
+    {
+        _menuOpen = !_menuOpen;
     }
     private async Task OnMetradoChanged(string partidaId, decimal? newMetrado)
     {
