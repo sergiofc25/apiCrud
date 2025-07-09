@@ -12,51 +12,50 @@
 
 <PageTitle>Login - Sistema Web SFC</PageTitle>
 
-<MudGrid Class="full-height">
-    <MudItem xs="12" md="8" Class="d-flex flex-column justify-center align-center pa-10">
+<MudGrid Class="full-height" Style="overflow-y: auto;">
+    <MudItem xs="12" md="8" Class="d-flex flex-column justify-center align-center pa-4 pa-md-10">
         <div class="welcome-content">
-            <MudText Typo="Typo.h3" Class="mb-4" Color="Color.Primary">
+            <MudText Typo="Typo.h4" Class="mb-3" Color="Color.Primary">
                 Bienvenido al Sistema Web De Análisis de Precios Unitarios
             </MudText>
-            <MudText Typo="Typo.h5" Class="mb-6" Color="Color.Secondary">
+            <MudText Typo="Typo.h6" Class="mb-4" Color="Color.Secondary">
                 Gestión Integral de Proyectos
             </MudText>
 
             <div class="features-list">
-                <MudText Class="d-flex align-center mb-3">
+                <MudText Class="d-flex align-center mb-2">
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
                     Acceso seguro
                 </MudText>
-                <MudText Class="d-flex align-center mb-3">
+                <MudText Class="d-flex align-center mb-2">
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
                     Panel de control intuitivo
                 </MudText>
-                <MudText Class="d-flex align-center mb-3">
+                <MudText Class="d-flex align-center mb-2">
                     <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Success" Class="mr-2" />
                     Analisis de costos
                 </MudText>
             </div>
 
-            <MudPaper Class="mt-10 pa-4" Elevation="0" Style="background-color: rgba(255,255,255,0.1); border-radius: 16px;">
-                <MudText Align="Align.Center" Class="mb-2">¿Necesitas ayuda?</MudText>
-                <MudButton Variant="Variant.Outlined" Color="Color.Info" FullWidth="true"
-                           EndIcon="@Icons.Material.Filled.ContactSupport">
-                    Contactar al soporte
+            <MudPaper Class="mt-6 pa-3" Elevation="0" Style="background-color: rgba(255,255,255,0.1); border-radius: 16px;">
+                <MudButton Href="https://sergiofc.runasp.net/" Variant="Variant.Outlined" Color="Color.Info" FullWidth="true"
+                           EndIcon="@Icons.Material.Filled.ContactSupport" Size="Size.Small">
+                    Contactar al administrador
                 </MudButton>
             </MudPaper>
         </div>
     </MudItem>
 
     <MudItem xs="12" md="4" Class="login-section">
-        <MudPaper Class="pa-8 full-height" Elevation="10" Style="border-radius: 0;">
+        <MudPaper Class="pa-4 pa-md-8 full-height" Elevation="10" Style="border-radius: 0;">
             <div class="d-flex flex-column justify-space-between full-height">
                 <div>
-                    <div class="text-center mb-6">
+                    <div class="text-center mb-4">
                         <MudAvatar Size="Size.Large" Color="Color.Primary" Style="margin: 0 auto;">
                             <MudIcon Icon="@Icons.Material.Filled.Lock" Size="Size.Large" />
                         </MudAvatar>
-                        <MudText Typo="Typo.h5" Class="mt-3" Color="Color.Primary">Inicio de Sesión</MudText>
-                        <MudText Class="mt-2" Color="Color.Secondary">Ingresa tus credenciales para continuar</MudText>
+                        <MudText Typo="Typo.h5" Class="mt-2" Color="Color.Primary">Inicio de Sesión</MudText>
+                        <MudText Class="mt-1" Color="Color.Secondary">Ingresa tus credenciales para continuar</MudText>
                     </div>
 
                     <MudForm @ref="form">
@@ -67,7 +66,7 @@
                                       FullWidth="true"
                                       Required="true"
                                       AdornmentIcon="@Icons.Material.Filled.Person"
-                                      Class="mb-4" />
+                                      Class="mb-3" />
 
                         <MudTextField @bind-Value="loginModel.Usu_Clave"
                                       Label="Contraseña"
@@ -77,13 +76,7 @@
                                       Required="true"
                                       InputType="InputType.Password"
                                       AdornmentIcon="@Icons.Material.Filled.Lock"
-                                      Class="mb-4" />
-
-                        <div class="text-right mb-4">
-                            <MudLink Href="#" Color="Color.Primary" Underline="Underline.Hover">
-                                ¿Olvidaste tu contraseña?
-                            </MudLink>
-                        </div>
+                                      Class="mb-3" />
 
                         <MudButton Type="Submit"
                                    Variant="Variant.Filled"
@@ -92,7 +85,7 @@
                                    EndIcon="@Icons.Material.Filled.Send"
                                    Disabled="isProcessing"
                                    OnClick="async () => await HandleLogin()"
-                                   Class="mb-4" Style="width: 100%;">
+                                   Class="mb-3" FullWidth="true">
                             @if (isProcessing)
                             {
                                 <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
@@ -109,19 +102,19 @@
                                    EndIcon="@Icons.Material.Filled.Person"
                                    Disabled="isProcessing"
                                    OnClick="async () => await LoginAsGuest()"
-                                   Class="mb-4" Style="width: 100%;">
+                                   Class="mb-3" FullWidth="true">
                             <MudText>Ingresar como Invitado</MudText>
                         </MudButton>
                         @if (!string.IsNullOrEmpty(errorMessage))
                         {
-                            <MudAlert Severity="Severity.Error" Class="mt-4">@errorMessage</MudAlert>
+                            <MudAlert Severity="Severity.Error" Class="mt-3">@errorMessage</MudAlert>
                         }
                     </MudForm>
                 </div>
 
-                <div class="text-center mt-6">
-                    <MudText Color="Color.Secondary" Class="mb-2">© @DateTime.Now.Year Sistema Web SFC</MudText>
-                    <MudText Color="Color.Secondary" Typo="Typo.caption">v3.0.0</MudText>
+                <div class="text-center mt-4">
+                    <MudText Color="Color.Secondary" Class="mb-1">© @DateTime.Now.Year Sistema Web SFC</MudText>
+                    <MudText Color="Color.Secondary" Typo="Typo.caption">v4.0.0</MudText>
                 </div>
             </div>
         </MudPaper>
@@ -136,25 +129,45 @@
     }
 
     .full-height {
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
     }
 
     .login-section {
-
+        background-color: white;
     }
 
     .welcome-content {
-        max-width: 1000px;
+        max-width: 100%;
+        border-radius: 8px;
+        color: black;
+        padding: 1rem;
+    }
+
+    .features-list {
+        margin: 1.5rem 0;
+        padding: 0.5rem;
         border-radius: 8px;
         color: black;
     }
 
-    .features-list {
-        margin: 2rem 0;
-        padding: 1rem;
-        border-radius: 8px;
-        color: black;
+    @@media (max-width: 600px) {
+        .full-height {
+            height: auto;
+        }
+
+        .welcome-content {
+            text-align: center;
+        }
+
+        .features-list {
+            text-align: left;
+            margin: 1rem 0;
+        }
+
+        MudText {
+            font-size: 0.9rem;
+        }
     }
 </style>
 @code {
