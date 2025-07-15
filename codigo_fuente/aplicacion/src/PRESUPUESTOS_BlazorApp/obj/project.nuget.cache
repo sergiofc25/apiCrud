@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "dgSpecHash": "bRqD4fwg/MM=",
-  "success": true,
+  "dgSpecHash": "cbSlEKY6Fhs=",
+  "success": false,
   "projectFilePath": "D:\\ProyectosPrueba\\PRESUPUESTOS\\codigo_fuente\\aplicacion\\src\\PRESUPUESTOS_BlazorApp\\PRESUPUESTOS_BlazorApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\blazored.localstorage\\4.5.0\\blazored.localstorage.4.5.0.nupkg.sha512",
@@ -49,5 +49,14 @@
     "C:\\Users\\user\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.runtime.mono.browser-wasm\\8.0.16\\microsoft.netcore.app.runtime.mono.browser-wasm.8.0.16.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1007",
+      "level": "Error",
+      "message": "No se encontró el archivo runtime.json especificado en el proyecto \"C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json\".",
+      "projectPath": "D:\\ProyectosPrueba\\PRESUPUESTOS\\codigo_fuente\\aplicacion\\src\\PRESUPUESTOS_BlazorApp\\PRESUPUESTOS_BlazorApp.csproj",
+      "filePath": "D:\\ProyectosPrueba\\PRESUPUESTOS\\codigo_fuente\\aplicacion\\src\\PRESUPUESTOS_BlazorApp\\PRESUPUESTOS_BlazorApp.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

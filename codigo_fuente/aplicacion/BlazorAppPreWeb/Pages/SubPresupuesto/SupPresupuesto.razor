@@ -38,7 +38,7 @@
             Class="mt-2" />
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" Class="mt-4">
+    @* <MudItem xs="12" Class="mt-4">
         <MudPaper Class="pa-4" Elevation="3">
             <MudTable Items="@combinedItems"
             FixedHeader="true"
@@ -162,7 +162,164 @@
 
             </MudTable>
         </MudPaper>
-    </MudItem>
+    </MudItem> *@
+    @* <MudItem xs="12" Class="mt-4">
+        <MudPaper Class="pa-4" Elevation="3">
+                <MudDataGrid T="CombinedItem" Items="@combinedItems"
+                             Dense="true"
+                             Hover="true"
+                             Striped="true"
+                             Breakpoint="Breakpoint.Sm"
+                             Height="466px"
+                             Loading="@isLoading"
+                             FixedHeader="true">
+                    <ToolBarContent>
+                        <MudToolBar>
+                            <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
+                                       Size="Size.Small" @onclick="@(() => Btn_Nuevo_SubPresupuesto_FL_Click(Pre_Id))">Agregar SubPresupuesto</MudButton>
+                        </MudToolBar>
+                    </ToolBarContent>
+                    <Columns>
+                        <SelectColumn T="CombinedItem"/>
+                    <PropertyColumn Property="x => x.Ruta" Title="Item">
+                        <CellTemplate Context="context">
+                            <div style="margin-left: @(GetIndentLevel(context.Item.Ruta))px">
+                                @context.Item.Ruta
+                            </div>
+                        </CellTemplate>
+                    </PropertyColumn>
+                    </Columns>
+                </MudDataGrid>
+        </MudPaper>
+    </MudItem> *@
+    <MudItem xs="12" Class="mt-4" Style="overflow-x: auto;">
+    <MudPaper Class="pa-4" Elevation="3" Style="min-width: 900px;">
+        <MudDataGrid T="CombinedItem" Items="@combinedItems"
+                     Dense="true"
+                     Striped="true"
+                     Breakpoint="Breakpoint.None"
+                     Height="466px"
+                     Loading="@isLoading"
+                     FixedHeader="true">
+
+            <Columns>
+                <PropertyColumn Property="x => x.Ruta" Title="Item" Width="150px">
+                    <CellTemplate Context="context">
+                        <div style="margin-left: @(GetIndentLevel(context.Item.Ruta))px">
+                            @context.Item.Ruta
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="x => x.Nombre" Title="Nombre">
+                    <CellTemplate Context="context">
+                        <div style="margin-left: @(GetIndentLevel(context.Item.Ruta))px">
+                            @context.Item.Nombre
+                        </div>
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="x => x.Metrado" Title="Metrado" Width="200px">
+                    <CellTemplate Context="context">
+                        @if (context.Item.EsPartida)
+                        {
+                            <MudNumericField T="decimal?"
+                                             Value="@context.Item.Metrado"
+                                             ValueChanged="@(newValue => OnMetradoChanged(context.Item.Id, newValue))"
+                                             Required
+                                             Disabled="@disabled"
+                                             Style="max-width: 100px;"
+                                             DebounceInterval="3000" />
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+
+                <PropertyColumn Property="x => x.Unidad" Title="Unidad" />
+
+                <PropertyColumn Property="x => x.PrecioUnitarioP" Title="Precio" />
+
+                <PropertyColumn Property="x => x.PrecioUnitarioFinal" Title="Parcial" />
+
+                <PropertyColumn Property="x => x.EsPartida" Title="Tipo">
+                    <CellTemplate Context="context">
+                        @if (context.Item.EsPartida)
+                        {
+                            <MudChip Color="Color.Info" Variant="Variant.Outlined">Partida</MudChip>
+                        }
+                        else
+                        {
+                            <MudChip Color="Color.Primary" Variant="Variant.Outlined">SubPresupuesto</MudChip>
+                        }
+                    </CellTemplate>
+                </PropertyColumn>
+
+                    <PropertyColumn Property="x => x.Id" Title =" Acciones" Width="120px">
+                    <CellTemplate Context="context">
+                        <MudMenu Label="Acciones" Variant="Variant.Filled" Color="Color.Primary">
+                            <ChildContent>
+                                <MudList>
+                                    @if (!context.Item.EsPartida)
+                                    {
+                                        @if (!HasPartidas(context.Item.Id))
+                                        {
+                                            <MudItem>
+                                                <MudButton Class="mx-2" Color="Color.Primary" OnClick="@(async () => { await Btn_Nuevo_SubPresupuesto_D_Click(context.Item.Id); Toggle(); })">
+                                                    Agregar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.CreateNewFolder" />
+                                                </MudButton>
+                                            </MudItem>
+                                        }
+                                        @if (!SubPresupuestoTieneHijos(context.Item.Id))
+                                        {
+                                            <MudItem>
+                                                <MudButton Class="mx-2" Color="Color.Warning" OnClick="@(async () => { await Btn_Crear_Partida_Click(context.Item.Id); Toggle(); })">
+                                                    Agregar Partida <MudIcon Icon="@Icons.Material.Filled.PostAdd" />
+                                                </MudButton>
+                                            </MudItem>
+                                        }
+                                        <MudItem>
+                                            <MudButton Class="mx-2" Color="Color.Info" OnClick="@(async () => { await Btn_Actualizar_SubPresupuesto_Click(context.Item.Id); Toggle(); })">
+                                                Editar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.Edit" />
+                                            </MudButton>
+                                        </MudItem>
+                                        <MudItem>
+                                            <MudButton Class="mx-2" Color="Color.Error" OnClick="@(async () => { await Btn_Eliminar_SubPresupuesto(context.Item.Id); Toggle(); })">
+                                                Eliminar SubPresupuesto <MudIcon Icon="@Icons.Material.Filled.Delete" />
+                                            </MudButton>
+                                        </MudItem>
+                                    }
+                                    else
+                                    {
+                                        <MudItem>
+                                            <MudButton Class="mx-2" Color="Color.Primary" OnClick="@(async () => { await NavigateToPartida(context.Item.Id); Toggle(); })">
+                                                Ver Partida <MudIcon Icon="@Icons.Material.Filled.Info" />
+                                            </MudButton>
+                                        </MudItem>
+                                    }
+                                </MudList>
+                            </ChildContent>
+                        </MudMenu>
+                    </CellTemplate>
+                </PropertyColumn>
+            </Columns>
+
+            <ToolBarContent>
+                <MudToolBar>
+                    <MudSpacer />
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.AddBox" Color="Color.Primary"
+                               Size="Size.Small" @onclick="@(() => Btn_Nuevo_SubPresupuesto_FL_Click(Pre_Id))">Agregar SubPresupuesto</MudButton>
+                </MudToolBar>
+            </ToolBarContent>
+
+            <LoadingContent>
+                <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+            </LoadingContent>
+
+        </MudDataGrid>
+    </MudPaper>
+</MudItem>
+
+
+
     <MudItem xs="12" Class="mt-4">
         <MudPaper Class="pa-4" Elevation="3">
             <MudGrid>
@@ -229,32 +386,39 @@
     <MudItem xs="12" Class="mt-4">
         <MudPaper Class="pa-4" Elevation="3">
             <MudGrid>
-                <MudItem xs="12" Class="d-flex justify-space-between">
+                <MudItem xs="12" Class="d-flex flex-wrap justify-space-between gap-2">
+
                     <MudButton Variant="Variant.Filled"
                                Color="Color.Warning"
                                Size="Size.Small"
                                EndIcon="@Icons.Material.Filled.PictureAsPdf"
                                OnClick="@ExportToPdf"
-                               Disabled="@isLoading">
+                               Disabled="@isLoading"
+                               Class="responsive-btn">
                         Exportar a PDF
                     </MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" EndIcon="@Icons.Material.Filled.Send" OnClick="@(async () => await ActualizarPresupuestoTotal())">
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               EndIcon="@Icons.Material.Filled.Send"
+                               OnClick="@(async () => await ActualizarPresupuestoTotal())"
+                               Class="responsive-btn d-flex align-center">
                         @if (_processing)
                         {
-                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" Color="Color.Inherit" />
-                            <MudText Class="ms-2">Actualizando...</MudText>
+                            <MudProgressCircular Size="Size.Small" Indeterminate="true" Color="Color.Inherit" Class="me-1" />
+                            <span class="text-caption">Actualizando...</span>
                         }
                         else
                         {
-                            <MudText>Obtener Presupuesto</MudText>
+                            <span class="text-caption">Obtener Presupuesto</span>
                         }
                     </MudButton>
-                </MudItem>
 
+                </MudItem>
             </MudGrid>
         </MudPaper>
     </MudItem>
-
 </MudGrid>
 
 @code {

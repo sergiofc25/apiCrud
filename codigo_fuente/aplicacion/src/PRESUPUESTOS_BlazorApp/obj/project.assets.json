@@ -1469,7 +1469,7 @@
           }
         },
         "runtime": {
-          "runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll": {
+          "lib/net8.0/System.Text.Encodings.Web.dll": {
             "related": ".xml"
           }
         },
@@ -3042,5 +3042,12 @@
         "#import": []
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1007",
+      "level": "Error",
+      "message": "No se encontró el archivo runtime.json especificado en el proyecto \"C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json\"."
+    }
+  ]
 }
